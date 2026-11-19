@@ -380,6 +380,7 @@ void main() {
     try {
       unlockDatabase(old, key);
       for (final table in [
+        'expense_details',
         'cash_reconciliations',
         'cash_settings',
         'movement_confirmations',

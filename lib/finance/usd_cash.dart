@@ -144,29 +144,22 @@ extension UsdCashLedger on Ledger {
     required int minor,
     required DateTime effectiveAt,
     String? note,
+    Set<int> acknowledged = const {},
   }) => _db.transaction(() async {
     _positiveCashAmount(minor);
     final wallet = await _requireCashWallet();
-    final expense = await _offset(usdCurrency, AccountKind.expense);
-    final explanation = note?.trim() ?? '';
-    if (explanation.length > 500) {
-      throw const LedgerException(LedgerIssue.invalidInput);
-    }
-    final existed = await _findOperation(operationId) != null;
-    final id = await _persist(
-      operationId,
-      JournalKind.cashExpense,
-      effectiveAt,
-      [
-        (accountId: wallet.id, minor: -minor),
-        (accountId: expense.id, minor: minor),
-      ],
-      reason: explanation.isEmpty ? null : explanation,
+    return recordExpense(
+      operationId: operationId,
+      input: (
+        accountId: wallet.id,
+        minor: minor,
+        date: effectiveAt,
+        period: ExpensePeriod.individual,
+        note: note,
+        category: null,
+      ),
+      acknowledged: acknowledged,
     );
-    if (!existed && (await _total(wallet.id)).isNegative) {
-      throw const CashException(CashIssue.insufficientCash);
-    }
-    return id;
   });
 
   /// The counted amount and the book amount shown at confirmation must match
@@ -177,8 +170,29 @@ extension UsdCashLedger on Ledger {
     required int countedMinor,
     required DateTime effectiveAt,
   }) => _db.transaction(() async {
-    if (countedMinor < 0) throw const CashException(CashIssue.invalidAmount);
     final wallet = await _requireCashWallet();
+    return confirmAccountBalance(
+      accountId: wallet.id,
+      operationId: operationId,
+      priorMinor: priorMinor,
+      countedMinor: countedMinor,
+      effectiveAt: effectiveAt,
+    );
+  });
+
+  Future<int> confirmAccountBalance({
+    required int accountId,
+    required String operationId,
+    required int priorMinor,
+    required int countedMinor,
+    required DateTime effectiveAt,
+  }) => _db.transaction(() async {
+    final wallet = await _personalAccount(accountId);
+    if (!_canPayExpense(wallet) ||
+        (wallet.kind == AccountKind.cash && countedMinor < 0)) {
+      throw const CashException(CashIssue.invalidAmount);
+    }
+    _checkRange(countedMinor);
     final delta = checkedMinor(
       BigInt.from(countedMinor) - BigInt.from(priorMinor),
     );
@@ -187,7 +201,7 @@ extension UsdCashLedger on Ledger {
         await _total(wallet.id) != BigInt.from(priorMinor)) {
       throw const CashException(CashIssue.staleBalance);
     }
-    final offset = await _offset(usdCurrency, AccountKind.cashAdjustment);
+    final offset = await _offset(wallet.currency, AccountKind.cashAdjustment);
     final id = await _persist(
       operationId,
       JournalKind.cashAdjustment,
@@ -228,6 +242,7 @@ extension UsdCashLedger on Ledger {
     required String replacementOperationId,
     required int entryId,
     required int minor,
+    Set<int> acknowledged = const {},
   }) => _db.transaction(() async {
     _positiveCashAmount(minor);
     final wallet = await _requireCashWallet();
@@ -237,8 +252,24 @@ extension UsdCashLedger on Ledger {
         !postings.any((line) => line.accountId == wallet.id)) {
       throw const CashException(CashIssue.uncorrectableMovement);
     }
-    if (original.kind != JournalKind.cashExpense &&
-        original.kind != JournalKind.cashIncome) {
+    if (original.kind == JournalKind.cashExpense) {
+      final old = await _expense(entryId);
+      return correctExpense(
+        entryId: entryId,
+        reversalOperationId: reversalOperationId,
+        replacementOperationId: replacementOperationId,
+        acknowledged: acknowledged,
+        input: (
+          accountId: wallet.id,
+          minor: minor,
+          date: DateTime.fromMicrosecondsSinceEpoch(original.effectiveMicros),
+          period: old.input.period,
+          category: old.input.category,
+          note: old.input.note,
+        ),
+      );
+    }
+    if (original.kind != JournalKind.cashIncome) {
       final other = await _account(
         postings.singleWhere((line) => line.accountId != wallet.id).accountId,
       );
@@ -386,18 +417,22 @@ extension UsdCashLedger on Ledger {
     final accounts = [
       for (final posting in postings) await _account(posting.accountId),
     ];
-    final walletIndex = accounts.indexWhere(
-      (account) => account.kind == AccountKind.cash,
-    );
-    if (walletIndex < 0 ||
-        accounts.any((account) => account.currency != usdCurrency)) {
+    final walletIndex = accounts.indexWhere(_canPayExpense);
+    if (walletIndex < 0 || accounts.first.currency != accounts.last.currency) {
       throw const LedgerException(LedgerIssue.invalidInput);
     }
+    final account = accounts[walletIndex];
     final offset = accounts[1 - walletIndex].kind;
     final minor = postings[walletIndex].minor;
+    final usdCash =
+        account.kind == AccountKind.cash && account.currency == usdCurrency;
     final valid = switch (kind) {
-      JournalKind.cashIncome => offset == AccountKind.income && minor > 0,
-      JournalKind.cashExpense => offset == AccountKind.expense && minor < 0,
+      JournalKind.cashIncome =>
+        usdCash && offset == AccountKind.income && minor > 0,
+      JournalKind.cashExpense =>
+        usdCash && offset == AccountKind.expense && minor < 0,
+      JournalKind.expense =>
+        !usdCash && offset == AccountKind.expense && minor < 0,
       JournalKind.cashAdjustment => offset == AccountKind.cashAdjustment,
       _ => false,
     };

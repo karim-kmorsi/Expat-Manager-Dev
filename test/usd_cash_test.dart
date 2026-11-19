@@ -313,6 +313,7 @@ void main() {
     final raw = sqlite3.open(file.path);
     try {
       unlockDatabase(raw, key);
+      raw.execute('DROP TABLE expense_details');
       raw.execute('DROP TABLE cash_reconciliations');
       raw.execute('DROP TABLE cash_settings');
       raw.execute("DELETE FROM ledger_accounts WHERE kind = 'cashAdjustment'");

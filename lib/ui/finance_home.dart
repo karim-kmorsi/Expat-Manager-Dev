@@ -6,6 +6,7 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'expense_screen.dart';
 import 'salary_screen.dart';
 import 'usd_cash_screen.dart';
 
@@ -111,10 +112,16 @@ class _FinanceHomeState extends State<FinanceHome> {
           icon: Icon(Icons.wallet_outlined),
           label: 'النقد',
         ),
+        NavigationDestination(
+          icon: Icon(Icons.receipt_outlined),
+          label: 'المصروفات',
+        ),
       ],
     ),
     body: SafeArea(
-      child: _tab == 3
+      child: _tab == 4
+          ? ExpenseScreen(ledger: ledger, newOperationId: _operationId)
+          : _tab == 3
           ? UsdCashScreen(ledger: ledger, newOperationId: _operationId)
           : _tab == 2
           ? SalaryScreen(ledger: ledger, newOperationId: _operationId)
@@ -204,7 +211,8 @@ class _FinanceHomeState extends State<FinanceHome> {
             JournalKind.salary => 'إيداع راتب',
             JournalKind.cashIncome => 'دخل نقدي خارجي',
             JournalKind.cashExpense => 'مصروف نقدي',
-            JournalKind.cashAdjustment => 'تسوية نقدية',
+            JournalKind.expense => 'مصروف',
+            JournalKind.cashAdjustment => 'تسوية رصيد',
           }),
           subtitle: entry.reason == null ? null : Text(entry.reason!),
           trailing: Text(

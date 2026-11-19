@@ -11,6 +11,7 @@ import 'schema_recovery.dart';
 part 'database.g.dart';
 part 'salary_tables.dart';
 part 'cash_tables.dart';
+part 'expense_tables.dart';
 
 class Currencies extends Table {
   TextColumn get code => text()();
@@ -72,6 +73,7 @@ class StorageLocked implements Exception {
     MovementConfirmations,
     CashSettings,
     CashReconciliations,
+    ExpenseDetails,
   ],
 )
 class LedgerDatabase extends _$LedgerDatabase {
@@ -89,7 +91,7 @@ class LedgerDatabase extends _$LedgerDatabase {
       unlockDatabase(raw, hexKey);
       final version =
           raw.select('PRAGMA user_version').single.values.single as int;
-      if (version == 1 || version == 2) {
+      if (version > 0 && version < 4) {
         protectLedgerMigration(raw, file, hexKey, version);
       }
       raw.execute('PRAGMA journal_mode = WAL');
@@ -113,12 +115,12 @@ class LedgerDatabase extends _$LedgerDatabase {
   }
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) => transaction(() async {
-      if ((from != 1 && from != 2) || to != 3) {
+      if (from < 1 || from > 3 || to != 4) {
         throw StateError('Unsupported ledger schema');
       }
       if (from == 1) {
@@ -133,11 +135,19 @@ class LedgerDatabase extends _$LedgerDatabase {
         }
         await _salaryIndexes();
       }
-      await migrator.createTable(cashSettings);
-      await migrator.createTable(cashReconciliations);
-      await customStatement('DROP INDEX system_account_by_currency');
-      await _systemAccountIndex();
-      await _seedCash();
+      if (from < 3) {
+        await migrator.createTable(cashSettings);
+        await migrator.createTable(cashReconciliations);
+        await customStatement('DROP INDEX system_account_by_currency');
+        await _systemAccountIndex();
+        await _seedCash();
+      } else {
+        // Bank statements may show a negative observed balance. Cash remains
+        // non-negative in the confirmed adjustment use case.
+        await migrator.alterTable(TableMigration(cashReconciliations));
+      }
+      await migrator.createTable(expenseDetails);
+      await _seedAdjustmentAccounts();
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
     onCreate: (migrator) => transaction(() async {
@@ -167,6 +177,7 @@ class LedgerDatabase extends _$LedgerDatabase {
         }
       }
       await _seedCash();
+      await _seedAdjustmentAccounts();
       // Persist the version with the schema and seed rows on first open.
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
@@ -178,16 +189,17 @@ class LedgerDatabase extends _$LedgerDatabase {
   );
 
   Future<void> _seedCash() async {
-    await into(ledgerAccounts).insert(
-      LedgerAccountsCompanion.insert(
-        name: 'cashAdjustment',
-        currency: usdCurrency,
-        kind: AccountKind.cashAdjustment,
-      ),
-    );
     await into(cashSettings)
         .insert(const CashSetting(id: 1, withdrawalLimitMinor: 50000));
   }
+
+  Future<void> _seedAdjustmentAccounts() => customStatement('''
+    INSERT INTO ledger_accounts (name, currency, kind)
+    SELECT 'cashAdjustment', c.code, 'cashAdjustment' FROM currencies c
+    WHERE NOT EXISTS (
+      SELECT 1 FROM ledger_accounts a WHERE a.currency = c.code AND a.kind = 'cashAdjustment'
+    )
+  ''');
 
   Future<void> _salaryIndexes() async {
     await customStatement(

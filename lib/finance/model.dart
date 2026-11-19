@@ -21,8 +21,13 @@ enum JournalKind {
   salary,
   cashIncome,
   cashExpense,
+  expense,
   cashAdjustment,
 }
+
+enum ExpensePeriod { individual, day, week }
+
+enum ExpenseCategory { food, transport, housing, bills, health, other }
 
 const usdCurrency = 'USD';
 

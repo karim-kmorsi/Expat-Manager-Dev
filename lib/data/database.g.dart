@@ -3178,6 +3178,324 @@ class CashReconciliationsCompanion extends UpdateCompanion<CashReconciliation> {
   }
 }
 
+class $ExpenseDetailsTable extends ExpenseDetails
+    with TableInfo<$ExpenseDetailsTable, ExpenseDetail> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpenseDetailsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ExpensePeriod, String> period =
+      GeneratedColumn<String>(
+        'period',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<ExpensePeriod>($ExpenseDetailsTable.$converterperiod);
+  static const VerificationMeta _startDayMeta = const VerificationMeta(
+    'startDay',
+  );
+  @override
+  late final GeneratedColumn<int> startDay = GeneratedColumn<int>(
+    'start_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ExpenseCategory?, String>
+  category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<ExpenseCategory?>($ExpenseDetailsTable.$convertercategoryn);
+  @override
+  List<GeneratedColumn> get $columns => [entryId, period, startDay, category];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expense_details';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExpenseDetail> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('start_day')) {
+      context.handle(
+        _startDayMeta,
+        startDay.isAcceptableOrUnknown(data['start_day']!, _startDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startDayMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  ExpenseDetail map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpenseDetail(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      period: $ExpenseDetailsTable.$converterperiod.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}period'],
+        )!,
+      ),
+      startDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}start_day'],
+      )!,
+      category: $ExpenseDetailsTable.$convertercategoryn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}category'],
+        ),
+      ),
+    );
+  }
+
+  @override
+  $ExpenseDetailsTable createAlias(String alias) {
+    return $ExpenseDetailsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ExpensePeriod, String, String> $converterperiod =
+      const EnumNameConverter<ExpensePeriod>(ExpensePeriod.values);
+  static JsonTypeConverter2<ExpenseCategory, String, String>
+  $convertercategory = const EnumNameConverter<ExpenseCategory>(
+    ExpenseCategory.values,
+  );
+  static JsonTypeConverter2<ExpenseCategory?, String?, String?>
+  $convertercategoryn = JsonTypeConverter2.asNullable($convertercategory);
+}
+
+class ExpenseDetail extends DataClass implements Insertable<ExpenseDetail> {
+  final int entryId;
+  final ExpensePeriod period;
+  final int startDay;
+  final ExpenseCategory? category;
+  const ExpenseDetail({
+    required this.entryId,
+    required this.period,
+    required this.startDay,
+    this.category,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    {
+      map['period'] = Variable<String>(
+        $ExpenseDetailsTable.$converterperiod.toSql(period),
+      );
+    }
+    map['start_day'] = Variable<int>(startDay);
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(
+        $ExpenseDetailsTable.$convertercategoryn.toSql(category),
+      );
+    }
+    return map;
+  }
+
+  ExpenseDetailsCompanion toCompanion(bool nullToAbsent) {
+    return ExpenseDetailsCompanion(
+      entryId: Value(entryId),
+      period: Value(period),
+      startDay: Value(startDay),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+    );
+  }
+
+  factory ExpenseDetail.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpenseDetail(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      period: $ExpenseDetailsTable.$converterperiod.fromJson(
+        serializer.fromJson<String>(json['period']),
+      ),
+      startDay: serializer.fromJson<int>(json['startDay']),
+      category: $ExpenseDetailsTable.$convertercategoryn.fromJson(
+        serializer.fromJson<String?>(json['category']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'period': serializer.toJson<String>(
+        $ExpenseDetailsTable.$converterperiod.toJson(period),
+      ),
+      'startDay': serializer.toJson<int>(startDay),
+      'category': serializer.toJson<String?>(
+        $ExpenseDetailsTable.$convertercategoryn.toJson(category),
+      ),
+    };
+  }
+
+  ExpenseDetail copyWith({
+    int? entryId,
+    ExpensePeriod? period,
+    int? startDay,
+    Value<ExpenseCategory?> category = const Value.absent(),
+  }) => ExpenseDetail(
+    entryId: entryId ?? this.entryId,
+    period: period ?? this.period,
+    startDay: startDay ?? this.startDay,
+    category: category.present ? category.value : this.category,
+  );
+  ExpenseDetail copyWithCompanion(ExpenseDetailsCompanion data) {
+    return ExpenseDetail(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      period: data.period.present ? data.period.value : this.period,
+      startDay: data.startDay.present ? data.startDay.value : this.startDay,
+      category: data.category.present ? data.category.value : this.category,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseDetail(')
+          ..write('entryId: $entryId, ')
+          ..write('period: $period, ')
+          ..write('startDay: $startDay, ')
+          ..write('category: $category')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, period, startDay, category);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpenseDetail &&
+          other.entryId == this.entryId &&
+          other.period == this.period &&
+          other.startDay == this.startDay &&
+          other.category == this.category);
+}
+
+class ExpenseDetailsCompanion extends UpdateCompanion<ExpenseDetail> {
+  final Value<int> entryId;
+  final Value<ExpensePeriod> period;
+  final Value<int> startDay;
+  final Value<ExpenseCategory?> category;
+  const ExpenseDetailsCompanion({
+    this.entryId = const Value.absent(),
+    this.period = const Value.absent(),
+    this.startDay = const Value.absent(),
+    this.category = const Value.absent(),
+  });
+  ExpenseDetailsCompanion.insert({
+    this.entryId = const Value.absent(),
+    required ExpensePeriod period,
+    required int startDay,
+    this.category = const Value.absent(),
+  }) : period = Value(period),
+       startDay = Value(startDay);
+  static Insertable<ExpenseDetail> custom({
+    Expression<int>? entryId,
+    Expression<String>? period,
+    Expression<int>? startDay,
+    Expression<String>? category,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (period != null) 'period': period,
+      if (startDay != null) 'start_day': startDay,
+      if (category != null) 'category': category,
+    });
+  }
+
+  ExpenseDetailsCompanion copyWith({
+    Value<int>? entryId,
+    Value<ExpensePeriod>? period,
+    Value<int>? startDay,
+    Value<ExpenseCategory?>? category,
+  }) {
+    return ExpenseDetailsCompanion(
+      entryId: entryId ?? this.entryId,
+      period: period ?? this.period,
+      startDay: startDay ?? this.startDay,
+      category: category ?? this.category,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (period.present) {
+      map['period'] = Variable<String>(
+        $ExpenseDetailsTable.$converterperiod.toSql(period.value),
+      );
+    }
+    if (startDay.present) {
+      map['start_day'] = Variable<int>(startDay.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(
+        $ExpenseDetailsTable.$convertercategoryn.toSql(category.value),
+      );
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseDetailsCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('period: $period, ')
+          ..write('startDay: $startDay, ')
+          ..write('category: $category')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -3199,6 +3517,7 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   late final $CashSettingsTable cashSettings = $CashSettingsTable(this);
   late final $CashReconciliationsTable cashReconciliations =
       $CashReconciliationsTable(this);
+  late final $ExpenseDetailsTable expenseDetails = $ExpenseDetailsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3215,6 +3534,7 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     movementConfirmations,
     cashSettings,
     cashReconciliations,
+    expenseDetails,
   ];
 }
 
@@ -4433,6 +4753,25 @@ final class $$JournalEntriesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$ExpenseDetailsTable, List<ExpenseDetail>>
+  _expenseDetailsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.expenseDetails,
+        aliasName: 'journal_entries__id__expense_details__entry_id',
+      );
+
+  $$ExpenseDetailsTableProcessedTableManager get expenseDetailsRefs {
+    final manager = $$ExpenseDetailsTableTableManager(
+      $_db,
+      $_db.expenseDetails,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_expenseDetailsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$JournalEntriesTableFilterComposer
@@ -4656,6 +4995,31 @@ class $$JournalEntriesTableFilterComposer
           }) => $$CashReconciliationsTableFilterComposer(
             $db: $db,
             $table: $db.cashReconciliations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> expenseDetailsRefs(
+    Expression<bool> Function($$ExpenseDetailsTableFilterComposer f) f,
+  ) {
+    final $$ExpenseDetailsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.expenseDetails,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpenseDetailsTableFilterComposer(
+            $db: $db,
+            $table: $db.expenseDetails,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4993,6 +5357,31 @@ class $$JournalEntriesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> expenseDetailsRefs<T extends Object>(
+    Expression<T> Function($$ExpenseDetailsTableAnnotationComposer a) f,
+  ) {
+    final $$ExpenseDetailsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.expenseDetails,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpenseDetailsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.expenseDetails,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$JournalEntriesTableTableManager
@@ -5017,6 +5406,7 @@ class $$JournalEntriesTableTableManager
             bool salaryExecutionsRefs,
             bool movementConfirmationsRefs,
             bool cashReconciliationsRefs,
+            bool expenseDetailsRefs,
           })
         > {
   $$JournalEntriesTableTableManager(
@@ -5090,6 +5480,7 @@ class $$JournalEntriesTableTableManager
                 salaryExecutionsRefs = false,
                 movementConfirmationsRefs = false,
                 cashReconciliationsRefs = false,
+                expenseDetailsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -5099,6 +5490,7 @@ class $$JournalEntriesTableTableManager
                     if (salaryExecutionsRefs) db.salaryExecutions,
                     if (movementConfirmationsRefs) db.movementConfirmations,
                     if (cashReconciliationsRefs) db.cashReconciliations,
+                    if (expenseDetailsRefs) db.expenseDetails,
                   ],
                   addJoins:
                       <
@@ -5254,6 +5646,26 @@ class $$JournalEntriesTableTableManager
                           referencedColumn: 'entry_id',
                           typedResults: items,
                         ),
+                      if (expenseDetailsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          ExpenseDetail,
+                          $ExpenseDetailsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._expenseDetailsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).expenseDetailsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -5283,6 +5695,7 @@ typedef $$JournalEntriesTableProcessedTableManager =
         bool salaryExecutionsRefs,
         bool movementConfirmationsRefs,
         bool cashReconciliationsRefs,
+        bool expenseDetailsRefs,
       })
     >;
 typedef $$JournalPostingsTableCreateCompanionBuilder =
@@ -7760,6 +8173,306 @@ typedef $$CashReconciliationsTableProcessedTableManager =
       CashReconciliation,
       PrefetchHooks Function({bool entryId, bool accountId})
     >;
+typedef $$ExpenseDetailsTableCreateCompanionBuilder =
+    ExpenseDetailsCompanion Function({
+      Value<int> entryId,
+      required ExpensePeriod period,
+      required int startDay,
+      Value<ExpenseCategory?> category,
+    });
+typedef $$ExpenseDetailsTableUpdateCompanionBuilder =
+    ExpenseDetailsCompanion Function({
+      Value<int> entryId,
+      Value<ExpensePeriod> period,
+      Value<int> startDay,
+      Value<ExpenseCategory?> category,
+    });
+
+final class $$ExpenseDetailsTableReferences
+    extends
+        BaseReferences<_$LedgerDatabase, $ExpenseDetailsTable, ExpenseDetail> {
+  $$ExpenseDetailsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('expense_details__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExpenseDetailsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $ExpenseDetailsTable> {
+  $$ExpenseDetailsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnWithTypeConverterFilters<ExpensePeriod, ExpensePeriod, String>
+  get period => $composableBuilder(
+    column: $table.period,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<int> get startDay => $composableBuilder(
+    column: $table.startDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ExpenseCategory?, ExpenseCategory, String>
+  get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExpenseDetailsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $ExpenseDetailsTable> {
+  $$ExpenseDetailsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get period => $composableBuilder(
+    column: $table.period,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get startDay => $composableBuilder(
+    column: $table.startDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExpenseDetailsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $ExpenseDetailsTable> {
+  $$ExpenseDetailsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumnWithTypeConverter<ExpensePeriod, String> get period =>
+      $composableBuilder(column: $table.period, builder: (column) => column);
+
+  GeneratedColumn<int> get startDay =>
+      $composableBuilder(column: $table.startDay, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ExpenseCategory?, String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ExpenseDetailsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $ExpenseDetailsTable,
+          ExpenseDetail,
+          $$ExpenseDetailsTableFilterComposer,
+          $$ExpenseDetailsTableOrderingComposer,
+          $$ExpenseDetailsTableAnnotationComposer,
+          $$ExpenseDetailsTableCreateCompanionBuilder,
+          $$ExpenseDetailsTableUpdateCompanionBuilder,
+          (ExpenseDetail, $$ExpenseDetailsTableReferences),
+          ExpenseDetail,
+          PrefetchHooks Function({bool entryId})
+        > {
+  $$ExpenseDetailsTableTableManager(
+    _$LedgerDatabase db,
+    $ExpenseDetailsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExpenseDetailsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExpenseDetailsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExpenseDetailsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                Value<ExpensePeriod> period = const Value.absent(),
+                Value<int> startDay = const Value.absent(),
+                Value<ExpenseCategory?> category = const Value.absent(),
+              }) => ExpenseDetailsCompanion(
+                entryId: entryId,
+                period: period,
+                startDay: startDay,
+                category: category,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required ExpensePeriod period,
+                required int startDay,
+                Value<ExpenseCategory?> category = const Value.absent(),
+              }) => ExpenseDetailsCompanion.insert(
+                entryId: entryId,
+                period: period,
+                startDay: startDay,
+                category: category,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ExpenseDetailsTable, ExpenseDetail>(table),
+                  $$ExpenseDetailsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({entryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (entryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.entryId,
+                        referencedTable: $$ExpenseDetailsTableReferences
+                            ._entryIdTable(db),
+                        referencedColumn: $$ExpenseDetailsTableReferences
+                            ._entryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExpenseDetailsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $ExpenseDetailsTable,
+      ExpenseDetail,
+      $$ExpenseDetailsTableFilterComposer,
+      $$ExpenseDetailsTableOrderingComposer,
+      $$ExpenseDetailsTableAnnotationComposer,
+      $$ExpenseDetailsTableCreateCompanionBuilder,
+      $$ExpenseDetailsTableUpdateCompanionBuilder,
+      (ExpenseDetail, $$ExpenseDetailsTableReferences),
+      ExpenseDetail,
+      PrefetchHooks Function({bool entryId})
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -7786,4 +8499,6 @@ class $LedgerDatabaseManager {
       $$CashSettingsTableTableManager(_db, _db.cashSettings);
   $$CashReconciliationsTableTableManager get cashReconciliations =>
       $$CashReconciliationsTableTableManager(_db, _db.cashReconciliations);
+  $$ExpenseDetailsTableTableManager get expenseDetails =>
+      $$ExpenseDetailsTableTableManager(_db, _db.expenseDetails);
 }

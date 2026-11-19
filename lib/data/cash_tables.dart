@@ -23,7 +23,4 @@ class CashReconciliations extends Table {
 
   @override
   Set<Column<Object>> get primaryKey => {entryId};
-
-  @override
-  List<String> get customConstraints => ['CHECK (counted_minor >= 0)'];
 }

@@ -4,6 +4,7 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'expense_screen.dart';
 
 class UsdCashScreen extends StatefulWidget {
   const UsdCashScreen({
@@ -71,13 +72,18 @@ class _UsdCashScreenState extends State<UsdCashScreen> {
 
   Future<void> _use() => _save(() async {
     final input = await _prompt('استخدام نقد', note: true);
-    if (input != null) {
-      await ledger.useUsdCash(
-        operationId: widget.newOperationId(),
-        minor: input.minor,
-        effectiveAt: DateTime.now(),
-        note: input.note,
-      );
+    if (input != null && mounted) {
+      final id = widget.newOperationId();
+      final date = DateTime.now();
+      await saveWithExpenseReview(context, (acknowledged) async {
+        await ledger.useUsdCash(
+          operationId: id,
+          minor: input.minor,
+          effectiveAt: date,
+          note: input.note,
+          acknowledged: acknowledged,
+        );
+      });
     }
   });
 
@@ -152,13 +158,18 @@ class _UsdCashScreenState extends State<UsdCashScreen> {
       label: 'المبلغ الصحيح',
       initial: movement.minor.abs(),
     );
-    if (input != null) {
-      await ledger.correctUsdCashAmount(
-        reversalOperationId: widget.newOperationId(),
-        replacementOperationId: widget.newOperationId(),
-        entryId: movement.entryId,
-        minor: input.minor,
-      );
+    if (input != null && mounted) {
+      final reversal = widget.newOperationId();
+      final replacement = widget.newOperationId();
+      await saveWithExpenseReview(context, (acknowledged) async {
+        await ledger.correctUsdCashAmount(
+          reversalOperationId: reversal,
+          replacementOperationId: replacement,
+          entryId: movement.entryId,
+          minor: input.minor,
+          acknowledged: acknowledged,
+        );
+      });
     }
   });
 
@@ -469,6 +480,8 @@ String _errorLabel(Object error) => switch (error) {
     CashIssue.staleBalance => 'تغيّر الرصيد المسجّل. راجع التسوية مجددًا.',
     CashIssue.uncorrectableMovement => 'هذه الحركة غير مؤهلة لتصحيح المبلغ.',
   },
+  ExpenseOverlap() =>
+    'تتداخل الحركة مع إجمالي مسجّل لهذا الحساب. صحّح الإجمالي أو ألغِه أولًا.',
   LedgerException() when error.issue == LedgerIssue.alreadyReversed =>
     'الحركة معكوسة بالفعل.',
   LedgerException() when error.issue == LedgerIssue.duplicateConflict =>

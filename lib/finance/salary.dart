@@ -366,7 +366,7 @@ extension SalaryLedger on Ledger {
             .customSelect(
               '''
       SELECT j.id FROM journal_postings p JOIN journal_entries j ON p.entry_id = j.id
-      WHERE p.account_id = ? AND p.minor < 0 AND j.kind IN ('entry', 'internalTransfer')
+      WHERE p.account_id = ? AND p.minor < 0 AND j.kind IN ('entry', 'internalTransfer', 'expense')
         AND NOT EXISTS (SELECT 1 FROM journal_entries r WHERE r.reversal_of = j.id)
         AND NOT EXISTS (SELECT 1 FROM salary_executions e WHERE e.entry_id = j.id AND e.allocation_id = ?)
       ORDER BY j.effective_micros DESC, j.id DESC
@@ -523,6 +523,7 @@ bool _eligibleMovement(SalaryDeposit salary, SalaryMovement movement) {
   if (!{
         JournalKind.entry,
         JournalKind.internalTransfer,
+        JournalKind.expense,
       }.contains(movement.entry.kind) ||
       movement.lines.length != 2) {
     return false;

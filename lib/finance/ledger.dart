@@ -5,6 +5,7 @@ import 'model.dart';
 
 part 'salary.dart';
 part 'usd_cash.dart';
+part 'expenses.dart';
 
 class Ledger {
   Ledger(this._db);
@@ -86,9 +87,7 @@ class Ledger {
     required DateTime effectiveAt,
   }) => _db.transaction(() async {
     final account = await _personalAccount(accountId);
-    if (account.kind == AccountKind.cash &&
-        account.currency == usdCurrency &&
-        await _findOperation(operationId) == null &&
+    if (await _findOperation(operationId) == null &&
         await _hasCashCount(accountId)) {
       throw const CashException(CashIssue.openingAfterSettlement);
     }
@@ -158,6 +157,8 @@ class Ledger {
   }) => _db.transaction(() async {
     final original = await _reversibleEntry(entryId);
     if (original.kind == JournalKind.salary ||
+        original.kind == JournalKind.expense ||
+        original.kind == JournalKind.cashExpense ||
         original.kind == JournalKind.cashAdjustment) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }
@@ -286,6 +287,7 @@ class Ledger {
     }
     if (kind == JournalKind.cashIncome ||
         kind == JournalKind.cashExpense ||
+        kind == JournalKind.expense ||
         kind == JournalKind.cashAdjustment) {
       await _validateCashPostings(kind, postings);
     }
