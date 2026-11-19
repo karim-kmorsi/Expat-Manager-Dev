@@ -1330,6 +1330,1262 @@ class JournalPostingsCompanion extends UpdateCompanion<JournalPosting> {
   }
 }
 
+class $SalaryReceiptsTable extends SalaryReceipts
+    with TableInfo<$SalaryReceiptsTable, SalaryReceipt> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalaryReceiptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ledger_accounts (id)',
+    ),
+  );
+  static const VerificationMeta _referenceMeta = const VerificationMeta(
+    'reference',
+  );
+  @override
+  late final GeneratedColumn<String> reference = GeneratedColumn<String>(
+    'reference',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [entryId, accountId, reference];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'salary_receipts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalaryReceipt> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('reference')) {
+      context.handle(
+        _referenceMeta,
+        reference.isAcceptableOrUnknown(data['reference']!, _referenceMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {accountId, reference},
+  ];
+  @override
+  SalaryReceipt map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalaryReceipt(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}account_id'],
+      )!,
+      reference: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference'],
+      ),
+    );
+  }
+
+  @override
+  $SalaryReceiptsTable createAlias(String alias) {
+    return $SalaryReceiptsTable(attachedDatabase, alias);
+  }
+}
+
+class SalaryReceipt extends DataClass implements Insertable<SalaryReceipt> {
+  final int entryId;
+  final int accountId;
+  final String? reference;
+  const SalaryReceipt({
+    required this.entryId,
+    required this.accountId,
+    this.reference,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    map['account_id'] = Variable<int>(accountId);
+    if (!nullToAbsent || reference != null) {
+      map['reference'] = Variable<String>(reference);
+    }
+    return map;
+  }
+
+  SalaryReceiptsCompanion toCompanion(bool nullToAbsent) {
+    return SalaryReceiptsCompanion(
+      entryId: Value(entryId),
+      accountId: Value(accountId),
+      reference: reference == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reference),
+    );
+  }
+
+  factory SalaryReceipt.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalaryReceipt(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      accountId: serializer.fromJson<int>(json['accountId']),
+      reference: serializer.fromJson<String?>(json['reference']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'accountId': serializer.toJson<int>(accountId),
+      'reference': serializer.toJson<String?>(reference),
+    };
+  }
+
+  SalaryReceipt copyWith({
+    int? entryId,
+    int? accountId,
+    Value<String?> reference = const Value.absent(),
+  }) => SalaryReceipt(
+    entryId: entryId ?? this.entryId,
+    accountId: accountId ?? this.accountId,
+    reference: reference.present ? reference.value : this.reference,
+  );
+  SalaryReceipt copyWithCompanion(SalaryReceiptsCompanion data) {
+    return SalaryReceipt(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      reference: data.reference.present ? data.reference.value : this.reference,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryReceipt(')
+          ..write('entryId: $entryId, ')
+          ..write('accountId: $accountId, ')
+          ..write('reference: $reference')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, accountId, reference);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalaryReceipt &&
+          other.entryId == this.entryId &&
+          other.accountId == this.accountId &&
+          other.reference == this.reference);
+}
+
+class SalaryReceiptsCompanion extends UpdateCompanion<SalaryReceipt> {
+  final Value<int> entryId;
+  final Value<int> accountId;
+  final Value<String?> reference;
+  const SalaryReceiptsCompanion({
+    this.entryId = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.reference = const Value.absent(),
+  });
+  SalaryReceiptsCompanion.insert({
+    this.entryId = const Value.absent(),
+    required int accountId,
+    this.reference = const Value.absent(),
+  }) : accountId = Value(accountId);
+  static Insertable<SalaryReceipt> custom({
+    Expression<int>? entryId,
+    Expression<int>? accountId,
+    Expression<String>? reference,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (accountId != null) 'account_id': accountId,
+      if (reference != null) 'reference': reference,
+    });
+  }
+
+  SalaryReceiptsCompanion copyWith({
+    Value<int>? entryId,
+    Value<int>? accountId,
+    Value<String?>? reference,
+  }) {
+    return SalaryReceiptsCompanion(
+      entryId: entryId ?? this.entryId,
+      accountId: accountId ?? this.accountId,
+      reference: reference ?? this.reference,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (reference.present) {
+      map['reference'] = Variable<String>(reference.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryReceiptsCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('accountId: $accountId, ')
+          ..write('reference: $reference')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SalaryPlansTable extends SalaryPlans
+    with TableInfo<$SalaryPlansTable, SalaryPlan> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalaryPlansTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _salaryIdMeta = const VerificationMeta(
+    'salaryId',
+  );
+  @override
+  late final GeneratedColumn<int> salaryId = GeneratedColumn<int>(
+    'salary_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES salary_receipts (entry_id)',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [salaryId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'salary_plans';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalaryPlan> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('salary_id')) {
+      context.handle(
+        _salaryIdMeta,
+        salaryId.isAcceptableOrUnknown(data['salary_id']!, _salaryIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {salaryId};
+  @override
+  SalaryPlan map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalaryPlan(
+      salaryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}salary_id'],
+      )!,
+    );
+  }
+
+  @override
+  $SalaryPlansTable createAlias(String alias) {
+    return $SalaryPlansTable(attachedDatabase, alias);
+  }
+}
+
+class SalaryPlan extends DataClass implements Insertable<SalaryPlan> {
+  final int salaryId;
+  const SalaryPlan({required this.salaryId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['salary_id'] = Variable<int>(salaryId);
+    return map;
+  }
+
+  SalaryPlansCompanion toCompanion(bool nullToAbsent) {
+    return SalaryPlansCompanion(salaryId: Value(salaryId));
+  }
+
+  factory SalaryPlan.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalaryPlan(salaryId: serializer.fromJson<int>(json['salaryId']));
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{'salaryId': serializer.toJson<int>(salaryId)};
+  }
+
+  SalaryPlan copyWith({int? salaryId}) =>
+      SalaryPlan(salaryId: salaryId ?? this.salaryId);
+  SalaryPlan copyWithCompanion(SalaryPlansCompanion data) {
+    return SalaryPlan(
+      salaryId: data.salaryId.present ? data.salaryId.value : this.salaryId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryPlan(')
+          ..write('salaryId: $salaryId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => salaryId.hashCode;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalaryPlan && other.salaryId == this.salaryId);
+}
+
+class SalaryPlansCompanion extends UpdateCompanion<SalaryPlan> {
+  final Value<int> salaryId;
+  const SalaryPlansCompanion({this.salaryId = const Value.absent()});
+  SalaryPlansCompanion.insert({this.salaryId = const Value.absent()});
+  static Insertable<SalaryPlan> custom({Expression<int>? salaryId}) {
+    return RawValuesInsertable({if (salaryId != null) 'salary_id': salaryId});
+  }
+
+  SalaryPlansCompanion copyWith({Value<int>? salaryId}) {
+    return SalaryPlansCompanion(salaryId: salaryId ?? this.salaryId);
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (salaryId.present) {
+      map['salary_id'] = Variable<int>(salaryId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryPlansCompanion(')
+          ..write('salaryId: $salaryId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SalaryAllocationsTable extends SalaryAllocations
+    with TableInfo<$SalaryAllocationsTable, SalaryAllocation> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalaryAllocationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _salaryIdMeta = const VerificationMeta(
+    'salaryId',
+  );
+  @override
+  late final GeneratedColumn<int> salaryId = GeneratedColumn<int>(
+    'salary_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES salary_plans (salary_id)',
+    ),
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _plannedMinorMeta = const VerificationMeta(
+    'plannedMinor',
+  );
+  @override
+  late final GeneratedColumn<int> plannedMinor = GeneratedColumn<int>(
+    'planned_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, salaryId, label, plannedMinor];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'salary_allocations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalaryAllocation> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('salary_id')) {
+      context.handle(
+        _salaryIdMeta,
+        salaryId.isAcceptableOrUnknown(data['salary_id']!, _salaryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_salaryIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('planned_minor')) {
+      context.handle(
+        _plannedMinorMeta,
+        plannedMinor.isAcceptableOrUnknown(
+          data['planned_minor']!,
+          _plannedMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_plannedMinorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SalaryAllocation map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalaryAllocation(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      salaryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}salary_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      plannedMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}planned_minor'],
+      )!,
+    );
+  }
+
+  @override
+  $SalaryAllocationsTable createAlias(String alias) {
+    return $SalaryAllocationsTable(attachedDatabase, alias);
+  }
+}
+
+class SalaryAllocation extends DataClass
+    implements Insertable<SalaryAllocation> {
+  final int id;
+  final int salaryId;
+  final String label;
+  final int plannedMinor;
+  const SalaryAllocation({
+    required this.id,
+    required this.salaryId,
+    required this.label,
+    required this.plannedMinor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['salary_id'] = Variable<int>(salaryId);
+    map['label'] = Variable<String>(label);
+    map['planned_minor'] = Variable<int>(plannedMinor);
+    return map;
+  }
+
+  SalaryAllocationsCompanion toCompanion(bool nullToAbsent) {
+    return SalaryAllocationsCompanion(
+      id: Value(id),
+      salaryId: Value(salaryId),
+      label: Value(label),
+      plannedMinor: Value(plannedMinor),
+    );
+  }
+
+  factory SalaryAllocation.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalaryAllocation(
+      id: serializer.fromJson<int>(json['id']),
+      salaryId: serializer.fromJson<int>(json['salaryId']),
+      label: serializer.fromJson<String>(json['label']),
+      plannedMinor: serializer.fromJson<int>(json['plannedMinor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'salaryId': serializer.toJson<int>(salaryId),
+      'label': serializer.toJson<String>(label),
+      'plannedMinor': serializer.toJson<int>(plannedMinor),
+    };
+  }
+
+  SalaryAllocation copyWith({
+    int? id,
+    int? salaryId,
+    String? label,
+    int? plannedMinor,
+  }) => SalaryAllocation(
+    id: id ?? this.id,
+    salaryId: salaryId ?? this.salaryId,
+    label: label ?? this.label,
+    plannedMinor: plannedMinor ?? this.plannedMinor,
+  );
+  SalaryAllocation copyWithCompanion(SalaryAllocationsCompanion data) {
+    return SalaryAllocation(
+      id: data.id.present ? data.id.value : this.id,
+      salaryId: data.salaryId.present ? data.salaryId.value : this.salaryId,
+      label: data.label.present ? data.label.value : this.label,
+      plannedMinor: data.plannedMinor.present
+          ? data.plannedMinor.value
+          : this.plannedMinor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryAllocation(')
+          ..write('id: $id, ')
+          ..write('salaryId: $salaryId, ')
+          ..write('label: $label, ')
+          ..write('plannedMinor: $plannedMinor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, salaryId, label, plannedMinor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalaryAllocation &&
+          other.id == this.id &&
+          other.salaryId == this.salaryId &&
+          other.label == this.label &&
+          other.plannedMinor == this.plannedMinor);
+}
+
+class SalaryAllocationsCompanion extends UpdateCompanion<SalaryAllocation> {
+  final Value<int> id;
+  final Value<int> salaryId;
+  final Value<String> label;
+  final Value<int> plannedMinor;
+  const SalaryAllocationsCompanion({
+    this.id = const Value.absent(),
+    this.salaryId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.plannedMinor = const Value.absent(),
+  });
+  SalaryAllocationsCompanion.insert({
+    this.id = const Value.absent(),
+    required int salaryId,
+    required String label,
+    required int plannedMinor,
+  }) : salaryId = Value(salaryId),
+       label = Value(label),
+       plannedMinor = Value(plannedMinor);
+  static Insertable<SalaryAllocation> custom({
+    Expression<int>? id,
+    Expression<int>? salaryId,
+    Expression<String>? label,
+    Expression<int>? plannedMinor,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (salaryId != null) 'salary_id': salaryId,
+      if (label != null) 'label': label,
+      if (plannedMinor != null) 'planned_minor': plannedMinor,
+    });
+  }
+
+  SalaryAllocationsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? salaryId,
+    Value<String>? label,
+    Value<int>? plannedMinor,
+  }) {
+    return SalaryAllocationsCompanion(
+      id: id ?? this.id,
+      salaryId: salaryId ?? this.salaryId,
+      label: label ?? this.label,
+      plannedMinor: plannedMinor ?? this.plannedMinor,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (salaryId.present) {
+      map['salary_id'] = Variable<int>(salaryId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (plannedMinor.present) {
+      map['planned_minor'] = Variable<int>(plannedMinor.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryAllocationsCompanion(')
+          ..write('id: $id, ')
+          ..write('salaryId: $salaryId, ')
+          ..write('label: $label, ')
+          ..write('plannedMinor: $plannedMinor')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SalaryExecutionsTable extends SalaryExecutions
+    with TableInfo<$SalaryExecutionsTable, SalaryExecution> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalaryExecutionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _allocationIdMeta = const VerificationMeta(
+    'allocationId',
+  );
+  @override
+  late final GeneratedColumn<int> allocationId = GeneratedColumn<int>(
+    'allocation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES salary_allocations (id)',
+    ),
+  );
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _minorMeta = const VerificationMeta('minor');
+  @override
+  late final GeneratedColumn<int> minor = GeneratedColumn<int>(
+    'minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [allocationId, entryId, minor];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'salary_executions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalaryExecution> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('allocation_id')) {
+      context.handle(
+        _allocationIdMeta,
+        allocationId.isAcceptableOrUnknown(
+          data['allocation_id']!,
+          _allocationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_allocationIdMeta);
+    }
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('minor')) {
+      context.handle(
+        _minorMeta,
+        minor.isAcceptableOrUnknown(data['minor']!, _minorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_minorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {allocationId, entryId};
+  @override
+  SalaryExecution map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalaryExecution(
+      allocationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}allocation_id'],
+      )!,
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      minor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}minor'],
+      )!,
+    );
+  }
+
+  @override
+  $SalaryExecutionsTable createAlias(String alias) {
+    return $SalaryExecutionsTable(attachedDatabase, alias);
+  }
+}
+
+class SalaryExecution extends DataClass implements Insertable<SalaryExecution> {
+  final int allocationId;
+  final int entryId;
+  final int minor;
+  const SalaryExecution({
+    required this.allocationId,
+    required this.entryId,
+    required this.minor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['allocation_id'] = Variable<int>(allocationId);
+    map['entry_id'] = Variable<int>(entryId);
+    map['minor'] = Variable<int>(minor);
+    return map;
+  }
+
+  SalaryExecutionsCompanion toCompanion(bool nullToAbsent) {
+    return SalaryExecutionsCompanion(
+      allocationId: Value(allocationId),
+      entryId: Value(entryId),
+      minor: Value(minor),
+    );
+  }
+
+  factory SalaryExecution.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalaryExecution(
+      allocationId: serializer.fromJson<int>(json['allocationId']),
+      entryId: serializer.fromJson<int>(json['entryId']),
+      minor: serializer.fromJson<int>(json['minor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'allocationId': serializer.toJson<int>(allocationId),
+      'entryId': serializer.toJson<int>(entryId),
+      'minor': serializer.toJson<int>(minor),
+    };
+  }
+
+  SalaryExecution copyWith({int? allocationId, int? entryId, int? minor}) =>
+      SalaryExecution(
+        allocationId: allocationId ?? this.allocationId,
+        entryId: entryId ?? this.entryId,
+        minor: minor ?? this.minor,
+      );
+  SalaryExecution copyWithCompanion(SalaryExecutionsCompanion data) {
+    return SalaryExecution(
+      allocationId: data.allocationId.present
+          ? data.allocationId.value
+          : this.allocationId,
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      minor: data.minor.present ? data.minor.value : this.minor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryExecution(')
+          ..write('allocationId: $allocationId, ')
+          ..write('entryId: $entryId, ')
+          ..write('minor: $minor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(allocationId, entryId, minor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalaryExecution &&
+          other.allocationId == this.allocationId &&
+          other.entryId == this.entryId &&
+          other.minor == this.minor);
+}
+
+class SalaryExecutionsCompanion extends UpdateCompanion<SalaryExecution> {
+  final Value<int> allocationId;
+  final Value<int> entryId;
+  final Value<int> minor;
+  final Value<int> rowid;
+  const SalaryExecutionsCompanion({
+    this.allocationId = const Value.absent(),
+    this.entryId = const Value.absent(),
+    this.minor = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SalaryExecutionsCompanion.insert({
+    required int allocationId,
+    required int entryId,
+    required int minor,
+    this.rowid = const Value.absent(),
+  }) : allocationId = Value(allocationId),
+       entryId = Value(entryId),
+       minor = Value(minor);
+  static Insertable<SalaryExecution> custom({
+    Expression<int>? allocationId,
+    Expression<int>? entryId,
+    Expression<int>? minor,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (allocationId != null) 'allocation_id': allocationId,
+      if (entryId != null) 'entry_id': entryId,
+      if (minor != null) 'minor': minor,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SalaryExecutionsCompanion copyWith({
+    Value<int>? allocationId,
+    Value<int>? entryId,
+    Value<int>? minor,
+    Value<int>? rowid,
+  }) {
+    return SalaryExecutionsCompanion(
+      allocationId: allocationId ?? this.allocationId,
+      entryId: entryId ?? this.entryId,
+      minor: minor ?? this.minor,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (allocationId.present) {
+      map['allocation_id'] = Variable<int>(allocationId.value);
+    }
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (minor.present) {
+      map['minor'] = Variable<int>(minor.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryExecutionsCompanion(')
+          ..write('allocationId: $allocationId, ')
+          ..write('entryId: $entryId, ')
+          ..write('minor: $minor, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MovementConfirmationsTable extends MovementConfirmations
+    with TableInfo<$MovementConfirmationsTable, MovementConfirmation> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MovementConfirmationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _evidenceMeta = const VerificationMeta(
+    'evidence',
+  );
+  @override
+  late final GeneratedColumn<String> evidence = GeneratedColumn<String>(
+    'evidence',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _confirmedMicrosMeta = const VerificationMeta(
+    'confirmedMicros',
+  );
+  @override
+  late final GeneratedColumn<int> confirmedMicros = GeneratedColumn<int>(
+    'confirmed_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [entryId, evidence, confirmedMicros];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'movement_confirmations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MovementConfirmation> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('evidence')) {
+      context.handle(
+        _evidenceMeta,
+        evidence.isAcceptableOrUnknown(data['evidence']!, _evidenceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_evidenceMeta);
+    }
+    if (data.containsKey('confirmed_micros')) {
+      context.handle(
+        _confirmedMicrosMeta,
+        confirmedMicros.isAcceptableOrUnknown(
+          data['confirmed_micros']!,
+          _confirmedMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_confirmedMicrosMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  MovementConfirmation map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MovementConfirmation(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      evidence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}evidence'],
+      )!,
+      confirmedMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}confirmed_micros'],
+      )!,
+    );
+  }
+
+  @override
+  $MovementConfirmationsTable createAlias(String alias) {
+    return $MovementConfirmationsTable(attachedDatabase, alias);
+  }
+}
+
+class MovementConfirmation extends DataClass
+    implements Insertable<MovementConfirmation> {
+  final int entryId;
+  final String evidence;
+  final int confirmedMicros;
+  const MovementConfirmation({
+    required this.entryId,
+    required this.evidence,
+    required this.confirmedMicros,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    map['evidence'] = Variable<String>(evidence);
+    map['confirmed_micros'] = Variable<int>(confirmedMicros);
+    return map;
+  }
+
+  MovementConfirmationsCompanion toCompanion(bool nullToAbsent) {
+    return MovementConfirmationsCompanion(
+      entryId: Value(entryId),
+      evidence: Value(evidence),
+      confirmedMicros: Value(confirmedMicros),
+    );
+  }
+
+  factory MovementConfirmation.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MovementConfirmation(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      evidence: serializer.fromJson<String>(json['evidence']),
+      confirmedMicros: serializer.fromJson<int>(json['confirmedMicros']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'evidence': serializer.toJson<String>(evidence),
+      'confirmedMicros': serializer.toJson<int>(confirmedMicros),
+    };
+  }
+
+  MovementConfirmation copyWith({
+    int? entryId,
+    String? evidence,
+    int? confirmedMicros,
+  }) => MovementConfirmation(
+    entryId: entryId ?? this.entryId,
+    evidence: evidence ?? this.evidence,
+    confirmedMicros: confirmedMicros ?? this.confirmedMicros,
+  );
+  MovementConfirmation copyWithCompanion(MovementConfirmationsCompanion data) {
+    return MovementConfirmation(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      evidence: data.evidence.present ? data.evidence.value : this.evidence,
+      confirmedMicros: data.confirmedMicros.present
+          ? data.confirmedMicros.value
+          : this.confirmedMicros,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovementConfirmation(')
+          ..write('entryId: $entryId, ')
+          ..write('evidence: $evidence, ')
+          ..write('confirmedMicros: $confirmedMicros')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, evidence, confirmedMicros);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MovementConfirmation &&
+          other.entryId == this.entryId &&
+          other.evidence == this.evidence &&
+          other.confirmedMicros == this.confirmedMicros);
+}
+
+class MovementConfirmationsCompanion
+    extends UpdateCompanion<MovementConfirmation> {
+  final Value<int> entryId;
+  final Value<String> evidence;
+  final Value<int> confirmedMicros;
+  const MovementConfirmationsCompanion({
+    this.entryId = const Value.absent(),
+    this.evidence = const Value.absent(),
+    this.confirmedMicros = const Value.absent(),
+  });
+  MovementConfirmationsCompanion.insert({
+    this.entryId = const Value.absent(),
+    required String evidence,
+    required int confirmedMicros,
+  }) : evidence = Value(evidence),
+       confirmedMicros = Value(confirmedMicros);
+  static Insertable<MovementConfirmation> custom({
+    Expression<int>? entryId,
+    Expression<String>? evidence,
+    Expression<int>? confirmedMicros,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (evidence != null) 'evidence': evidence,
+      if (confirmedMicros != null) 'confirmed_micros': confirmedMicros,
+    });
+  }
+
+  MovementConfirmationsCompanion copyWith({
+    Value<int>? entryId,
+    Value<String>? evidence,
+    Value<int>? confirmedMicros,
+  }) {
+    return MovementConfirmationsCompanion(
+      entryId: entryId ?? this.entryId,
+      evidence: evidence ?? this.evidence,
+      confirmedMicros: confirmedMicros ?? this.confirmedMicros,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (evidence.present) {
+      map['evidence'] = Variable<String>(evidence.value);
+    }
+    if (confirmedMicros.present) {
+      map['confirmed_micros'] = Variable<int>(confirmedMicros.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovementConfirmationsCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('evidence: $evidence, ')
+          ..write('confirmedMicros: $confirmedMicros')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -1339,6 +2595,15 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   late final $JournalPostingsTable journalPostings = $JournalPostingsTable(
     this,
   );
+  late final $SalaryReceiptsTable salaryReceipts = $SalaryReceiptsTable(this);
+  late final $SalaryPlansTable salaryPlans = $SalaryPlansTable(this);
+  late final $SalaryAllocationsTable salaryAllocations =
+      $SalaryAllocationsTable(this);
+  late final $SalaryExecutionsTable salaryExecutions = $SalaryExecutionsTable(
+    this,
+  );
+  late final $MovementConfirmationsTable movementConfirmations =
+      $MovementConfirmationsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1348,6 +2613,11 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     ledgerAccounts,
     journalEntries,
     journalPostings,
+    salaryReceipts,
+    salaryPlans,
+    salaryAllocations,
+    salaryExecutions,
+    movementConfirmations,
   ];
 }
 
@@ -1672,6 +2942,25 @@ final class $$LedgerAccountsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$SalaryReceiptsTable, List<SalaryReceipt>>
+  _salaryReceiptsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.salaryReceipts,
+        aliasName: 'ledger_accounts__id__salary_receipts__account_id',
+      );
+
+  $$SalaryReceiptsTableProcessedTableManager get salaryReceiptsRefs {
+    final manager = $$SalaryReceiptsTableTableManager(
+      $_db,
+      $_db.salaryReceipts,
+    ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_salaryReceiptsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$LedgerAccountsTableFilterComposer
@@ -1763,6 +3052,31 @@ class $$LedgerAccountsTableFilterComposer
           }) => $$JournalPostingsTableFilterComposer(
             $db: $db,
             $table: $db.journalPostings,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salaryReceiptsRefs(
+    Expression<bool> Function($$SalaryReceiptsTableFilterComposer f) f,
+  ) {
+    final $$SalaryReceiptsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryReceipts,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryReceiptsTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryReceipts,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -1911,6 +3225,31 @@ class $$LedgerAccountsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> salaryReceiptsRefs<T extends Object>(
+    Expression<T> Function($$SalaryReceiptsTableAnnotationComposer a) f,
+  ) {
+    final $$SalaryReceiptsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryReceipts,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryReceiptsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salaryReceipts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$LedgerAccountsTableTableManager
@@ -1930,6 +3269,7 @@ class $$LedgerAccountsTableTableManager
             bool currency,
             bool journalEntriesRefs,
             bool journalPostingsRefs,
+            bool salaryReceiptsRefs,
           })
         > {
   $$LedgerAccountsTableTableManager(
@@ -1982,12 +3322,14 @@ class $$LedgerAccountsTableTableManager
                 currency = false,
                 journalEntriesRefs = false,
                 journalPostingsRefs = false,
+                salaryReceiptsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (journalEntriesRefs) db.journalEntries,
                     if (journalPostingsRefs) db.journalPostings,
+                    if (salaryReceiptsRefs) db.salaryReceipts,
                   ],
                   addJoins:
                       <
@@ -2061,6 +3403,26 @@ class $$LedgerAccountsTableTableManager
                           referencedColumn: 'account_id',
                           typedResults: items,
                         ),
+                      if (salaryReceiptsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          LedgerAccount,
+                          $LedgerAccountsTable,
+                          SalaryReceipt,
+                          $SalaryReceiptsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LedgerAccountsTableReferences
+                              ._salaryReceiptsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LedgerAccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salaryReceiptsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'account_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -2085,6 +3447,7 @@ typedef $$LedgerAccountsTableProcessedTableManager =
         bool currency,
         bool journalEntriesRefs,
         bool journalPostingsRefs,
+        bool salaryReceiptsRefs,
       })
     >;
 typedef $$JournalEntriesTableCreateCompanionBuilder =
@@ -2188,6 +3551,71 @@ final class $$JournalEntriesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _journalPostingsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SalaryReceiptsTable, List<SalaryReceipt>>
+  _salaryReceiptsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.salaryReceipts,
+        aliasName: 'journal_entries__id__salary_receipts__entry_id',
+      );
+
+  $$SalaryReceiptsTableProcessedTableManager get salaryReceiptsRefs {
+    final manager = $$SalaryReceiptsTableTableManager(
+      $_db,
+      $_db.salaryReceipts,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_salaryReceiptsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SalaryExecutionsTable, List<SalaryExecution>>
+  _salaryExecutionsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.salaryExecutions,
+        aliasName: 'journal_entries__id__salary_executions__entry_id',
+      );
+
+  $$SalaryExecutionsTableProcessedTableManager get salaryExecutionsRefs {
+    final manager = $$SalaryExecutionsTableTableManager(
+      $_db,
+      $_db.salaryExecutions,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salaryExecutionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $MovementConfirmationsTable,
+    List<MovementConfirmation>
+  >
+  _movementConfirmationsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.movementConfirmations,
+        aliasName: 'journal_entries__id__movement_confirmations__entry_id',
+      );
+
+  $$MovementConfirmationsTableProcessedTableManager
+  get movementConfirmationsRefs {
+    final manager = $$MovementConfirmationsTableTableManager(
+      $_db,
+      $_db.movementConfirmations,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _movementConfirmationsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -2321,6 +3749,82 @@ class $$JournalEntriesTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> salaryReceiptsRefs(
+    Expression<bool> Function($$SalaryReceiptsTableFilterComposer f) f,
+  ) {
+    final $$SalaryReceiptsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryReceipts,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryReceiptsTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryReceipts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salaryExecutionsRefs(
+    Expression<bool> Function($$SalaryExecutionsTableFilterComposer f) f,
+  ) {
+    final $$SalaryExecutionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryExecutions,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryExecutionsTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryExecutions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> movementConfirmationsRefs(
+    Expression<bool> Function($$MovementConfirmationsTableFilterComposer f) f,
+  ) {
+    final $$MovementConfirmationsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movementConfirmations,
+          getReferencedColumn: (t) => t.entryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovementConfirmationsTableFilterComposer(
+                $db: $db,
+                $table: $db.movementConfirmations,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -2550,6 +4054,82 @@ class $$JournalEntriesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> salaryReceiptsRefs<T extends Object>(
+    Expression<T> Function($$SalaryReceiptsTableAnnotationComposer a) f,
+  ) {
+    final $$SalaryReceiptsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryReceipts,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryReceiptsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salaryReceipts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> salaryExecutionsRefs<T extends Object>(
+    Expression<T> Function($$SalaryExecutionsTableAnnotationComposer a) f,
+  ) {
+    final $$SalaryExecutionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryExecutions,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryExecutionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salaryExecutions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> movementConfirmationsRefs<T extends Object>(
+    Expression<T> Function($$MovementConfirmationsTableAnnotationComposer a) f,
+  ) {
+    final $$MovementConfirmationsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.movementConfirmations,
+          getReferencedColumn: (t) => t.entryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MovementConfirmationsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.movementConfirmations,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$JournalEntriesTableTableManager
@@ -2570,6 +4150,9 @@ class $$JournalEntriesTableTableManager
             bool reversalOf,
             bool correctionOf,
             bool journalPostingsRefs,
+            bool salaryReceiptsRefs,
+            bool salaryExecutionsRefs,
+            bool movementConfirmationsRefs,
           })
         > {
   $$JournalEntriesTableTableManager(
@@ -2639,11 +4222,17 @@ class $$JournalEntriesTableTableManager
                 reversalOf = false,
                 correctionOf = false,
                 journalPostingsRefs = false,
+                salaryReceiptsRefs = false,
+                salaryExecutionsRefs = false,
+                movementConfirmationsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (journalPostingsRefs) db.journalPostings,
+                    if (salaryReceiptsRefs) db.salaryReceipts,
+                    if (salaryExecutionsRefs) db.salaryExecutions,
+                    if (movementConfirmationsRefs) db.movementConfirmations,
                   ],
                   addJoins:
                       <
@@ -2719,6 +4308,66 @@ class $$JournalEntriesTableTableManager
                           referencedColumn: 'entry_id',
                           typedResults: items,
                         ),
+                      if (salaryReceiptsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          SalaryReceipt,
+                          $SalaryReceiptsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._salaryReceiptsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salaryReceiptsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
+                      if (salaryExecutionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          SalaryExecution,
+                          $SalaryExecutionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._salaryExecutionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salaryExecutionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
+                      if (movementConfirmationsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          MovementConfirmation,
+                          $MovementConfirmationsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._movementConfirmationsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).movementConfirmationsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -2744,6 +4393,9 @@ typedef $$JournalEntriesTableProcessedTableManager =
         bool reversalOf,
         bool correctionOf,
         bool journalPostingsRefs,
+        bool salaryReceiptsRefs,
+        bool salaryExecutionsRefs,
+        bool movementConfirmationsRefs,
       })
     >;
 typedef $$JournalPostingsTableCreateCompanionBuilder =
@@ -3120,6 +4772,1434 @@ typedef $$JournalPostingsTableProcessedTableManager =
       JournalPosting,
       PrefetchHooks Function({bool entryId, bool accountId})
     >;
+typedef $$SalaryReceiptsTableCreateCompanionBuilder =
+    SalaryReceiptsCompanion Function({
+      Value<int> entryId,
+      required int accountId,
+      Value<String?> reference,
+    });
+typedef $$SalaryReceiptsTableUpdateCompanionBuilder =
+    SalaryReceiptsCompanion Function({
+      Value<int> entryId,
+      Value<int> accountId,
+      Value<String?> reference,
+    });
+
+final class $$SalaryReceiptsTableReferences
+    extends
+        BaseReferences<_$LedgerDatabase, $SalaryReceiptsTable, SalaryReceipt> {
+  $$SalaryReceiptsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('salary_receipts__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LedgerAccountsTable _accountIdTable(_$LedgerDatabase db) => db
+      .ledgerAccounts
+      .createAlias('salary_receipts__account_id__ledger_accounts__id');
+
+  $$LedgerAccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<int>('account_id')!;
+
+    final manager = $$LedgerAccountsTableTableManager(
+      $_db,
+      $_db.ledgerAccounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalaryReceiptsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $SalaryReceiptsTable> {
+  $$SalaryReceiptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get reference => $composableBuilder(
+    column: $table.reference,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableFilterComposer get accountId {
+    final $$LedgerAccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryReceiptsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $SalaryReceiptsTable> {
+  $$SalaryReceiptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get reference => $composableBuilder(
+    column: $table.reference,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableOrderingComposer get accountId {
+    final $$LedgerAccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryReceiptsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $SalaryReceiptsTable> {
+  $$SalaryReceiptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get reference =>
+      $composableBuilder(column: $table.reference, builder: (column) => column);
+
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableAnnotationComposer get accountId {
+    final $$LedgerAccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryReceiptsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $SalaryReceiptsTable,
+          SalaryReceipt,
+          $$SalaryReceiptsTableFilterComposer,
+          $$SalaryReceiptsTableOrderingComposer,
+          $$SalaryReceiptsTableAnnotationComposer,
+          $$SalaryReceiptsTableCreateCompanionBuilder,
+          $$SalaryReceiptsTableUpdateCompanionBuilder,
+          (SalaryReceipt, $$SalaryReceiptsTableReferences),
+          SalaryReceipt,
+          PrefetchHooks Function({bool entryId, bool accountId})
+        > {
+  $$SalaryReceiptsTableTableManager(
+    _$LedgerDatabase db,
+    $SalaryReceiptsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalaryReceiptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SalaryReceiptsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SalaryReceiptsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                Value<int> accountId = const Value.absent(),
+                Value<String?> reference = const Value.absent(),
+              }) => SalaryReceiptsCompanion(
+                entryId: entryId,
+                accountId: accountId,
+                reference: reference,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required int accountId,
+                Value<String?> reference = const Value.absent(),
+              }) => SalaryReceiptsCompanion.insert(
+                entryId: entryId,
+                accountId: accountId,
+                reference: reference,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SalaryReceiptsTable, SalaryReceipt>(table),
+                  $$SalaryReceiptsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({entryId = false, accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (entryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.entryId,
+                        referencedTable: $$SalaryReceiptsTableReferences
+                            ._entryIdTable(db),
+                        referencedColumn: $$SalaryReceiptsTableReferences
+                            ._entryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (accountId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.accountId,
+                        referencedTable: $$SalaryReceiptsTableReferences
+                            ._accountIdTable(db),
+                        referencedColumn: $$SalaryReceiptsTableReferences
+                            ._accountIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SalaryReceiptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $SalaryReceiptsTable,
+      SalaryReceipt,
+      $$SalaryReceiptsTableFilterComposer,
+      $$SalaryReceiptsTableOrderingComposer,
+      $$SalaryReceiptsTableAnnotationComposer,
+      $$SalaryReceiptsTableCreateCompanionBuilder,
+      $$SalaryReceiptsTableUpdateCompanionBuilder,
+      (SalaryReceipt, $$SalaryReceiptsTableReferences),
+      SalaryReceipt,
+      PrefetchHooks Function({bool entryId, bool accountId})
+    >;
+typedef $$SalaryPlansTableCreateCompanionBuilder =
+    SalaryPlansCompanion Function({Value<int> salaryId});
+typedef $$SalaryPlansTableUpdateCompanionBuilder =
+    SalaryPlansCompanion Function({Value<int> salaryId});
+
+class $$SalaryPlansTableFilterComposer
+    extends Composer<_$LedgerDatabase, $SalaryPlansTable> {
+  $$SalaryPlansTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+}
+
+class $$SalaryPlansTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $SalaryPlansTable> {
+  $$SalaryPlansTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+}
+
+class $$SalaryPlansTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $SalaryPlansTable> {
+  $$SalaryPlansTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+}
+
+class $$SalaryPlansTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $SalaryPlansTable,
+          SalaryPlan,
+          $$SalaryPlansTableFilterComposer,
+          $$SalaryPlansTableOrderingComposer,
+          $$SalaryPlansTableAnnotationComposer,
+          $$SalaryPlansTableCreateCompanionBuilder,
+          $$SalaryPlansTableUpdateCompanionBuilder,
+          (
+            SalaryPlan,
+            BaseReferences<_$LedgerDatabase, $SalaryPlansTable, SalaryPlan>,
+          ),
+          SalaryPlan,
+          PrefetchHooks Function()
+        > {
+  $$SalaryPlansTableTableManager(_$LedgerDatabase db, $SalaryPlansTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalaryPlansTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SalaryPlansTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SalaryPlansTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> salaryId = const Value.absent(),
+          }) => SalaryPlansCompanion(salaryId: salaryId),
+          createCompanionCallback: ({
+            Value<int> salaryId = const Value.absent(),
+          }) => SalaryPlansCompanion.insert(salaryId: salaryId),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SalaryPlansTable, SalaryPlan>(table),
+                  BaseReferences<
+                    _$LedgerDatabase,
+                    $SalaryPlansTable,
+                    SalaryPlan
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SalaryPlansTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $SalaryPlansTable,
+      SalaryPlan,
+      $$SalaryPlansTableFilterComposer,
+      $$SalaryPlansTableOrderingComposer,
+      $$SalaryPlansTableAnnotationComposer,
+      $$SalaryPlansTableCreateCompanionBuilder,
+      $$SalaryPlansTableUpdateCompanionBuilder,
+      (
+        SalaryPlan,
+        BaseReferences<_$LedgerDatabase, $SalaryPlansTable, SalaryPlan>,
+      ),
+      SalaryPlan,
+      PrefetchHooks Function()
+    >;
+typedef $$SalaryAllocationsTableCreateCompanionBuilder =
+    SalaryAllocationsCompanion Function({
+      Value<int> id,
+      required int salaryId,
+      required String label,
+      required int plannedMinor,
+    });
+typedef $$SalaryAllocationsTableUpdateCompanionBuilder =
+    SalaryAllocationsCompanion Function({
+      Value<int> id,
+      Value<int> salaryId,
+      Value<String> label,
+      Value<int> plannedMinor,
+    });
+
+final class $$SalaryAllocationsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $SalaryAllocationsTable,
+          SalaryAllocation
+        > {
+  $$SalaryAllocationsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$SalaryExecutionsTable, List<SalaryExecution>>
+  _salaryExecutionsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.salaryExecutions,
+        aliasName: 'salary_allocations__id__salary_executions__allocation_id',
+      );
+
+  $$SalaryExecutionsTableProcessedTableManager get salaryExecutionsRefs {
+    final manager = $$SalaryExecutionsTableTableManager(
+      $_db,
+      $_db.salaryExecutions,
+    ).filter((f) => f.allocationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salaryExecutionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$SalaryAllocationsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $SalaryAllocationsTable> {
+  $$SalaryAllocationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get plannedMinor => $composableBuilder(
+    column: $table.plannedMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> salaryExecutionsRefs(
+    Expression<bool> Function($$SalaryExecutionsTableFilterComposer f) f,
+  ) {
+    final $$SalaryExecutionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryExecutions,
+      getReferencedColumn: (t) => t.allocationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryExecutionsTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryExecutions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$SalaryAllocationsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $SalaryAllocationsTable> {
+  $$SalaryAllocationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get plannedMinor => $composableBuilder(
+    column: $table.plannedMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SalaryAllocationsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $SalaryAllocationsTable> {
+  $$SalaryAllocationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<int> get plannedMinor => $composableBuilder(
+    column: $table.plannedMinor,
+    builder: (column) => column,
+  );
+
+  Expression<T> salaryExecutionsRefs<T extends Object>(
+    Expression<T> Function($$SalaryExecutionsTableAnnotationComposer a) f,
+  ) {
+    final $$SalaryExecutionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.salaryExecutions,
+      getReferencedColumn: (t) => t.allocationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryExecutionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.salaryExecutions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$SalaryAllocationsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $SalaryAllocationsTable,
+          SalaryAllocation,
+          $$SalaryAllocationsTableFilterComposer,
+          $$SalaryAllocationsTableOrderingComposer,
+          $$SalaryAllocationsTableAnnotationComposer,
+          $$SalaryAllocationsTableCreateCompanionBuilder,
+          $$SalaryAllocationsTableUpdateCompanionBuilder,
+          (SalaryAllocation, $$SalaryAllocationsTableReferences),
+          SalaryAllocation,
+          PrefetchHooks Function({bool salaryExecutionsRefs})
+        > {
+  $$SalaryAllocationsTableTableManager(
+    _$LedgerDatabase db,
+    $SalaryAllocationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalaryAllocationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SalaryAllocationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SalaryAllocationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> salaryId = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<int> plannedMinor = const Value.absent(),
+              }) => SalaryAllocationsCompanion(
+                id: id,
+                salaryId: salaryId,
+                label: label,
+                plannedMinor: plannedMinor,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int salaryId,
+                required String label,
+                required int plannedMinor,
+              }) => SalaryAllocationsCompanion.insert(
+                id: id,
+                salaryId: salaryId,
+                label: label,
+                plannedMinor: plannedMinor,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SalaryAllocationsTable, SalaryAllocation>(table),
+                  $$SalaryAllocationsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({salaryExecutionsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (salaryExecutionsRefs) db.salaryExecutions,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (salaryExecutionsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      SalaryAllocation,
+                      $SalaryAllocationsTable,
+                      SalaryExecution,
+                      $SalaryExecutionsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$SalaryAllocationsTableReferences
+                          ._salaryExecutionsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$SalaryAllocationsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).salaryExecutionsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'allocation_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SalaryAllocationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $SalaryAllocationsTable,
+      SalaryAllocation,
+      $$SalaryAllocationsTableFilterComposer,
+      $$SalaryAllocationsTableOrderingComposer,
+      $$SalaryAllocationsTableAnnotationComposer,
+      $$SalaryAllocationsTableCreateCompanionBuilder,
+      $$SalaryAllocationsTableUpdateCompanionBuilder,
+      (SalaryAllocation, $$SalaryAllocationsTableReferences),
+      SalaryAllocation,
+      PrefetchHooks Function({bool salaryExecutionsRefs})
+    >;
+typedef $$SalaryExecutionsTableCreateCompanionBuilder =
+    SalaryExecutionsCompanion Function({
+      required int allocationId,
+      required int entryId,
+      required int minor,
+      Value<int> rowid,
+    });
+typedef $$SalaryExecutionsTableUpdateCompanionBuilder =
+    SalaryExecutionsCompanion Function({
+      Value<int> allocationId,
+      Value<int> entryId,
+      Value<int> minor,
+      Value<int> rowid,
+    });
+
+final class $$SalaryExecutionsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $SalaryExecutionsTable,
+          SalaryExecution
+        > {
+  $$SalaryExecutionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SalaryAllocationsTable _allocationIdTable(_$LedgerDatabase db) => db
+      .salaryAllocations
+      .createAlias('salary_executions__allocation_id__salary_allocations__id');
+
+  $$SalaryAllocationsTableProcessedTableManager get allocationId {
+    final $_column = $_itemColumn<int>('allocation_id')!;
+
+    final manager = $$SalaryAllocationsTableTableManager(
+      $_db,
+      $_db.salaryAllocations,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_allocationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('salary_executions__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalaryExecutionsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $SalaryExecutionsTable> {
+  $$SalaryExecutionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get minor => $composableBuilder(
+    column: $table.minor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$SalaryAllocationsTableFilterComposer get allocationId {
+    final $$SalaryAllocationsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.allocationId,
+      referencedTable: $db.salaryAllocations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryAllocationsTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryAllocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryExecutionsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $SalaryExecutionsTable> {
+  $$SalaryExecutionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get minor => $composableBuilder(
+    column: $table.minor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$SalaryAllocationsTableOrderingComposer get allocationId {
+    final $$SalaryAllocationsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.allocationId,
+      referencedTable: $db.salaryAllocations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryAllocationsTableOrderingComposer(
+            $db: $db,
+            $table: $db.salaryAllocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryExecutionsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $SalaryExecutionsTable> {
+  $$SalaryExecutionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get minor =>
+      $composableBuilder(column: $table.minor, builder: (column) => column);
+
+  $$SalaryAllocationsTableAnnotationComposer get allocationId {
+    final $$SalaryAllocationsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.allocationId,
+          referencedTable: $db.salaryAllocations,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalaryAllocationsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salaryAllocations,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryExecutionsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $SalaryExecutionsTable,
+          SalaryExecution,
+          $$SalaryExecutionsTableFilterComposer,
+          $$SalaryExecutionsTableOrderingComposer,
+          $$SalaryExecutionsTableAnnotationComposer,
+          $$SalaryExecutionsTableCreateCompanionBuilder,
+          $$SalaryExecutionsTableUpdateCompanionBuilder,
+          (SalaryExecution, $$SalaryExecutionsTableReferences),
+          SalaryExecution,
+          PrefetchHooks Function({bool allocationId, bool entryId})
+        > {
+  $$SalaryExecutionsTableTableManager(
+    _$LedgerDatabase db,
+    $SalaryExecutionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalaryExecutionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SalaryExecutionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SalaryExecutionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> allocationId = const Value.absent(),
+                Value<int> entryId = const Value.absent(),
+                Value<int> minor = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SalaryExecutionsCompanion(
+                allocationId: allocationId,
+                entryId: entryId,
+                minor: minor,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int allocationId,
+                required int entryId,
+                required int minor,
+                Value<int> rowid = const Value.absent(),
+              }) => SalaryExecutionsCompanion.insert(
+                allocationId: allocationId,
+                entryId: entryId,
+                minor: minor,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SalaryExecutionsTable, SalaryExecution>(table),
+                  $$SalaryExecutionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({allocationId = false, entryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (allocationId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.allocationId,
+                        referencedTable: $$SalaryExecutionsTableReferences
+                            ._allocationIdTable(db),
+                        referencedColumn: $$SalaryExecutionsTableReferences
+                            ._allocationIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (entryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.entryId,
+                        referencedTable: $$SalaryExecutionsTableReferences
+                            ._entryIdTable(db),
+                        referencedColumn: $$SalaryExecutionsTableReferences
+                            ._entryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SalaryExecutionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $SalaryExecutionsTable,
+      SalaryExecution,
+      $$SalaryExecutionsTableFilterComposer,
+      $$SalaryExecutionsTableOrderingComposer,
+      $$SalaryExecutionsTableAnnotationComposer,
+      $$SalaryExecutionsTableCreateCompanionBuilder,
+      $$SalaryExecutionsTableUpdateCompanionBuilder,
+      (SalaryExecution, $$SalaryExecutionsTableReferences),
+      SalaryExecution,
+      PrefetchHooks Function({bool allocationId, bool entryId})
+    >;
+typedef $$MovementConfirmationsTableCreateCompanionBuilder =
+    MovementConfirmationsCompanion Function({
+      Value<int> entryId,
+      required String evidence,
+      required int confirmedMicros,
+    });
+typedef $$MovementConfirmationsTableUpdateCompanionBuilder =
+    MovementConfirmationsCompanion Function({
+      Value<int> entryId,
+      Value<String> evidence,
+      Value<int> confirmedMicros,
+    });
+
+final class $$MovementConfirmationsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $MovementConfirmationsTable,
+          MovementConfirmation
+        > {
+  $$MovementConfirmationsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('movement_confirmations__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MovementConfirmationsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $MovementConfirmationsTable> {
+  $$MovementConfirmationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get evidence => $composableBuilder(
+    column: $table.evidence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get confirmedMicros => $composableBuilder(
+    column: $table.confirmedMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MovementConfirmationsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $MovementConfirmationsTable> {
+  $$MovementConfirmationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get evidence => $composableBuilder(
+    column: $table.evidence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get confirmedMicros => $composableBuilder(
+    column: $table.confirmedMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MovementConfirmationsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $MovementConfirmationsTable> {
+  $$MovementConfirmationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get evidence =>
+      $composableBuilder(column: $table.evidence, builder: (column) => column);
+
+  GeneratedColumn<int> get confirmedMicros => $composableBuilder(
+    column: $table.confirmedMicros,
+    builder: (column) => column,
+  );
+
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MovementConfirmationsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $MovementConfirmationsTable,
+          MovementConfirmation,
+          $$MovementConfirmationsTableFilterComposer,
+          $$MovementConfirmationsTableOrderingComposer,
+          $$MovementConfirmationsTableAnnotationComposer,
+          $$MovementConfirmationsTableCreateCompanionBuilder,
+          $$MovementConfirmationsTableUpdateCompanionBuilder,
+          (MovementConfirmation, $$MovementConfirmationsTableReferences),
+          MovementConfirmation,
+          PrefetchHooks Function({bool entryId})
+        > {
+  $$MovementConfirmationsTableTableManager(
+    _$LedgerDatabase db,
+    $MovementConfirmationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MovementConfirmationsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MovementConfirmationsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MovementConfirmationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                Value<String> evidence = const Value.absent(),
+                Value<int> confirmedMicros = const Value.absent(),
+              }) => MovementConfirmationsCompanion(
+                entryId: entryId,
+                evidence: evidence,
+                confirmedMicros: confirmedMicros,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required String evidence,
+                required int confirmedMicros,
+              }) => MovementConfirmationsCompanion.insert(
+                entryId: entryId,
+                evidence: evidence,
+                confirmedMicros: confirmedMicros,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $MovementConfirmationsTable,
+                    MovementConfirmation
+                  >(table),
+                  $$MovementConfirmationsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({entryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (entryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.entryId,
+                        referencedTable: $$MovementConfirmationsTableReferences
+                            ._entryIdTable(db),
+                        referencedColumn: $$MovementConfirmationsTableReferences
+                            ._entryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MovementConfirmationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $MovementConfirmationsTable,
+      MovementConfirmation,
+      $$MovementConfirmationsTableFilterComposer,
+      $$MovementConfirmationsTableOrderingComposer,
+      $$MovementConfirmationsTableAnnotationComposer,
+      $$MovementConfirmationsTableCreateCompanionBuilder,
+      $$MovementConfirmationsTableUpdateCompanionBuilder,
+      (MovementConfirmation, $$MovementConfirmationsTableReferences),
+      MovementConfirmation,
+      PrefetchHooks Function({bool entryId})
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -3132,4 +6212,14 @@ class $LedgerDatabaseManager {
       $$JournalEntriesTableTableManager(_db, _db.journalEntries);
   $$JournalPostingsTableTableManager get journalPostings =>
       $$JournalPostingsTableTableManager(_db, _db.journalPostings);
+  $$SalaryReceiptsTableTableManager get salaryReceipts =>
+      $$SalaryReceiptsTableTableManager(_db, _db.salaryReceipts);
+  $$SalaryPlansTableTableManager get salaryPlans =>
+      $$SalaryPlansTableTableManager(_db, _db.salaryPlans);
+  $$SalaryAllocationsTableTableManager get salaryAllocations =>
+      $$SalaryAllocationsTableTableManager(_db, _db.salaryAllocations);
+  $$SalaryExecutionsTableTableManager get salaryExecutions =>
+      $$SalaryExecutionsTableTableManager(_db, _db.salaryExecutions);
+  $$MovementConfirmationsTableTableManager get movementConfirmations =>
+      $$MovementConfirmationsTableTableManager(_db, _db.movementConfirmations);
 }

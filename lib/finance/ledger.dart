@@ -3,6 +3,8 @@ import 'package:drift/drift.dart';
 import '../data/database.dart';
 import 'model.dart';
 
+part 'salary.dart';
+
 class Ledger {
   Ledger(this._db);
   final LedgerDatabase _db;
@@ -143,6 +145,9 @@ class Ledger {
     required List<Posting> replacement,
   }) => _db.transaction(() async {
     final original = await _reversibleEntry(entryId);
+    if (original.kind == JournalKind.salary) {
+      throw const LedgerException(LedgerIssue.reversalNotAllowed);
+    }
     final explanation = _reason(reason);
     await _reverse(reversalOperationId, original, effectiveAt, explanation);
     return _persist(

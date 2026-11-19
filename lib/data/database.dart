@@ -6,8 +6,10 @@ import 'package:sodium/sodium.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../finance/model.dart';
+import 'schema_recovery.dart';
 
 part 'database.g.dart';
+part 'salary_tables.dart';
 
 class Currencies extends Table {
   TextColumn get code => text()();
@@ -57,7 +59,17 @@ class StorageLocked implements Exception {
 }
 
 @DriftDatabase(
-  tables: [Currencies, LedgerAccounts, JournalEntries, JournalPostings],
+  tables: [
+    Currencies,
+    LedgerAccounts,
+    JournalEntries,
+    JournalPostings,
+    SalaryReceipts,
+    SalaryPlans,
+    SalaryAllocations,
+    SalaryExecutions,
+    MovementConfirmations,
+  ],
 )
 class LedgerDatabase extends _$LedgerDatabase {
   LedgerDatabase._(super.executor);
@@ -70,13 +82,11 @@ class LedgerDatabase extends _$LedgerDatabase {
       if (key.length != 32) throw const StorageLocked();
       final sodium = await SodiumInit.init();
       raw = sqlite.sqlite3.open(file.path);
-      if (raw.select('PRAGMA cipher').isEmpty) {
-        throw const StorageLocked();
+      final hexKey = sodium.bin2hex(key);
+      unlockDatabase(raw, hexKey);
+      if (raw.select('PRAGMA user_version').single.values.single == 1) {
+        protectV1Migration(raw, file, hexKey);
       }
-      raw.execute("PRAGMA cipher = 'chacha20'");
-      // The random key is formatted as hex, so it cannot alter the pragma.
-      raw.execute("PRAGMA key = '${sodium.bin2hex(key)}'");
-      raw.select('SELECT count(*) FROM sqlite_schema');
       raw.execute('PRAGMA journal_mode = WAL');
       raw.execute('PRAGMA synchronous = FULL');
       raw.execute('PRAGMA temp_store = MEMORY');
@@ -98,12 +108,27 @@ class LedgerDatabase extends _$LedgerDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) => transaction(() async {
+      if (from != 1 || to != 2) throw StateError('Unsupported ledger schema');
+      for (final table in <TableInfo<Table, dynamic>>[
+        salaryReceipts,
+        salaryPlans,
+        salaryAllocations,
+        salaryExecutions,
+        movementConfirmations,
+      ]) {
+        await migrator.createTable(table);
+      }
+      await _salaryIndexes();
+      await customStatement('PRAGMA user_version = $schemaVersion');
+    }),
     onCreate: (migrator) => transaction(() async {
       await migrator.createAll();
+      await _salaryIndexes();
       await customStatement(
         'CREATE INDEX journal_postings_by_account ON journal_postings (account_id)',
       );
@@ -134,4 +159,13 @@ class LedgerDatabase extends _$LedgerDatabase {
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
   );
+
+  Future<void> _salaryIndexes() async {
+    await customStatement(
+      'CREATE INDEX salary_allocations_by_plan ON salary_allocations (salary_id)',
+    );
+    await customStatement(
+      'CREATE INDEX salary_executions_by_movement ON salary_executions (entry_id)',
+    );
+  }
 }

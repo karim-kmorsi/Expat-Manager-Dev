@@ -12,7 +12,7 @@ enum AccountKind {
   };
 }
 
-enum JournalKind { opening, entry, internalTransfer, reversal }
+enum JournalKind { opening, entry, internalTransfer, reversal, salary }
 
 enum LedgerIssue {
   invalidInput,

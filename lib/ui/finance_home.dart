@@ -6,6 +6,7 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'salary_screen.dart';
 
 typedef _AccountView = ({LedgerAccount account, Balance balance});
 typedef _Overview = ({
@@ -76,7 +77,10 @@ class _FinanceHomeState extends State<FinanceHome> {
     appBar: AppBar(title: const Text('Expat Manager')),
     bottomNavigationBar: NavigationBar(
       selectedIndex: _tab,
-      onDestinationSelected: (value) => setState(() => _tab = value),
+      onDestinationSelected: (value) => setState(() {
+        if (_tab == 2) _overview = _load();
+        _tab = value;
+      }),
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.account_balance_wallet_outlined),
@@ -86,27 +90,35 @@ class _FinanceHomeState extends State<FinanceHome> {
           icon: Icon(Icons.receipt_long_outlined),
           label: 'القيود',
         ),
+        NavigationDestination(
+          icon: Icon(Icons.payments_outlined),
+          label: 'الرواتب',
+        ),
       ],
     ),
     body: SafeArea(
-      child: FutureBuilder(
-        future: _overview,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: TextButton(
-                onPressed: _refresh,
-                child: const Text('تعذّر تحميل البيانات. أعد المحاولة'),
-              ),
-            );
-          }
-          final data = snapshot.data;
-          if (data == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return _tab == 0 ? _accountList(data) : _journalList(data.entries);
-        },
-      ),
+      child: _tab == 2
+          ? SalaryScreen(ledger: ledger, newOperationId: _operationId)
+          : FutureBuilder(
+              future: _overview,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: TextButton(
+                      onPressed: _refresh,
+                      child: const Text('تعذّر تحميل البيانات. أعد المحاولة'),
+                    ),
+                  );
+                }
+                final data = snapshot.data;
+                if (data == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return _tab == 0
+                    ? _accountList(data)
+                    : _journalList(data.entries);
+              },
+            ),
     ),
   );
 
@@ -170,6 +182,7 @@ class _FinanceHomeState extends State<FinanceHome> {
             JournalKind.entry => 'قيد مالي',
             JournalKind.internalTransfer => 'تحويل داخلي',
             JournalKind.reversal => 'عكس قيد',
+            JournalKind.salary => 'إيداع راتب',
           }),
           subtitle: entry.reason == null ? null : Text(entry.reason!),
           trailing: Text(
