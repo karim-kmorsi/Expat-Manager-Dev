@@ -1,0 +1,22 @@
+# Secrets, personal data and exports
+.env
+.env.*
+*.jks
+*.keystore
+*.p12
+*.key
+*.sqlite
+*.sqlite3
+*.db
+*.backup
+*.bak
+private/
+backups/
+exports/
+# Future Flutter/Dart build artifacts
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.idea/
+.vscode/
