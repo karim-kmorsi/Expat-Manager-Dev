@@ -380,6 +380,10 @@ void main() {
     try {
       unlockDatabase(old, key);
       for (final table in [
+        'remittance_family_payments',
+        'remittance_purposes',
+        'remittance_events',
+        'remittances',
         'expense_details',
         'cash_reconciliations',
         'cash_settings',
@@ -391,6 +395,9 @@ void main() {
       ]) {
         old.execute('DROP TABLE $table');
       }
+      old.execute(
+        "DELETE FROM ledger_accounts WHERE kind IN ('remittanceTransit', 'remittanceExchange')",
+      );
       old.execute("DELETE FROM ledger_accounts WHERE kind = 'cashAdjustment'");
       old.execute('PRAGMA user_version = 1');
     } finally {

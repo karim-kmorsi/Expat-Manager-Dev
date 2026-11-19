@@ -313,6 +313,13 @@ void main() {
     final raw = sqlite3.open(file.path);
     try {
       unlockDatabase(raw, key);
+      raw.execute('DROP TABLE remittance_family_payments');
+      raw.execute('DROP TABLE remittance_purposes');
+      raw.execute('DROP TABLE remittance_events');
+      raw.execute('DROP TABLE remittances');
+      raw.execute(
+        "DELETE FROM ledger_accounts WHERE kind IN ('remittanceTransit', 'remittanceExchange')",
+      );
       raw.execute('DROP TABLE expense_details');
       raw.execute('DROP TABLE cash_reconciliations');
       raw.execute('DROP TABLE cash_settings');

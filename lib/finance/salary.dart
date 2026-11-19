@@ -279,6 +279,10 @@ extension SalaryLedger on Ledger {
 
     final movement = await salaryMovement(entryId);
     final capacity = _movementCapacity(salary, movement);
+    if (movement.entry.kind == JournalKind.remittanceDebit &&
+        await _remittanceHasRefundForDebit(entryId)) {
+      throw const SalaryException(SalaryIssue.ineligibleMovement);
+    }
     final used = await _linkedMinor(entryId);
     if (minor > capacity - used) {
       throw const SalaryException(SalaryIssue.movementLimit);
@@ -366,7 +370,7 @@ extension SalaryLedger on Ledger {
             .customSelect(
               '''
       SELECT j.id FROM journal_postings p JOIN journal_entries j ON p.entry_id = j.id
-      WHERE p.account_id = ? AND p.minor < 0 AND j.kind IN ('entry', 'internalTransfer', 'expense')
+      WHERE p.account_id = ? AND p.minor < 0 AND j.kind IN ('entry', 'internalTransfer', 'expense', 'remittanceDebit')
         AND NOT EXISTS (SELECT 1 FROM journal_entries r WHERE r.reversal_of = j.id)
         AND NOT EXISTS (SELECT 1 FROM salary_executions e WHERE e.entry_id = j.id AND e.allocation_id = ?)
       ORDER BY j.effective_micros DESC, j.id DESC
@@ -379,8 +383,12 @@ extension SalaryLedger on Ledger {
           final entryId = row.read<int>('id');
           final movement = await salaryMovement(entryId);
           if (!_eligibleMovement(salary, movement)) continue;
+          if (movement.entry.kind == JournalKind.remittanceDebit &&
+              await _remittanceHasRefundForDebit(entryId)) {
+            continue;
+          }
           final available =
-              -movement.lines.first.minor - await _linkedMinor(entryId);
+              _movementCapacity(salary, movement) - await _linkedMinor(entryId);
           if (available > 0) {
             results.add((movement: movement, available: available));
           }
@@ -520,6 +528,14 @@ String _allocationInput(String label, int minor) {
 }
 
 bool _eligibleMovement(SalaryDeposit salary, SalaryMovement movement) {
+  if (movement.entry.kind == JournalKind.remittanceDebit) {
+    return movement.lines.any(
+      (line) =>
+          line.accountId == salary.accountId &&
+          line.currency == salary.currency &&
+          line.minor < 0,
+    );
+  }
   if (!{
         JournalKind.entry,
         JournalKind.internalTransfer,
@@ -544,6 +560,11 @@ int _movementCapacity(SalaryDeposit salary, SalaryMovement movement) {
   }
   if (!_eligibleMovement(salary, movement)) {
     throw const SalaryException(SalaryIssue.ineligibleMovement);
+  }
+  if (movement.entry.kind == JournalKind.remittanceDebit) {
+    return movement.lines
+        .singleWhere((line) => line.kind == AccountKind.remittanceTransit)
+        .minor;
   }
   return -movement.lines.first.minor;
 }

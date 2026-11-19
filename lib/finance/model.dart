@@ -5,11 +5,13 @@ enum AccountKind {
   opening,
   income,
   expense,
-  cashAdjustment;
+  cashAdjustment,
+  remittanceTransit,
+  remittanceExchange;
 
   bool get isPersonal => switch (this) {
     bank || cash || savings => true,
-    opening || income || expense || cashAdjustment => false,
+    _ => false,
   };
 }
 
@@ -23,7 +25,23 @@ enum JournalKind {
   cashExpense,
   expense,
   cashAdjustment,
+  remittanceDebit,
+  remittanceReceipt,
+  remittanceRefund,
+  remittanceSettlement;
+
+  bool get isRemittance => switch (this) {
+    remittanceDebit ||
+    remittanceReceipt ||
+    remittanceRefund ||
+    remittanceSettlement => true,
+    _ => false,
+  };
 }
+
+enum RemittanceDestination { personal, family, beneficiary }
+
+enum RemittanceEventKind { debit, receipt, refund, sourceProof }
 
 enum ExpensePeriod { individual, day, week }
 

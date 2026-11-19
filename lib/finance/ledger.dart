@@ -6,6 +6,7 @@ import 'model.dart';
 part 'salary.dart';
 part 'usd_cash.dart';
 part 'expenses.dart';
+part 'remittances.dart';
 
 class Ledger {
   Ledger(this._db);
@@ -200,7 +201,8 @@ class Ledger {
     )..where((row) => row.id.equals(id))).getSingleOrNull();
     if (entry == null) throw const LedgerException(LedgerIssue.entryNotFound);
     if (entry.kind == JournalKind.opening ||
-        entry.kind == JournalKind.reversal) {
+        entry.kind == JournalKind.reversal ||
+        entry.kind.isRemittance) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }
     return entry;
@@ -308,6 +310,10 @@ class Ledger {
       if ((account.kind == AccountKind.opening &&
               kind != JournalKind.opening) ||
           (kind == JournalKind.internalTransfer && !account.kind.isPersonal) ||
+          ((account.kind == AccountKind.remittanceTransit ||
+                  account.kind == AccountKind.remittanceExchange) &&
+              !kind.isRemittance &&
+              kind != JournalKind.reversal) ||
           (account.kind == AccountKind.cashAdjustment &&
               kind != JournalKind.cashAdjustment &&
               kind != JournalKind.reversal)) {

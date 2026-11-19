@@ -7,6 +7,7 @@ import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
 import 'expense_screen.dart';
+import 'remittance_screen.dart';
 import 'salary_screen.dart';
 import 'usd_cash_screen.dart';
 
@@ -88,7 +89,23 @@ class _FinanceHomeState extends State<FinanceHome> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Expat Manager')),
+    appBar: AppBar(
+      title: const Text('Expat Manager'),
+      actions: [
+        TextButton.icon(
+          onPressed: () async {
+            await Navigator.of(context).push<void>(
+              MaterialPageRoute(
+                builder: (_) => RemittanceScreen(ledger: ledger),
+              ),
+            );
+            if (mounted) _refresh();
+          },
+          icon: const Icon(Icons.language),
+          label: const Text('الحوالات'),
+        ),
+      ],
+    ),
     bottomNavigationBar: NavigationBar(
       selectedIndex: _tab,
       onDestinationSelected: (value) => setState(() {
@@ -213,6 +230,10 @@ class _FinanceHomeState extends State<FinanceHome> {
             JournalKind.cashExpense => 'مصروف نقدي',
             JournalKind.expense => 'مصروف',
             JournalKind.cashAdjustment => 'تسوية رصيد',
+            JournalKind.remittanceDebit => 'خصم حوالة',
+            JournalKind.remittanceReceipt => 'استلام حوالة',
+            JournalKind.remittanceRefund => 'استرداد حوالة',
+            JournalKind.remittanceSettlement => 'تسوية حوالة',
           }),
           subtitle: entry.reason == null ? null : Text(entry.reason!),
           trailing: Text(

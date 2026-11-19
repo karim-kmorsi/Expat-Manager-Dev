@@ -3496,6 +3496,1645 @@ class ExpenseDetailsCompanion extends UpdateCompanion<ExpenseDetail> {
   }
 }
 
+class $RemittancesTable extends Remittances
+    with TableInfo<$RemittancesTable, Remittance> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemittancesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _draftKeyMeta = const VerificationMeta(
+    'draftKey',
+  );
+  @override
+  late final GeneratedColumn<String> draftKey = GeneratedColumn<String>(
+    'draft_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _sourceAccountIdMeta = const VerificationMeta(
+    'sourceAccountId',
+  );
+  @override
+  late final GeneratedColumn<int> sourceAccountId = GeneratedColumn<int>(
+    'source_account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ledger_accounts (id)',
+    ),
+  );
+  static const VerificationMeta _destinationAccountIdMeta =
+      const VerificationMeta('destinationAccountId');
+  @override
+  late final GeneratedColumn<int> destinationAccountId = GeneratedColumn<int>(
+    'destination_account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ledger_accounts (id)',
+    ),
+  );
+  static const VerificationMeta _destinationCurrencyMeta =
+      const VerificationMeta('destinationCurrency');
+  @override
+  late final GeneratedColumn<String> destinationCurrency =
+      GeneratedColumn<String>(
+        'destination_currency',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES currencies (code)',
+        ),
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<RemittanceDestination, String>
+  destination =
+      GeneratedColumn<String>(
+        'destination',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<RemittanceDestination>(
+        $RemittancesTable.$converterdestination,
+      );
+  static const VerificationMeta _beneficiaryMeta = const VerificationMeta(
+    'beneficiary',
+  );
+  @override
+  late final GeneratedColumn<String> beneficiary = GeneratedColumn<String>(
+    'beneficiary',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cancelledMeta = const VerificationMeta(
+    'cancelled',
+  );
+  @override
+  late final GeneratedColumn<bool> cancelled = GeneratedColumn<bool>(
+    'cancelled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("cancelled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _awaitingMeta = const VerificationMeta(
+    'awaiting',
+  );
+  @override
+  late final GeneratedColumn<bool> awaiting = GeneratedColumn<bool>(
+    'awaiting',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("awaiting" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    draftKey,
+    sourceAccountId,
+    destinationAccountId,
+    destinationCurrency,
+    destination,
+    beneficiary,
+    cancelled,
+    awaiting,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'remittances';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Remittance> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('draft_key')) {
+      context.handle(
+        _draftKeyMeta,
+        draftKey.isAcceptableOrUnknown(data['draft_key']!, _draftKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_draftKeyMeta);
+    }
+    if (data.containsKey('source_account_id')) {
+      context.handle(
+        _sourceAccountIdMeta,
+        sourceAccountId.isAcceptableOrUnknown(
+          data['source_account_id']!,
+          _sourceAccountIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceAccountIdMeta);
+    }
+    if (data.containsKey('destination_account_id')) {
+      context.handle(
+        _destinationAccountIdMeta,
+        destinationAccountId.isAcceptableOrUnknown(
+          data['destination_account_id']!,
+          _destinationAccountIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('destination_currency')) {
+      context.handle(
+        _destinationCurrencyMeta,
+        destinationCurrency.isAcceptableOrUnknown(
+          data['destination_currency']!,
+          _destinationCurrencyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_destinationCurrencyMeta);
+    }
+    if (data.containsKey('beneficiary')) {
+      context.handle(
+        _beneficiaryMeta,
+        beneficiary.isAcceptableOrUnknown(
+          data['beneficiary']!,
+          _beneficiaryMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cancelled')) {
+      context.handle(
+        _cancelledMeta,
+        cancelled.isAcceptableOrUnknown(data['cancelled']!, _cancelledMeta),
+      );
+    }
+    if (data.containsKey('awaiting')) {
+      context.handle(
+        _awaitingMeta,
+        awaiting.isAcceptableOrUnknown(data['awaiting']!, _awaitingMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Remittance map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Remittance(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      draftKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}draft_key'],
+      )!,
+      sourceAccountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}source_account_id'],
+      )!,
+      destinationAccountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}destination_account_id'],
+      ),
+      destinationCurrency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}destination_currency'],
+      )!,
+      destination: $RemittancesTable.$converterdestination.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}destination'],
+        )!,
+      ),
+      beneficiary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}beneficiary'],
+      ),
+      cancelled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}cancelled'],
+      )!,
+      awaiting: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}awaiting'],
+      )!,
+    );
+  }
+
+  @override
+  $RemittancesTable createAlias(String alias) {
+    return $RemittancesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<RemittanceDestination, String, String>
+  $converterdestination = const EnumNameConverter<RemittanceDestination>(
+    RemittanceDestination.values,
+  );
+}
+
+class Remittance extends DataClass implements Insertable<Remittance> {
+  final int id;
+  final String draftKey;
+  final int sourceAccountId;
+  final int? destinationAccountId;
+  final String destinationCurrency;
+  final RemittanceDestination destination;
+  final String? beneficiary;
+  final bool cancelled;
+  final bool awaiting;
+  const Remittance({
+    required this.id,
+    required this.draftKey,
+    required this.sourceAccountId,
+    this.destinationAccountId,
+    required this.destinationCurrency,
+    required this.destination,
+    this.beneficiary,
+    required this.cancelled,
+    required this.awaiting,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['draft_key'] = Variable<String>(draftKey);
+    map['source_account_id'] = Variable<int>(sourceAccountId);
+    if (!nullToAbsent || destinationAccountId != null) {
+      map['destination_account_id'] = Variable<int>(destinationAccountId);
+    }
+    map['destination_currency'] = Variable<String>(destinationCurrency);
+    {
+      map['destination'] = Variable<String>(
+        $RemittancesTable.$converterdestination.toSql(destination),
+      );
+    }
+    if (!nullToAbsent || beneficiary != null) {
+      map['beneficiary'] = Variable<String>(beneficiary);
+    }
+    map['cancelled'] = Variable<bool>(cancelled);
+    map['awaiting'] = Variable<bool>(awaiting);
+    return map;
+  }
+
+  RemittancesCompanion toCompanion(bool nullToAbsent) {
+    return RemittancesCompanion(
+      id: Value(id),
+      draftKey: Value(draftKey),
+      sourceAccountId: Value(sourceAccountId),
+      destinationAccountId: destinationAccountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(destinationAccountId),
+      destinationCurrency: Value(destinationCurrency),
+      destination: Value(destination),
+      beneficiary: beneficiary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(beneficiary),
+      cancelled: Value(cancelled),
+      awaiting: Value(awaiting),
+    );
+  }
+
+  factory Remittance.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Remittance(
+      id: serializer.fromJson<int>(json['id']),
+      draftKey: serializer.fromJson<String>(json['draftKey']),
+      sourceAccountId: serializer.fromJson<int>(json['sourceAccountId']),
+      destinationAccountId: serializer.fromJson<int?>(
+        json['destinationAccountId'],
+      ),
+      destinationCurrency: serializer.fromJson<String>(
+        json['destinationCurrency'],
+      ),
+      destination: $RemittancesTable.$converterdestination.fromJson(
+        serializer.fromJson<String>(json['destination']),
+      ),
+      beneficiary: serializer.fromJson<String?>(json['beneficiary']),
+      cancelled: serializer.fromJson<bool>(json['cancelled']),
+      awaiting: serializer.fromJson<bool>(json['awaiting']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'draftKey': serializer.toJson<String>(draftKey),
+      'sourceAccountId': serializer.toJson<int>(sourceAccountId),
+      'destinationAccountId': serializer.toJson<int?>(destinationAccountId),
+      'destinationCurrency': serializer.toJson<String>(destinationCurrency),
+      'destination': serializer.toJson<String>(
+        $RemittancesTable.$converterdestination.toJson(destination),
+      ),
+      'beneficiary': serializer.toJson<String?>(beneficiary),
+      'cancelled': serializer.toJson<bool>(cancelled),
+      'awaiting': serializer.toJson<bool>(awaiting),
+    };
+  }
+
+  Remittance copyWith({
+    int? id,
+    String? draftKey,
+    int? sourceAccountId,
+    Value<int?> destinationAccountId = const Value.absent(),
+    String? destinationCurrency,
+    RemittanceDestination? destination,
+    Value<String?> beneficiary = const Value.absent(),
+    bool? cancelled,
+    bool? awaiting,
+  }) => Remittance(
+    id: id ?? this.id,
+    draftKey: draftKey ?? this.draftKey,
+    sourceAccountId: sourceAccountId ?? this.sourceAccountId,
+    destinationAccountId: destinationAccountId.present
+        ? destinationAccountId.value
+        : this.destinationAccountId,
+    destinationCurrency: destinationCurrency ?? this.destinationCurrency,
+    destination: destination ?? this.destination,
+    beneficiary: beneficiary.present ? beneficiary.value : this.beneficiary,
+    cancelled: cancelled ?? this.cancelled,
+    awaiting: awaiting ?? this.awaiting,
+  );
+  Remittance copyWithCompanion(RemittancesCompanion data) {
+    return Remittance(
+      id: data.id.present ? data.id.value : this.id,
+      draftKey: data.draftKey.present ? data.draftKey.value : this.draftKey,
+      sourceAccountId: data.sourceAccountId.present
+          ? data.sourceAccountId.value
+          : this.sourceAccountId,
+      destinationAccountId: data.destinationAccountId.present
+          ? data.destinationAccountId.value
+          : this.destinationAccountId,
+      destinationCurrency: data.destinationCurrency.present
+          ? data.destinationCurrency.value
+          : this.destinationCurrency,
+      destination: data.destination.present
+          ? data.destination.value
+          : this.destination,
+      beneficiary: data.beneficiary.present
+          ? data.beneficiary.value
+          : this.beneficiary,
+      cancelled: data.cancelled.present ? data.cancelled.value : this.cancelled,
+      awaiting: data.awaiting.present ? data.awaiting.value : this.awaiting,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Remittance(')
+          ..write('id: $id, ')
+          ..write('draftKey: $draftKey, ')
+          ..write('sourceAccountId: $sourceAccountId, ')
+          ..write('destinationAccountId: $destinationAccountId, ')
+          ..write('destinationCurrency: $destinationCurrency, ')
+          ..write('destination: $destination, ')
+          ..write('beneficiary: $beneficiary, ')
+          ..write('cancelled: $cancelled, ')
+          ..write('awaiting: $awaiting')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    draftKey,
+    sourceAccountId,
+    destinationAccountId,
+    destinationCurrency,
+    destination,
+    beneficiary,
+    cancelled,
+    awaiting,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Remittance &&
+          other.id == this.id &&
+          other.draftKey == this.draftKey &&
+          other.sourceAccountId == this.sourceAccountId &&
+          other.destinationAccountId == this.destinationAccountId &&
+          other.destinationCurrency == this.destinationCurrency &&
+          other.destination == this.destination &&
+          other.beneficiary == this.beneficiary &&
+          other.cancelled == this.cancelled &&
+          other.awaiting == this.awaiting);
+}
+
+class RemittancesCompanion extends UpdateCompanion<Remittance> {
+  final Value<int> id;
+  final Value<String> draftKey;
+  final Value<int> sourceAccountId;
+  final Value<int?> destinationAccountId;
+  final Value<String> destinationCurrency;
+  final Value<RemittanceDestination> destination;
+  final Value<String?> beneficiary;
+  final Value<bool> cancelled;
+  final Value<bool> awaiting;
+  const RemittancesCompanion({
+    this.id = const Value.absent(),
+    this.draftKey = const Value.absent(),
+    this.sourceAccountId = const Value.absent(),
+    this.destinationAccountId = const Value.absent(),
+    this.destinationCurrency = const Value.absent(),
+    this.destination = const Value.absent(),
+    this.beneficiary = const Value.absent(),
+    this.cancelled = const Value.absent(),
+    this.awaiting = const Value.absent(),
+  });
+  RemittancesCompanion.insert({
+    this.id = const Value.absent(),
+    required String draftKey,
+    required int sourceAccountId,
+    this.destinationAccountId = const Value.absent(),
+    required String destinationCurrency,
+    required RemittanceDestination destination,
+    this.beneficiary = const Value.absent(),
+    this.cancelled = const Value.absent(),
+    this.awaiting = const Value.absent(),
+  }) : draftKey = Value(draftKey),
+       sourceAccountId = Value(sourceAccountId),
+       destinationCurrency = Value(destinationCurrency),
+       destination = Value(destination);
+  static Insertable<Remittance> custom({
+    Expression<int>? id,
+    Expression<String>? draftKey,
+    Expression<int>? sourceAccountId,
+    Expression<int>? destinationAccountId,
+    Expression<String>? destinationCurrency,
+    Expression<String>? destination,
+    Expression<String>? beneficiary,
+    Expression<bool>? cancelled,
+    Expression<bool>? awaiting,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (draftKey != null) 'draft_key': draftKey,
+      if (sourceAccountId != null) 'source_account_id': sourceAccountId,
+      if (destinationAccountId != null)
+        'destination_account_id': destinationAccountId,
+      if (destinationCurrency != null)
+        'destination_currency': destinationCurrency,
+      if (destination != null) 'destination': destination,
+      if (beneficiary != null) 'beneficiary': beneficiary,
+      if (cancelled != null) 'cancelled': cancelled,
+      if (awaiting != null) 'awaiting': awaiting,
+    });
+  }
+
+  RemittancesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? draftKey,
+    Value<int>? sourceAccountId,
+    Value<int?>? destinationAccountId,
+    Value<String>? destinationCurrency,
+    Value<RemittanceDestination>? destination,
+    Value<String?>? beneficiary,
+    Value<bool>? cancelled,
+    Value<bool>? awaiting,
+  }) {
+    return RemittancesCompanion(
+      id: id ?? this.id,
+      draftKey: draftKey ?? this.draftKey,
+      sourceAccountId: sourceAccountId ?? this.sourceAccountId,
+      destinationAccountId: destinationAccountId ?? this.destinationAccountId,
+      destinationCurrency: destinationCurrency ?? this.destinationCurrency,
+      destination: destination ?? this.destination,
+      beneficiary: beneficiary ?? this.beneficiary,
+      cancelled: cancelled ?? this.cancelled,
+      awaiting: awaiting ?? this.awaiting,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (draftKey.present) {
+      map['draft_key'] = Variable<String>(draftKey.value);
+    }
+    if (sourceAccountId.present) {
+      map['source_account_id'] = Variable<int>(sourceAccountId.value);
+    }
+    if (destinationAccountId.present) {
+      map['destination_account_id'] = Variable<int>(destinationAccountId.value);
+    }
+    if (destinationCurrency.present) {
+      map['destination_currency'] = Variable<String>(destinationCurrency.value);
+    }
+    if (destination.present) {
+      map['destination'] = Variable<String>(
+        $RemittancesTable.$converterdestination.toSql(destination.value),
+      );
+    }
+    if (beneficiary.present) {
+      map['beneficiary'] = Variable<String>(beneficiary.value);
+    }
+    if (cancelled.present) {
+      map['cancelled'] = Variable<bool>(cancelled.value);
+    }
+    if (awaiting.present) {
+      map['awaiting'] = Variable<bool>(awaiting.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittancesCompanion(')
+          ..write('id: $id, ')
+          ..write('draftKey: $draftKey, ')
+          ..write('sourceAccountId: $sourceAccountId, ')
+          ..write('destinationAccountId: $destinationAccountId, ')
+          ..write('destinationCurrency: $destinationCurrency, ')
+          ..write('destination: $destination, ')
+          ..write('beneficiary: $beneficiary, ')
+          ..write('cancelled: $cancelled, ')
+          ..write('awaiting: $awaiting')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RemittanceEventsTable extends RemittanceEvents
+    with TableInfo<$RemittanceEventsTable, RemittanceEvent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemittanceEventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _remittanceIdMeta = const VerificationMeta(
+    'remittanceId',
+  );
+  @override
+  late final GeneratedColumn<int> remittanceId = GeneratedColumn<int>(
+    'remittance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES remittances (id)',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<RemittanceEventKind, String>
+  kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<RemittanceEventKind>($RemittanceEventsTable.$converterkind);
+  static const VerificationMeta _evidenceMeta = const VerificationMeta(
+    'evidence',
+  );
+  @override
+  late final GeneratedColumn<String> evidence = GeneratedColumn<String>(
+    'evidence',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _feeMinorMeta = const VerificationMeta(
+    'feeMinor',
+  );
+  @override
+  late final GeneratedColumn<int> feeMinor = GeneratedColumn<int>(
+    'fee_minor',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _receiptEntryIdMeta = const VerificationMeta(
+    'receiptEntryId',
+  );
+  @override
+  late final GeneratedColumn<int> receiptEntryId = GeneratedColumn<int>(
+    'receipt_entry_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    entryId,
+    remittanceId,
+    kind,
+    evidence,
+    feeMinor,
+    receiptEntryId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'remittance_events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RemittanceEvent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('remittance_id')) {
+      context.handle(
+        _remittanceIdMeta,
+        remittanceId.isAcceptableOrUnknown(
+          data['remittance_id']!,
+          _remittanceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_remittanceIdMeta);
+    }
+    if (data.containsKey('evidence')) {
+      context.handle(
+        _evidenceMeta,
+        evidence.isAcceptableOrUnknown(data['evidence']!, _evidenceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_evidenceMeta);
+    }
+    if (data.containsKey('fee_minor')) {
+      context.handle(
+        _feeMinorMeta,
+        feeMinor.isAcceptableOrUnknown(data['fee_minor']!, _feeMinorMeta),
+      );
+    }
+    if (data.containsKey('receipt_entry_id')) {
+      context.handle(
+        _receiptEntryIdMeta,
+        receiptEntryId.isAcceptableOrUnknown(
+          data['receipt_entry_id']!,
+          _receiptEntryIdMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  RemittanceEvent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RemittanceEvent(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      remittanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remittance_id'],
+      )!,
+      kind: $RemittanceEventsTable.$converterkind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}kind'],
+        )!,
+      ),
+      evidence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}evidence'],
+      )!,
+      feeMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fee_minor'],
+      ),
+      receiptEntryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}receipt_entry_id'],
+      ),
+    );
+  }
+
+  @override
+  $RemittanceEventsTable createAlias(String alias) {
+    return $RemittanceEventsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<RemittanceEventKind, String, String>
+  $converterkind = const EnumNameConverter<RemittanceEventKind>(
+    RemittanceEventKind.values,
+  );
+}
+
+class RemittanceEvent extends DataClass implements Insertable<RemittanceEvent> {
+  final int entryId;
+  final int remittanceId;
+  final RemittanceEventKind kind;
+  final String evidence;
+  final int? feeMinor;
+  final int? receiptEntryId;
+  const RemittanceEvent({
+    required this.entryId,
+    required this.remittanceId,
+    required this.kind,
+    required this.evidence,
+    this.feeMinor,
+    this.receiptEntryId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    map['remittance_id'] = Variable<int>(remittanceId);
+    {
+      map['kind'] = Variable<String>(
+        $RemittanceEventsTable.$converterkind.toSql(kind),
+      );
+    }
+    map['evidence'] = Variable<String>(evidence);
+    if (!nullToAbsent || feeMinor != null) {
+      map['fee_minor'] = Variable<int>(feeMinor);
+    }
+    if (!nullToAbsent || receiptEntryId != null) {
+      map['receipt_entry_id'] = Variable<int>(receiptEntryId);
+    }
+    return map;
+  }
+
+  RemittanceEventsCompanion toCompanion(bool nullToAbsent) {
+    return RemittanceEventsCompanion(
+      entryId: Value(entryId),
+      remittanceId: Value(remittanceId),
+      kind: Value(kind),
+      evidence: Value(evidence),
+      feeMinor: feeMinor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(feeMinor),
+      receiptEntryId: receiptEntryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receiptEntryId),
+    );
+  }
+
+  factory RemittanceEvent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RemittanceEvent(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      remittanceId: serializer.fromJson<int>(json['remittanceId']),
+      kind: $RemittanceEventsTable.$converterkind.fromJson(
+        serializer.fromJson<String>(json['kind']),
+      ),
+      evidence: serializer.fromJson<String>(json['evidence']),
+      feeMinor: serializer.fromJson<int?>(json['feeMinor']),
+      receiptEntryId: serializer.fromJson<int?>(json['receiptEntryId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'remittanceId': serializer.toJson<int>(remittanceId),
+      'kind': serializer.toJson<String>(
+        $RemittanceEventsTable.$converterkind.toJson(kind),
+      ),
+      'evidence': serializer.toJson<String>(evidence),
+      'feeMinor': serializer.toJson<int?>(feeMinor),
+      'receiptEntryId': serializer.toJson<int?>(receiptEntryId),
+    };
+  }
+
+  RemittanceEvent copyWith({
+    int? entryId,
+    int? remittanceId,
+    RemittanceEventKind? kind,
+    String? evidence,
+    Value<int?> feeMinor = const Value.absent(),
+    Value<int?> receiptEntryId = const Value.absent(),
+  }) => RemittanceEvent(
+    entryId: entryId ?? this.entryId,
+    remittanceId: remittanceId ?? this.remittanceId,
+    kind: kind ?? this.kind,
+    evidence: evidence ?? this.evidence,
+    feeMinor: feeMinor.present ? feeMinor.value : this.feeMinor,
+    receiptEntryId: receiptEntryId.present
+        ? receiptEntryId.value
+        : this.receiptEntryId,
+  );
+  RemittanceEvent copyWithCompanion(RemittanceEventsCompanion data) {
+    return RemittanceEvent(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      remittanceId: data.remittanceId.present
+          ? data.remittanceId.value
+          : this.remittanceId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      evidence: data.evidence.present ? data.evidence.value : this.evidence,
+      feeMinor: data.feeMinor.present ? data.feeMinor.value : this.feeMinor,
+      receiptEntryId: data.receiptEntryId.present
+          ? data.receiptEntryId.value
+          : this.receiptEntryId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittanceEvent(')
+          ..write('entryId: $entryId, ')
+          ..write('remittanceId: $remittanceId, ')
+          ..write('kind: $kind, ')
+          ..write('evidence: $evidence, ')
+          ..write('feeMinor: $feeMinor, ')
+          ..write('receiptEntryId: $receiptEntryId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    entryId,
+    remittanceId,
+    kind,
+    evidence,
+    feeMinor,
+    receiptEntryId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RemittanceEvent &&
+          other.entryId == this.entryId &&
+          other.remittanceId == this.remittanceId &&
+          other.kind == this.kind &&
+          other.evidence == this.evidence &&
+          other.feeMinor == this.feeMinor &&
+          other.receiptEntryId == this.receiptEntryId);
+}
+
+class RemittanceEventsCompanion extends UpdateCompanion<RemittanceEvent> {
+  final Value<int> entryId;
+  final Value<int> remittanceId;
+  final Value<RemittanceEventKind> kind;
+  final Value<String> evidence;
+  final Value<int?> feeMinor;
+  final Value<int?> receiptEntryId;
+  const RemittanceEventsCompanion({
+    this.entryId = const Value.absent(),
+    this.remittanceId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.evidence = const Value.absent(),
+    this.feeMinor = const Value.absent(),
+    this.receiptEntryId = const Value.absent(),
+  });
+  RemittanceEventsCompanion.insert({
+    this.entryId = const Value.absent(),
+    required int remittanceId,
+    required RemittanceEventKind kind,
+    required String evidence,
+    this.feeMinor = const Value.absent(),
+    this.receiptEntryId = const Value.absent(),
+  }) : remittanceId = Value(remittanceId),
+       kind = Value(kind),
+       evidence = Value(evidence);
+  static Insertable<RemittanceEvent> custom({
+    Expression<int>? entryId,
+    Expression<int>? remittanceId,
+    Expression<String>? kind,
+    Expression<String>? evidence,
+    Expression<int>? feeMinor,
+    Expression<int>? receiptEntryId,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (remittanceId != null) 'remittance_id': remittanceId,
+      if (kind != null) 'kind': kind,
+      if (evidence != null) 'evidence': evidence,
+      if (feeMinor != null) 'fee_minor': feeMinor,
+      if (receiptEntryId != null) 'receipt_entry_id': receiptEntryId,
+    });
+  }
+
+  RemittanceEventsCompanion copyWith({
+    Value<int>? entryId,
+    Value<int>? remittanceId,
+    Value<RemittanceEventKind>? kind,
+    Value<String>? evidence,
+    Value<int?>? feeMinor,
+    Value<int?>? receiptEntryId,
+  }) {
+    return RemittanceEventsCompanion(
+      entryId: entryId ?? this.entryId,
+      remittanceId: remittanceId ?? this.remittanceId,
+      kind: kind ?? this.kind,
+      evidence: evidence ?? this.evidence,
+      feeMinor: feeMinor ?? this.feeMinor,
+      receiptEntryId: receiptEntryId ?? this.receiptEntryId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (remittanceId.present) {
+      map['remittance_id'] = Variable<int>(remittanceId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(
+        $RemittanceEventsTable.$converterkind.toSql(kind.value),
+      );
+    }
+    if (evidence.present) {
+      map['evidence'] = Variable<String>(evidence.value);
+    }
+    if (feeMinor.present) {
+      map['fee_minor'] = Variable<int>(feeMinor.value);
+    }
+    if (receiptEntryId.present) {
+      map['receipt_entry_id'] = Variable<int>(receiptEntryId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittanceEventsCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('remittanceId: $remittanceId, ')
+          ..write('kind: $kind, ')
+          ..write('evidence: $evidence, ')
+          ..write('feeMinor: $feeMinor, ')
+          ..write('receiptEntryId: $receiptEntryId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RemittancePurposesTable extends RemittancePurposes
+    with TableInfo<$RemittancePurposesTable, RemittancePurpose> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemittancePurposesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _operationKeyMeta = const VerificationMeta(
+    'operationKey',
+  );
+  @override
+  late final GeneratedColumn<String> operationKey = GeneratedColumn<String>(
+    'operation_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _remittanceIdMeta = const VerificationMeta(
+    'remittanceId',
+  );
+  @override
+  late final GeneratedColumn<int> remittanceId = GeneratedColumn<int>(
+    'remittance_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES remittances (id)',
+    ),
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _minorMeta = const VerificationMeta('minor');
+  @override
+  late final GeneratedColumn<int> minor = GeneratedColumn<int>(
+    'minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _familyMeta = const VerificationMeta('family');
+  @override
+  late final GeneratedColumn<bool> family = GeneratedColumn<bool>(
+    'family',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("family" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    operationKey,
+    remittanceId,
+    label,
+    minor,
+    family,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'remittance_purposes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RemittancePurpose> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('operation_key')) {
+      context.handle(
+        _operationKeyMeta,
+        operationKey.isAcceptableOrUnknown(
+          data['operation_key']!,
+          _operationKeyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_operationKeyMeta);
+    }
+    if (data.containsKey('remittance_id')) {
+      context.handle(
+        _remittanceIdMeta,
+        remittanceId.isAcceptableOrUnknown(
+          data['remittance_id']!,
+          _remittanceIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_remittanceIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('minor')) {
+      context.handle(
+        _minorMeta,
+        minor.isAcceptableOrUnknown(data['minor']!, _minorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_minorMeta);
+    }
+    if (data.containsKey('family')) {
+      context.handle(
+        _familyMeta,
+        family.isAcceptableOrUnknown(data['family']!, _familyMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {operationKey};
+  @override
+  RemittancePurpose map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RemittancePurpose(
+      operationKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}operation_key'],
+      )!,
+      remittanceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}remittance_id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      minor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}minor'],
+      )!,
+      family: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}family'],
+      )!,
+    );
+  }
+
+  @override
+  $RemittancePurposesTable createAlias(String alias) {
+    return $RemittancePurposesTable(attachedDatabase, alias);
+  }
+}
+
+class RemittancePurpose extends DataClass
+    implements Insertable<RemittancePurpose> {
+  final String operationKey;
+  final int remittanceId;
+  final String label;
+  final int minor;
+  final bool family;
+  const RemittancePurpose({
+    required this.operationKey,
+    required this.remittanceId,
+    required this.label,
+    required this.minor,
+    required this.family,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['operation_key'] = Variable<String>(operationKey);
+    map['remittance_id'] = Variable<int>(remittanceId);
+    map['label'] = Variable<String>(label);
+    map['minor'] = Variable<int>(minor);
+    map['family'] = Variable<bool>(family);
+    return map;
+  }
+
+  RemittancePurposesCompanion toCompanion(bool nullToAbsent) {
+    return RemittancePurposesCompanion(
+      operationKey: Value(operationKey),
+      remittanceId: Value(remittanceId),
+      label: Value(label),
+      minor: Value(minor),
+      family: Value(family),
+    );
+  }
+
+  factory RemittancePurpose.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RemittancePurpose(
+      operationKey: serializer.fromJson<String>(json['operationKey']),
+      remittanceId: serializer.fromJson<int>(json['remittanceId']),
+      label: serializer.fromJson<String>(json['label']),
+      minor: serializer.fromJson<int>(json['minor']),
+      family: serializer.fromJson<bool>(json['family']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'operationKey': serializer.toJson<String>(operationKey),
+      'remittanceId': serializer.toJson<int>(remittanceId),
+      'label': serializer.toJson<String>(label),
+      'minor': serializer.toJson<int>(minor),
+      'family': serializer.toJson<bool>(family),
+    };
+  }
+
+  RemittancePurpose copyWith({
+    String? operationKey,
+    int? remittanceId,
+    String? label,
+    int? minor,
+    bool? family,
+  }) => RemittancePurpose(
+    operationKey: operationKey ?? this.operationKey,
+    remittanceId: remittanceId ?? this.remittanceId,
+    label: label ?? this.label,
+    minor: minor ?? this.minor,
+    family: family ?? this.family,
+  );
+  RemittancePurpose copyWithCompanion(RemittancePurposesCompanion data) {
+    return RemittancePurpose(
+      operationKey: data.operationKey.present
+          ? data.operationKey.value
+          : this.operationKey,
+      remittanceId: data.remittanceId.present
+          ? data.remittanceId.value
+          : this.remittanceId,
+      label: data.label.present ? data.label.value : this.label,
+      minor: data.minor.present ? data.minor.value : this.minor,
+      family: data.family.present ? data.family.value : this.family,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittancePurpose(')
+          ..write('operationKey: $operationKey, ')
+          ..write('remittanceId: $remittanceId, ')
+          ..write('label: $label, ')
+          ..write('minor: $minor, ')
+          ..write('family: $family')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(operationKey, remittanceId, label, minor, family);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RemittancePurpose &&
+          other.operationKey == this.operationKey &&
+          other.remittanceId == this.remittanceId &&
+          other.label == this.label &&
+          other.minor == this.minor &&
+          other.family == this.family);
+}
+
+class RemittancePurposesCompanion extends UpdateCompanion<RemittancePurpose> {
+  final Value<String> operationKey;
+  final Value<int> remittanceId;
+  final Value<String> label;
+  final Value<int> minor;
+  final Value<bool> family;
+  final Value<int> rowid;
+  const RemittancePurposesCompanion({
+    this.operationKey = const Value.absent(),
+    this.remittanceId = const Value.absent(),
+    this.label = const Value.absent(),
+    this.minor = const Value.absent(),
+    this.family = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RemittancePurposesCompanion.insert({
+    required String operationKey,
+    required int remittanceId,
+    required String label,
+    required int minor,
+    this.family = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : operationKey = Value(operationKey),
+       remittanceId = Value(remittanceId),
+       label = Value(label),
+       minor = Value(minor);
+  static Insertable<RemittancePurpose> custom({
+    Expression<String>? operationKey,
+    Expression<int>? remittanceId,
+    Expression<String>? label,
+    Expression<int>? minor,
+    Expression<bool>? family,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (operationKey != null) 'operation_key': operationKey,
+      if (remittanceId != null) 'remittance_id': remittanceId,
+      if (label != null) 'label': label,
+      if (minor != null) 'minor': minor,
+      if (family != null) 'family': family,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RemittancePurposesCompanion copyWith({
+    Value<String>? operationKey,
+    Value<int>? remittanceId,
+    Value<String>? label,
+    Value<int>? minor,
+    Value<bool>? family,
+    Value<int>? rowid,
+  }) {
+    return RemittancePurposesCompanion(
+      operationKey: operationKey ?? this.operationKey,
+      remittanceId: remittanceId ?? this.remittanceId,
+      label: label ?? this.label,
+      minor: minor ?? this.minor,
+      family: family ?? this.family,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (operationKey.present) {
+      map['operation_key'] = Variable<String>(operationKey.value);
+    }
+    if (remittanceId.present) {
+      map['remittance_id'] = Variable<int>(remittanceId.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (minor.present) {
+      map['minor'] = Variable<int>(minor.value);
+    }
+    if (family.present) {
+      map['family'] = Variable<bool>(family.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittancePurposesCompanion(')
+          ..write('operationKey: $operationKey, ')
+          ..write('remittanceId: $remittanceId, ')
+          ..write('label: $label, ')
+          ..write('minor: $minor, ')
+          ..write('family: $family, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RemittanceFamilyPaymentsTable extends RemittanceFamilyPayments
+    with TableInfo<$RemittanceFamilyPaymentsTable, RemittanceFamilyPayment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemittanceFamilyPaymentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _purposeKeyMeta = const VerificationMeta(
+    'purposeKey',
+  );
+  @override
+  late final GeneratedColumn<String> purposeKey = GeneratedColumn<String>(
+    'purpose_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES remittance_purposes (operation_key)',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [entryId, purposeKey];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'remittance_family_payments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RemittanceFamilyPayment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('purpose_key')) {
+      context.handle(
+        _purposeKeyMeta,
+        purposeKey.isAcceptableOrUnknown(data['purpose_key']!, _purposeKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_purposeKeyMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  RemittanceFamilyPayment map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RemittanceFamilyPayment(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      purposeKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purpose_key'],
+      )!,
+    );
+  }
+
+  @override
+  $RemittanceFamilyPaymentsTable createAlias(String alias) {
+    return $RemittanceFamilyPaymentsTable(attachedDatabase, alias);
+  }
+}
+
+class RemittanceFamilyPayment extends DataClass
+    implements Insertable<RemittanceFamilyPayment> {
+  final int entryId;
+  final String purposeKey;
+  const RemittanceFamilyPayment({
+    required this.entryId,
+    required this.purposeKey,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    map['purpose_key'] = Variable<String>(purposeKey);
+    return map;
+  }
+
+  RemittanceFamilyPaymentsCompanion toCompanion(bool nullToAbsent) {
+    return RemittanceFamilyPaymentsCompanion(
+      entryId: Value(entryId),
+      purposeKey: Value(purposeKey),
+    );
+  }
+
+  factory RemittanceFamilyPayment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RemittanceFamilyPayment(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      purposeKey: serializer.fromJson<String>(json['purposeKey']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'purposeKey': serializer.toJson<String>(purposeKey),
+    };
+  }
+
+  RemittanceFamilyPayment copyWith({int? entryId, String? purposeKey}) =>
+      RemittanceFamilyPayment(
+        entryId: entryId ?? this.entryId,
+        purposeKey: purposeKey ?? this.purposeKey,
+      );
+  RemittanceFamilyPayment copyWithCompanion(
+    RemittanceFamilyPaymentsCompanion data,
+  ) {
+    return RemittanceFamilyPayment(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      purposeKey: data.purposeKey.present
+          ? data.purposeKey.value
+          : this.purposeKey,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittanceFamilyPayment(')
+          ..write('entryId: $entryId, ')
+          ..write('purposeKey: $purposeKey')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, purposeKey);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RemittanceFamilyPayment &&
+          other.entryId == this.entryId &&
+          other.purposeKey == this.purposeKey);
+}
+
+class RemittanceFamilyPaymentsCompanion
+    extends UpdateCompanion<RemittanceFamilyPayment> {
+  final Value<int> entryId;
+  final Value<String> purposeKey;
+  const RemittanceFamilyPaymentsCompanion({
+    this.entryId = const Value.absent(),
+    this.purposeKey = const Value.absent(),
+  });
+  RemittanceFamilyPaymentsCompanion.insert({
+    this.entryId = const Value.absent(),
+    required String purposeKey,
+  }) : purposeKey = Value(purposeKey);
+  static Insertable<RemittanceFamilyPayment> custom({
+    Expression<int>? entryId,
+    Expression<String>? purposeKey,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (purposeKey != null) 'purpose_key': purposeKey,
+    });
+  }
+
+  RemittanceFamilyPaymentsCompanion copyWith({
+    Value<int>? entryId,
+    Value<String>? purposeKey,
+  }) {
+    return RemittanceFamilyPaymentsCompanion(
+      entryId: entryId ?? this.entryId,
+      purposeKey: purposeKey ?? this.purposeKey,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (purposeKey.present) {
+      map['purpose_key'] = Variable<String>(purposeKey.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittanceFamilyPaymentsCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('purposeKey: $purposeKey')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -3518,6 +5157,14 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   late final $CashReconciliationsTable cashReconciliations =
       $CashReconciliationsTable(this);
   late final $ExpenseDetailsTable expenseDetails = $ExpenseDetailsTable(this);
+  late final $RemittancesTable remittances = $RemittancesTable(this);
+  late final $RemittanceEventsTable remittanceEvents = $RemittanceEventsTable(
+    this,
+  );
+  late final $RemittancePurposesTable remittancePurposes =
+      $RemittancePurposesTable(this);
+  late final $RemittanceFamilyPaymentsTable remittanceFamilyPayments =
+      $RemittanceFamilyPaymentsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3535,6 +5182,10 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     cashSettings,
     cashReconciliations,
     expenseDetails,
+    remittances,
+    remittanceEvents,
+    remittancePurposes,
+    remittanceFamilyPayments,
   ];
 }
 
@@ -3567,6 +5218,26 @@ final class $$CurrenciesTableReferences
     ).filter((f) => f.currency.code.sqlEquals($_itemColumn<String>('code')!));
 
     final cache = $_typedResult.readTableOrNull(_ledgerAccountsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittancesTable, List<Remittance>>
+  _remittancesRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.remittances,
+    aliasName: 'currencies__code__remittances__destination_currency',
+  );
+
+  $$RemittancesTableProcessedTableManager get remittancesRefs {
+    final manager = $$RemittancesTableTableManager($_db, $_db.remittances)
+        .filter(
+          (f) => f.destinationCurrency.code.sqlEquals(
+            $_itemColumn<String>('code')!,
+          ),
+        );
+
+    final cache = $_typedResult.readTableOrNull(_remittancesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -3608,6 +5279,31 @@ class $$CurrenciesTableFilterComposer
           }) => $$LedgerAccountsTableFilterComposer(
             $db: $db,
             $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> remittancesRefs(
+    Expression<bool> Function($$RemittancesTableFilterComposer f) f,
+  ) {
+    final $$RemittancesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.destinationCurrency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittances,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3677,6 +5373,31 @@ class $$CurrenciesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> remittancesRefs<T extends Object>(
+    Expression<T> Function($$RemittancesTableAnnotationComposer a) f,
+  ) {
+    final $$RemittancesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.destinationCurrency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$CurrenciesTableTableManager
@@ -3692,7 +5413,10 @@ class $$CurrenciesTableTableManager
           $$CurrenciesTableUpdateCompanionBuilder,
           (Currency, $$CurrenciesTableReferences),
           Currency,
-          PrefetchHooks Function({bool ledgerAccountsRefs})
+          PrefetchHooks Function({
+            bool ledgerAccountsRefs,
+            bool remittancesRefs,
+          })
         > {
   $$CurrenciesTableTableManager(_$LedgerDatabase db, $CurrenciesTable table)
     : super(
@@ -3728,39 +5452,61 @@ class $$CurrenciesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({ledgerAccountsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (ledgerAccountsRefs) db.ledgerAccounts,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (ledgerAccountsRefs)
-                    await $_getPrefetchedDataByColumns<
-                      Currency,
-                      $CurrenciesTable,
-                      LedgerAccount,
-                      $LedgerAccountsTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$CurrenciesTableReferences
-                          ._ledgerAccountsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$CurrenciesTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).ledgerAccountsRefs,
-                      currentColumn: 'code',
-                      referencedColumn: 'currency',
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({ledgerAccountsRefs = false, remittancesRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (ledgerAccountsRefs) db.ledgerAccounts,
+                    if (remittancesRefs) db.remittances,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (ledgerAccountsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          LedgerAccount,
+                          $LedgerAccountsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._ledgerAccountsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).ledgerAccountsRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'currency',
+                          typedResults: items,
+                        ),
+                      if (remittancesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          Remittance,
+                          $RemittancesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._remittancesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittancesRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'destination_currency',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -3777,7 +5523,7 @@ typedef $$CurrenciesTableProcessedTableManager =
       $$CurrenciesTableUpdateCompanionBuilder,
       (Currency, $$CurrenciesTableReferences),
       Currency,
-      PrefetchHooks Function({bool ledgerAccountsRefs})
+      PrefetchHooks Function({bool ledgerAccountsRefs, bool remittancesRefs})
     >;
 typedef $$LedgerAccountsTableCreateCompanionBuilder =
     LedgerAccountsCompanion Function({
@@ -3915,6 +5661,48 @@ final class $$LedgerAccountsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _cashReconciliationsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittancesTable, List<Remittance>>
+  _outgoingRemittancesTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittances,
+        aliasName: 'ledger_accounts__id__remittances__source_account_id',
+      );
+
+  $$RemittancesTableProcessedTableManager get outgoingRemittances {
+    final manager = $$RemittancesTableTableManager(
+      $_db,
+      $_db.remittances,
+    ).filter((f) => f.sourceAccountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _outgoingRemittancesTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittancesTable, List<Remittance>>
+  _incomingRemittancesTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittances,
+        aliasName: 'ledger_accounts__id__remittances__destination_account_id',
+      );
+
+  $$RemittancesTableProcessedTableManager get incomingRemittances {
+    final manager = $$RemittancesTableTableManager($_db, $_db.remittances)
+        .filter(
+          (f) => f.destinationAccountId.id.sqlEquals($_itemColumn<int>('id')!),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _incomingRemittancesTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -4086,6 +5874,56 @@ class $$LedgerAccountsTableFilterComposer
           }) => $$CashReconciliationsTableFilterComposer(
             $db: $db,
             $table: $db.cashReconciliations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> outgoingRemittances(
+    Expression<bool> Function($$RemittancesTableFilterComposer f) f,
+  ) {
+    final $$RemittancesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.sourceAccountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> incomingRemittances(
+    Expression<bool> Function($$RemittancesTableFilterComposer f) f,
+  ) {
+    final $$RemittancesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.destinationAccountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittances,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4310,6 +6148,56 @@ class $$LedgerAccountsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> outgoingRemittances<T extends Object>(
+    Expression<T> Function($$RemittancesTableAnnotationComposer a) f,
+  ) {
+    final $$RemittancesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.sourceAccountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> incomingRemittances<T extends Object>(
+    Expression<T> Function($$RemittancesTableAnnotationComposer a) f,
+  ) {
+    final $$RemittancesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.destinationAccountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$LedgerAccountsTableTableManager
@@ -4332,6 +6220,8 @@ class $$LedgerAccountsTableTableManager
             bool salaryReceiptsRefs,
             bool cashSettingsRefs,
             bool cashReconciliationsRefs,
+            bool outgoingRemittances,
+            bool incomingRemittances,
           })
         > {
   $$LedgerAccountsTableTableManager(
@@ -4387,6 +6277,8 @@ class $$LedgerAccountsTableTableManager
                 salaryReceiptsRefs = false,
                 cashSettingsRefs = false,
                 cashReconciliationsRefs = false,
+                outgoingRemittances = false,
+                incomingRemittances = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -4396,6 +6288,8 @@ class $$LedgerAccountsTableTableManager
                     if (salaryReceiptsRefs) db.salaryReceipts,
                     if (cashSettingsRefs) db.cashSettings,
                     if (cashReconciliationsRefs) db.cashReconciliations,
+                    if (outgoingRemittances) db.remittances,
+                    if (incomingRemittances) db.remittances,
                   ],
                   addJoins:
                       <
@@ -4529,6 +6423,46 @@ class $$LedgerAccountsTableTableManager
                           referencedColumn: 'account_id',
                           typedResults: items,
                         ),
+                      if (outgoingRemittances)
+                        await $_getPrefetchedDataByColumns<
+                          LedgerAccount,
+                          $LedgerAccountsTable,
+                          Remittance,
+                          $RemittancesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LedgerAccountsTableReferences
+                              ._outgoingRemittancesTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LedgerAccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).outgoingRemittances,
+                          currentColumn: 'id',
+                          referencedColumn: 'source_account_id',
+                          typedResults: items,
+                        ),
+                      if (incomingRemittances)
+                        await $_getPrefetchedDataByColumns<
+                          LedgerAccount,
+                          $LedgerAccountsTable,
+                          Remittance,
+                          $RemittancesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LedgerAccountsTableReferences
+                              ._incomingRemittancesTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LedgerAccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).incomingRemittances,
+                          currentColumn: 'id',
+                          referencedColumn: 'destination_account_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -4556,6 +6490,8 @@ typedef $$LedgerAccountsTableProcessedTableManager =
         bool salaryReceiptsRefs,
         bool cashSettingsRefs,
         bool cashReconciliationsRefs,
+        bool outgoingRemittances,
+        bool incomingRemittances,
       })
     >;
 typedef $$JournalEntriesTableCreateCompanionBuilder =
@@ -4768,6 +6704,73 @@ final class $$JournalEntriesTableReferences
     ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_expenseDetailsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittanceEventsTable, List<RemittanceEvent>>
+  _remittanceEventsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittanceEvents,
+        aliasName: 'journal_entries__id__remittance_events__entry_id',
+      );
+
+  $$RemittanceEventsTableProcessedTableManager get remittanceEventsRefs {
+    final manager = $$RemittanceEventsTableTableManager(
+      $_db,
+      $_db.remittanceEvents,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _remittanceEventsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittanceEventsTable, List<RemittanceEvent>>
+  _remittanceSourceProofsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittanceEvents,
+        aliasName: 'journal_entries__id__remittance_events__receipt_entry_id',
+      );
+
+  $$RemittanceEventsTableProcessedTableManager get remittanceSourceProofs {
+    final manager = $$RemittanceEventsTableTableManager(
+      $_db,
+      $_db.remittanceEvents,
+    ).filter((f) => f.receiptEntryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _remittanceSourceProofsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $RemittanceFamilyPaymentsTable,
+    List<RemittanceFamilyPayment>
+  >
+  _remittanceFamilyPaymentsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittanceFamilyPayments,
+        aliasName: 'journal_entries__id__remittance_family_payments__entry_id',
+      );
+
+  $$RemittanceFamilyPaymentsTableProcessedTableManager
+  get remittanceFamilyPaymentsRefs {
+    final manager = $$RemittanceFamilyPaymentsTableTableManager(
+      $_db,
+      $_db.remittanceFamilyPayments,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _remittanceFamilyPaymentsRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -5026,6 +7029,83 @@ class $$JournalEntriesTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> remittanceEventsRefs(
+    Expression<bool> Function($$RemittanceEventsTableFilterComposer f) f,
+  ) {
+    final $$RemittanceEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittanceEvents,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittanceEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.remittanceEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> remittanceSourceProofs(
+    Expression<bool> Function($$RemittanceEventsTableFilterComposer f) f,
+  ) {
+    final $$RemittanceEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittanceEvents,
+      getReferencedColumn: (t) => t.receiptEntryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittanceEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.remittanceEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> remittanceFamilyPaymentsRefs(
+    Expression<bool> Function($$RemittanceFamilyPaymentsTableFilterComposer f)
+    f,
+  ) {
+    final $$RemittanceFamilyPaymentsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.remittanceFamilyPayments,
+          getReferencedColumn: (t) => t.entryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RemittanceFamilyPaymentsTableFilterComposer(
+                $db: $db,
+                $table: $db.remittanceFamilyPayments,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -5382,6 +7462,83 @@ class $$JournalEntriesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> remittanceEventsRefs<T extends Object>(
+    Expression<T> Function($$RemittanceEventsTableAnnotationComposer a) f,
+  ) {
+    final $$RemittanceEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittanceEvents,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittanceEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittanceEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> remittanceSourceProofs<T extends Object>(
+    Expression<T> Function($$RemittanceEventsTableAnnotationComposer a) f,
+  ) {
+    final $$RemittanceEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittanceEvents,
+      getReferencedColumn: (t) => t.receiptEntryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittanceEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittanceEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> remittanceFamilyPaymentsRefs<T extends Object>(
+    Expression<T> Function($$RemittanceFamilyPaymentsTableAnnotationComposer a)
+    f,
+  ) {
+    final $$RemittanceFamilyPaymentsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.remittanceFamilyPayments,
+          getReferencedColumn: (t) => t.entryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RemittanceFamilyPaymentsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.remittanceFamilyPayments,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$JournalEntriesTableTableManager
@@ -5407,6 +7564,9 @@ class $$JournalEntriesTableTableManager
             bool movementConfirmationsRefs,
             bool cashReconciliationsRefs,
             bool expenseDetailsRefs,
+            bool remittanceEventsRefs,
+            bool remittanceSourceProofs,
+            bool remittanceFamilyPaymentsRefs,
           })
         > {
   $$JournalEntriesTableTableManager(
@@ -5481,6 +7641,9 @@ class $$JournalEntriesTableTableManager
                 movementConfirmationsRefs = false,
                 cashReconciliationsRefs = false,
                 expenseDetailsRefs = false,
+                remittanceEventsRefs = false,
+                remittanceSourceProofs = false,
+                remittanceFamilyPaymentsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -5491,6 +7654,10 @@ class $$JournalEntriesTableTableManager
                     if (movementConfirmationsRefs) db.movementConfirmations,
                     if (cashReconciliationsRefs) db.cashReconciliations,
                     if (expenseDetailsRefs) db.expenseDetails,
+                    if (remittanceEventsRefs) db.remittanceEvents,
+                    if (remittanceSourceProofs) db.remittanceEvents,
+                    if (remittanceFamilyPaymentsRefs)
+                      db.remittanceFamilyPayments,
                   ],
                   addJoins:
                       <
@@ -5666,6 +7833,66 @@ class $$JournalEntriesTableTableManager
                           referencedColumn: 'entry_id',
                           typedResults: items,
                         ),
+                      if (remittanceEventsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          RemittanceEvent,
+                          $RemittanceEventsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._remittanceEventsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittanceEventsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
+                      if (remittanceSourceProofs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          RemittanceEvent,
+                          $RemittanceEventsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._remittanceSourceProofsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittanceSourceProofs,
+                          currentColumn: 'id',
+                          referencedColumn: 'receipt_entry_id',
+                          typedResults: items,
+                        ),
+                      if (remittanceFamilyPaymentsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          RemittanceFamilyPayment,
+                          $RemittanceFamilyPaymentsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._remittanceFamilyPaymentsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittanceFamilyPaymentsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -5696,6 +7923,9 @@ typedef $$JournalEntriesTableProcessedTableManager =
         bool movementConfirmationsRefs,
         bool cashReconciliationsRefs,
         bool expenseDetailsRefs,
+        bool remittanceEventsRefs,
+        bool remittanceSourceProofs,
+        bool remittanceFamilyPaymentsRefs,
       })
     >;
 typedef $$JournalPostingsTableCreateCompanionBuilder =
@@ -8473,6 +10703,2126 @@ typedef $$ExpenseDetailsTableProcessedTableManager =
       ExpenseDetail,
       PrefetchHooks Function({bool entryId})
     >;
+typedef $$RemittancesTableCreateCompanionBuilder =
+    RemittancesCompanion Function({
+      Value<int> id,
+      required String draftKey,
+      required int sourceAccountId,
+      Value<int?> destinationAccountId,
+      required String destinationCurrency,
+      required RemittanceDestination destination,
+      Value<String?> beneficiary,
+      Value<bool> cancelled,
+      Value<bool> awaiting,
+    });
+typedef $$RemittancesTableUpdateCompanionBuilder =
+    RemittancesCompanion Function({
+      Value<int> id,
+      Value<String> draftKey,
+      Value<int> sourceAccountId,
+      Value<int?> destinationAccountId,
+      Value<String> destinationCurrency,
+      Value<RemittanceDestination> destination,
+      Value<String?> beneficiary,
+      Value<bool> cancelled,
+      Value<bool> awaiting,
+    });
+
+final class $$RemittancesTableReferences
+    extends BaseReferences<_$LedgerDatabase, $RemittancesTable, Remittance> {
+  $$RemittancesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $LedgerAccountsTable _sourceAccountIdTable(_$LedgerDatabase db) => db
+      .ledgerAccounts
+      .createAlias('remittances__source_account_id__ledger_accounts__id');
+
+  $$LedgerAccountsTableProcessedTableManager get sourceAccountId {
+    final $_column = $_itemColumn<int>('source_account_id')!;
+
+    final manager = $$LedgerAccountsTableTableManager(
+      $_db,
+      $_db.ledgerAccounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sourceAccountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LedgerAccountsTable _destinationAccountIdTable(_$LedgerDatabase db) =>
+      db.ledgerAccounts.createAlias(
+        'remittances__destination_account_id__ledger_accounts__id',
+      );
+
+  $$LedgerAccountsTableProcessedTableManager? get destinationAccountId {
+    final $_column = $_itemColumn<int>('destination_account_id');
+    if ($_column == null) return null;
+    final manager = $$LedgerAccountsTableTableManager(
+      $_db,
+      $_db.ledgerAccounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(
+      _destinationAccountIdTable($_db),
+    );
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CurrenciesTable _destinationCurrencyTable(_$LedgerDatabase db) => db
+      .currencies
+      .createAlias('remittances__destination_currency__currencies__code');
+
+  $$CurrenciesTableProcessedTableManager get destinationCurrency {
+    final $_column = $_itemColumn<String>('destination_currency')!;
+
+    final manager = $$CurrenciesTableTableManager(
+      $_db,
+      $_db.currencies,
+    ).filter((f) => f.code.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_destinationCurrencyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittanceEventsTable, List<RemittanceEvent>>
+  _remittanceEventsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittanceEvents,
+        aliasName: 'remittances__id__remittance_events__remittance_id',
+      );
+
+  $$RemittanceEventsTableProcessedTableManager get remittanceEventsRefs {
+    final manager = $$RemittanceEventsTableTableManager(
+      $_db,
+      $_db.remittanceEvents,
+    ).filter((f) => f.remittanceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _remittanceEventsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RemittancePurposesTable, List<RemittancePurpose>>
+  _remittancePurposesRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittancePurposes,
+        aliasName: 'remittances__id__remittance_purposes__remittance_id',
+      );
+
+  $$RemittancePurposesTableProcessedTableManager get remittancePurposesRefs {
+    final manager = $$RemittancePurposesTableTableManager(
+      $_db,
+      $_db.remittancePurposes,
+    ).filter((f) => f.remittanceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _remittancePurposesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$RemittancesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $RemittancesTable> {
+  $$RemittancesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get draftKey => $composableBuilder(
+    column: $table.draftKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    RemittanceDestination,
+    RemittanceDestination,
+    String
+  >
+  get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get beneficiary => $composableBuilder(
+    column: $table.beneficiary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get cancelled => $composableBuilder(
+    column: $table.cancelled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get awaiting => $composableBuilder(
+    column: $table.awaiting,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$LedgerAccountsTableFilterComposer get sourceAccountId {
+    final $$LedgerAccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableFilterComposer get destinationAccountId {
+    final $$LedgerAccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.destinationAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurrenciesTableFilterComposer get destinationCurrency {
+    final $$CurrenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.destinationCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> remittanceEventsRefs(
+    Expression<bool> Function($$RemittanceEventsTableFilterComposer f) f,
+  ) {
+    final $$RemittanceEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittanceEvents,
+      getReferencedColumn: (t) => t.remittanceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittanceEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.remittanceEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> remittancePurposesRefs(
+    Expression<bool> Function($$RemittancePurposesTableFilterComposer f) f,
+  ) {
+    final $$RemittancePurposesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittancePurposes,
+      getReferencedColumn: (t) => t.remittanceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancePurposesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittancePurposes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RemittancesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $RemittancesTable> {
+  $$RemittancesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get draftKey => $composableBuilder(
+    column: $table.draftKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get beneficiary => $composableBuilder(
+    column: $table.beneficiary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get cancelled => $composableBuilder(
+    column: $table.cancelled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get awaiting => $composableBuilder(
+    column: $table.awaiting,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$LedgerAccountsTableOrderingComposer get sourceAccountId {
+    final $$LedgerAccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableOrderingComposer get destinationAccountId {
+    final $$LedgerAccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.destinationAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurrenciesTableOrderingComposer get destinationCurrency {
+    final $$CurrenciesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.destinationCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableOrderingComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittancesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $RemittancesTable> {
+  $$RemittancesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get draftKey =>
+      $composableBuilder(column: $table.draftKey, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<RemittanceDestination, String>
+  get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get beneficiary => $composableBuilder(
+    column: $table.beneficiary,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get cancelled =>
+      $composableBuilder(column: $table.cancelled, builder: (column) => column);
+
+  GeneratedColumn<bool> get awaiting =>
+      $composableBuilder(column: $table.awaiting, builder: (column) => column);
+
+  $$LedgerAccountsTableAnnotationComposer get sourceAccountId {
+    final $$LedgerAccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableAnnotationComposer get destinationAccountId {
+    final $$LedgerAccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.destinationAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurrenciesTableAnnotationComposer get destinationCurrency {
+    final $$CurrenciesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.destinationCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> remittanceEventsRefs<T extends Object>(
+    Expression<T> Function($$RemittanceEventsTableAnnotationComposer a) f,
+  ) {
+    final $$RemittanceEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.remittanceEvents,
+      getReferencedColumn: (t) => t.remittanceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittanceEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittanceEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> remittancePurposesRefs<T extends Object>(
+    Expression<T> Function($$RemittancePurposesTableAnnotationComposer a) f,
+  ) {
+    final $$RemittancePurposesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.remittancePurposes,
+          getReferencedColumn: (t) => t.remittanceId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RemittancePurposesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.remittancePurposes,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$RemittancesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $RemittancesTable,
+          Remittance,
+          $$RemittancesTableFilterComposer,
+          $$RemittancesTableOrderingComposer,
+          $$RemittancesTableAnnotationComposer,
+          $$RemittancesTableCreateCompanionBuilder,
+          $$RemittancesTableUpdateCompanionBuilder,
+          (Remittance, $$RemittancesTableReferences),
+          Remittance,
+          PrefetchHooks Function({
+            bool sourceAccountId,
+            bool destinationAccountId,
+            bool destinationCurrency,
+            bool remittanceEventsRefs,
+            bool remittancePurposesRefs,
+          })
+        > {
+  $$RemittancesTableTableManager(_$LedgerDatabase db, $RemittancesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemittancesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RemittancesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RemittancesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> draftKey = const Value.absent(),
+                Value<int> sourceAccountId = const Value.absent(),
+                Value<int?> destinationAccountId = const Value.absent(),
+                Value<String> destinationCurrency = const Value.absent(),
+                Value<RemittanceDestination> destination = const Value.absent(),
+                Value<String?> beneficiary = const Value.absent(),
+                Value<bool> cancelled = const Value.absent(),
+                Value<bool> awaiting = const Value.absent(),
+              }) => RemittancesCompanion(
+                id: id,
+                draftKey: draftKey,
+                sourceAccountId: sourceAccountId,
+                destinationAccountId: destinationAccountId,
+                destinationCurrency: destinationCurrency,
+                destination: destination,
+                beneficiary: beneficiary,
+                cancelled: cancelled,
+                awaiting: awaiting,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String draftKey,
+                required int sourceAccountId,
+                Value<int?> destinationAccountId = const Value.absent(),
+                required String destinationCurrency,
+                required RemittanceDestination destination,
+                Value<String?> beneficiary = const Value.absent(),
+                Value<bool> cancelled = const Value.absent(),
+                Value<bool> awaiting = const Value.absent(),
+              }) => RemittancesCompanion.insert(
+                id: id,
+                draftKey: draftKey,
+                sourceAccountId: sourceAccountId,
+                destinationAccountId: destinationAccountId,
+                destinationCurrency: destinationCurrency,
+                destination: destination,
+                beneficiary: beneficiary,
+                cancelled: cancelled,
+                awaiting: awaiting,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RemittancesTable, Remittance>(table),
+                  $$RemittancesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                sourceAccountId = false,
+                destinationAccountId = false,
+                destinationCurrency = false,
+                remittanceEventsRefs = false,
+                remittancePurposesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (remittanceEventsRefs) db.remittanceEvents,
+                    if (remittancePurposesRefs) db.remittancePurposes,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (sourceAccountId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.sourceAccountId,
+                            referencedTable: $$RemittancesTableReferences
+                                ._sourceAccountIdTable(db),
+                            referencedColumn: $$RemittancesTableReferences
+                                ._sourceAccountIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (destinationAccountId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.destinationAccountId,
+                            referencedTable: $$RemittancesTableReferences
+                                ._destinationAccountIdTable(db),
+                            referencedColumn: $$RemittancesTableReferences
+                                ._destinationAccountIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (destinationCurrency) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.destinationCurrency,
+                            referencedTable: $$RemittancesTableReferences
+                                ._destinationCurrencyTable(db),
+                            referencedColumn: $$RemittancesTableReferences
+                                ._destinationCurrencyTable(db)
+                                .code,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (remittanceEventsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Remittance,
+                          $RemittancesTable,
+                          RemittanceEvent,
+                          $RemittanceEventsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RemittancesTableReferences
+                              ._remittanceEventsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RemittancesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittanceEventsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'remittance_id',
+                          typedResults: items,
+                        ),
+                      if (remittancePurposesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Remittance,
+                          $RemittancesTable,
+                          RemittancePurpose,
+                          $RemittancePurposesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RemittancesTableReferences
+                              ._remittancePurposesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RemittancesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittancePurposesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'remittance_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$RemittancesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $RemittancesTable,
+      Remittance,
+      $$RemittancesTableFilterComposer,
+      $$RemittancesTableOrderingComposer,
+      $$RemittancesTableAnnotationComposer,
+      $$RemittancesTableCreateCompanionBuilder,
+      $$RemittancesTableUpdateCompanionBuilder,
+      (Remittance, $$RemittancesTableReferences),
+      Remittance,
+      PrefetchHooks Function({
+        bool sourceAccountId,
+        bool destinationAccountId,
+        bool destinationCurrency,
+        bool remittanceEventsRefs,
+        bool remittancePurposesRefs,
+      })
+    >;
+typedef $$RemittanceEventsTableCreateCompanionBuilder =
+    RemittanceEventsCompanion Function({
+      Value<int> entryId,
+      required int remittanceId,
+      required RemittanceEventKind kind,
+      required String evidence,
+      Value<int?> feeMinor,
+      Value<int?> receiptEntryId,
+    });
+typedef $$RemittanceEventsTableUpdateCompanionBuilder =
+    RemittanceEventsCompanion Function({
+      Value<int> entryId,
+      Value<int> remittanceId,
+      Value<RemittanceEventKind> kind,
+      Value<String> evidence,
+      Value<int?> feeMinor,
+      Value<int?> receiptEntryId,
+    });
+
+final class $$RemittanceEventsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $RemittanceEventsTable,
+          RemittanceEvent
+        > {
+  $$RemittanceEventsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('remittance_events__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $RemittancesTable _remittanceIdTable(_$LedgerDatabase db) => db
+      .remittances
+      .createAlias('remittance_events__remittance_id__remittances__id');
+
+  $$RemittancesTableProcessedTableManager get remittanceId {
+    final $_column = $_itemColumn<int>('remittance_id')!;
+
+    final manager = $$RemittancesTableTableManager(
+      $_db,
+      $_db.remittances,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_remittanceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $JournalEntriesTable _receiptEntryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('remittance_events__receipt_entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager? get receiptEntryId {
+    final $_column = $_itemColumn<int>('receipt_entry_id');
+    if ($_column == null) return null;
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_receiptEntryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$RemittanceEventsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $RemittanceEventsTable> {
+  $$RemittanceEventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnWithTypeConverterFilters<
+    RemittanceEventKind,
+    RemittanceEventKind,
+    String
+  >
+  get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get evidence => $composableBuilder(
+    column: $table.evidence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get feeMinor => $composableBuilder(
+    column: $table.feeMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RemittancesTableFilterComposer get remittanceId {
+    final $$RemittancesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.remittanceId,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableFilterComposer get receiptEntryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptEntryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittanceEventsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $RemittanceEventsTable> {
+  $$RemittanceEventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get evidence => $composableBuilder(
+    column: $table.evidence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get feeMinor => $composableBuilder(
+    column: $table.feeMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RemittancesTableOrderingComposer get remittanceId {
+    final $$RemittancesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.remittanceId,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableOrderingComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableOrderingComposer get receiptEntryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptEntryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittanceEventsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $RemittanceEventsTable> {
+  $$RemittanceEventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumnWithTypeConverter<RemittanceEventKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get evidence =>
+      $composableBuilder(column: $table.evidence, builder: (column) => column);
+
+  GeneratedColumn<int> get feeMinor =>
+      $composableBuilder(column: $table.feeMinor, builder: (column) => column);
+
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RemittancesTableAnnotationComposer get remittanceId {
+    final $$RemittancesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.remittanceId,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableAnnotationComposer get receiptEntryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptEntryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittanceEventsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $RemittanceEventsTable,
+          RemittanceEvent,
+          $$RemittanceEventsTableFilterComposer,
+          $$RemittanceEventsTableOrderingComposer,
+          $$RemittanceEventsTableAnnotationComposer,
+          $$RemittanceEventsTableCreateCompanionBuilder,
+          $$RemittanceEventsTableUpdateCompanionBuilder,
+          (RemittanceEvent, $$RemittanceEventsTableReferences),
+          RemittanceEvent,
+          PrefetchHooks Function({
+            bool entryId,
+            bool remittanceId,
+            bool receiptEntryId,
+          })
+        > {
+  $$RemittanceEventsTableTableManager(
+    _$LedgerDatabase db,
+    $RemittanceEventsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemittanceEventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RemittanceEventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RemittanceEventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                Value<int> remittanceId = const Value.absent(),
+                Value<RemittanceEventKind> kind = const Value.absent(),
+                Value<String> evidence = const Value.absent(),
+                Value<int?> feeMinor = const Value.absent(),
+                Value<int?> receiptEntryId = const Value.absent(),
+              }) => RemittanceEventsCompanion(
+                entryId: entryId,
+                remittanceId: remittanceId,
+                kind: kind,
+                evidence: evidence,
+                feeMinor: feeMinor,
+                receiptEntryId: receiptEntryId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required int remittanceId,
+                required RemittanceEventKind kind,
+                required String evidence,
+                Value<int?> feeMinor = const Value.absent(),
+                Value<int?> receiptEntryId = const Value.absent(),
+              }) => RemittanceEventsCompanion.insert(
+                entryId: entryId,
+                remittanceId: remittanceId,
+                kind: kind,
+                evidence: evidence,
+                feeMinor: feeMinor,
+                receiptEntryId: receiptEntryId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RemittanceEventsTable, RemittanceEvent>(table),
+                  $$RemittanceEventsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                entryId = false,
+                remittanceId = false,
+                receiptEntryId = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (entryId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.entryId,
+                            referencedTable: $$RemittanceEventsTableReferences
+                                ._entryIdTable(db),
+                            referencedColumn: $$RemittanceEventsTableReferences
+                                ._entryIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (remittanceId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.remittanceId,
+                            referencedTable: $$RemittanceEventsTableReferences
+                                ._remittanceIdTable(db),
+                            referencedColumn: $$RemittanceEventsTableReferences
+                                ._remittanceIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (receiptEntryId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.receiptEntryId,
+                            referencedTable: $$RemittanceEventsTableReferences
+                                ._receiptEntryIdTable(db),
+                            referencedColumn: $$RemittanceEventsTableReferences
+                                ._receiptEntryIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$RemittanceEventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $RemittanceEventsTable,
+      RemittanceEvent,
+      $$RemittanceEventsTableFilterComposer,
+      $$RemittanceEventsTableOrderingComposer,
+      $$RemittanceEventsTableAnnotationComposer,
+      $$RemittanceEventsTableCreateCompanionBuilder,
+      $$RemittanceEventsTableUpdateCompanionBuilder,
+      (RemittanceEvent, $$RemittanceEventsTableReferences),
+      RemittanceEvent,
+      PrefetchHooks Function({
+        bool entryId,
+        bool remittanceId,
+        bool receiptEntryId,
+      })
+    >;
+typedef $$RemittancePurposesTableCreateCompanionBuilder =
+    RemittancePurposesCompanion Function({
+      required String operationKey,
+      required int remittanceId,
+      required String label,
+      required int minor,
+      Value<bool> family,
+      Value<int> rowid,
+    });
+typedef $$RemittancePurposesTableUpdateCompanionBuilder =
+    RemittancePurposesCompanion Function({
+      Value<String> operationKey,
+      Value<int> remittanceId,
+      Value<String> label,
+      Value<int> minor,
+      Value<bool> family,
+      Value<int> rowid,
+    });
+
+final class $$RemittancePurposesTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $RemittancePurposesTable,
+          RemittancePurpose
+        > {
+  $$RemittancePurposesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $RemittancesTable _remittanceIdTable(_$LedgerDatabase db) => db
+      .remittances
+      .createAlias('remittance_purposes__remittance_id__remittances__id');
+
+  $$RemittancesTableProcessedTableManager get remittanceId {
+    final $_column = $_itemColumn<int>('remittance_id')!;
+
+    final manager = $$RemittancesTableTableManager(
+      $_db,
+      $_db.remittances,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_remittanceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $RemittanceFamilyPaymentsTable,
+    List<RemittanceFamilyPayment>
+  >
+  _remittanceFamilyPaymentsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.remittanceFamilyPayments,
+        aliasName: 'remittance_purposes__operation_key__remittance_family_payments__purpose_key',
+      );
+
+  $$RemittanceFamilyPaymentsTableProcessedTableManager
+  get remittanceFamilyPaymentsRefs {
+    final manager =
+        $$RemittanceFamilyPaymentsTableTableManager(
+          $_db,
+          $_db.remittanceFamilyPayments,
+        ).filter(
+          (f) => f.purposeKey.operationKey.sqlEquals(
+            $_itemColumn<String>('operation_key')!,
+          ),
+        );
+
+    final cache = $_typedResult.readTableOrNull(
+      _remittanceFamilyPaymentsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$RemittancePurposesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $RemittancePurposesTable> {
+  $$RemittancePurposesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get operationKey => $composableBuilder(
+    column: $table.operationKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minor => $composableBuilder(
+    column: $table.minor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get family => $composableBuilder(
+    column: $table.family,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$RemittancesTableFilterComposer get remittanceId {
+    final $$RemittancesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.remittanceId,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> remittanceFamilyPaymentsRefs(
+    Expression<bool> Function($$RemittanceFamilyPaymentsTableFilterComposer f)
+    f,
+  ) {
+    final $$RemittanceFamilyPaymentsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.operationKey,
+          referencedTable: $db.remittanceFamilyPayments,
+          getReferencedColumn: (t) => t.purposeKey,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RemittanceFamilyPaymentsTableFilterComposer(
+                $db: $db,
+                $table: $db.remittanceFamilyPayments,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$RemittancePurposesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $RemittancePurposesTable> {
+  $$RemittancePurposesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get operationKey => $composableBuilder(
+    column: $table.operationKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get minor => $composableBuilder(
+    column: $table.minor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get family => $composableBuilder(
+    column: $table.family,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$RemittancesTableOrderingComposer get remittanceId {
+    final $$RemittancesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.remittanceId,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableOrderingComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittancePurposesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $RemittancePurposesTable> {
+  $$RemittancePurposesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get operationKey => $composableBuilder(
+    column: $table.operationKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<int> get minor =>
+      $composableBuilder(column: $table.minor, builder: (column) => column);
+
+  GeneratedColumn<bool> get family =>
+      $composableBuilder(column: $table.family, builder: (column) => column);
+
+  $$RemittancesTableAnnotationComposer get remittanceId {
+    final $$RemittancesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.remittanceId,
+      referencedTable: $db.remittances,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> remittanceFamilyPaymentsRefs<T extends Object>(
+    Expression<T> Function($$RemittanceFamilyPaymentsTableAnnotationComposer a)
+    f,
+  ) {
+    final $$RemittanceFamilyPaymentsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.operationKey,
+          referencedTable: $db.remittanceFamilyPayments,
+          getReferencedColumn: (t) => t.purposeKey,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RemittanceFamilyPaymentsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.remittanceFamilyPayments,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$RemittancePurposesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $RemittancePurposesTable,
+          RemittancePurpose,
+          $$RemittancePurposesTableFilterComposer,
+          $$RemittancePurposesTableOrderingComposer,
+          $$RemittancePurposesTableAnnotationComposer,
+          $$RemittancePurposesTableCreateCompanionBuilder,
+          $$RemittancePurposesTableUpdateCompanionBuilder,
+          (RemittancePurpose, $$RemittancePurposesTableReferences),
+          RemittancePurpose,
+          PrefetchHooks Function({
+            bool remittanceId,
+            bool remittanceFamilyPaymentsRefs,
+          })
+        > {
+  $$RemittancePurposesTableTableManager(
+    _$LedgerDatabase db,
+    $RemittancePurposesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemittancePurposesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RemittancePurposesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RemittancePurposesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> operationKey = const Value.absent(),
+                Value<int> remittanceId = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<int> minor = const Value.absent(),
+                Value<bool> family = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RemittancePurposesCompanion(
+                operationKey: operationKey,
+                remittanceId: remittanceId,
+                label: label,
+                minor: minor,
+                family: family,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String operationKey,
+                required int remittanceId,
+                required String label,
+                required int minor,
+                Value<bool> family = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RemittancePurposesCompanion.insert(
+                operationKey: operationKey,
+                remittanceId: remittanceId,
+                label: label,
+                minor: minor,
+                family: family,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RemittancePurposesTable, RemittancePurpose>(
+                    table,
+                  ),
+                  $$RemittancePurposesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({remittanceId = false, remittanceFamilyPaymentsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (remittanceFamilyPaymentsRefs)
+                      db.remittanceFamilyPayments,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (remittanceId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.remittanceId,
+                            referencedTable: $$RemittancePurposesTableReferences
+                                ._remittanceIdTable(db),
+                            referencedColumn:
+                                $$RemittancePurposesTableReferences
+                                    ._remittanceIdTable(db)
+                                    .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (remittanceFamilyPaymentsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          RemittancePurpose,
+                          $RemittancePurposesTable,
+                          RemittanceFamilyPayment,
+                          $RemittanceFamilyPaymentsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RemittancePurposesTableReferences
+                              ._remittanceFamilyPaymentsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RemittancePurposesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).remittanceFamilyPaymentsRefs,
+                          currentColumn: 'operation_key',
+                          referencedColumn: 'purpose_key',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$RemittancePurposesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $RemittancePurposesTable,
+      RemittancePurpose,
+      $$RemittancePurposesTableFilterComposer,
+      $$RemittancePurposesTableOrderingComposer,
+      $$RemittancePurposesTableAnnotationComposer,
+      $$RemittancePurposesTableCreateCompanionBuilder,
+      $$RemittancePurposesTableUpdateCompanionBuilder,
+      (RemittancePurpose, $$RemittancePurposesTableReferences),
+      RemittancePurpose,
+      PrefetchHooks Function({
+        bool remittanceId,
+        bool remittanceFamilyPaymentsRefs,
+      })
+    >;
+typedef $$RemittanceFamilyPaymentsTableCreateCompanionBuilder =
+    RemittanceFamilyPaymentsCompanion Function({
+      Value<int> entryId,
+      required String purposeKey,
+    });
+typedef $$RemittanceFamilyPaymentsTableUpdateCompanionBuilder =
+    RemittanceFamilyPaymentsCompanion Function({
+      Value<int> entryId,
+      Value<String> purposeKey,
+    });
+
+final class $$RemittanceFamilyPaymentsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $RemittanceFamilyPaymentsTable,
+          RemittanceFamilyPayment
+        > {
+  $$RemittanceFamilyPaymentsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('remittance_family_payments__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $RemittancePurposesTable _purposeKeyTable(_$LedgerDatabase db) =>
+      db.remittancePurposes.createAlias(
+        'remittance_family_payments__purpose_key__remittance_purposes__operation_key',
+      );
+
+  $$RemittancePurposesTableProcessedTableManager get purposeKey {
+    final $_column = $_itemColumn<String>('purpose_key')!;
+
+    final manager = $$RemittancePurposesTableTableManager(
+      $_db,
+      $_db.remittancePurposes,
+    ).filter((f) => f.operationKey.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_purposeKeyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$RemittanceFamilyPaymentsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $RemittanceFamilyPaymentsTable> {
+  $$RemittanceFamilyPaymentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RemittancePurposesTableFilterComposer get purposeKey {
+    final $$RemittancePurposesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.purposeKey,
+      referencedTable: $db.remittancePurposes,
+      getReferencedColumn: (t) => t.operationKey,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancePurposesTableFilterComposer(
+            $db: $db,
+            $table: $db.remittancePurposes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittanceFamilyPaymentsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $RemittanceFamilyPaymentsTable> {
+  $$RemittanceFamilyPaymentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RemittancePurposesTableOrderingComposer get purposeKey {
+    final $$RemittancePurposesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.purposeKey,
+      referencedTable: $db.remittancePurposes,
+      getReferencedColumn: (t) => t.operationKey,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RemittancePurposesTableOrderingComposer(
+            $db: $db,
+            $table: $db.remittancePurposes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RemittanceFamilyPaymentsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $RemittanceFamilyPaymentsTable> {
+  $$RemittanceFamilyPaymentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$RemittancePurposesTableAnnotationComposer get purposeKey {
+    final $$RemittancePurposesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.purposeKey,
+          referencedTable: $db.remittancePurposes,
+          getReferencedColumn: (t) => t.operationKey,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RemittancePurposesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.remittancePurposes,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$RemittanceFamilyPaymentsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $RemittanceFamilyPaymentsTable,
+          RemittanceFamilyPayment,
+          $$RemittanceFamilyPaymentsTableFilterComposer,
+          $$RemittanceFamilyPaymentsTableOrderingComposer,
+          $$RemittanceFamilyPaymentsTableAnnotationComposer,
+          $$RemittanceFamilyPaymentsTableCreateCompanionBuilder,
+          $$RemittanceFamilyPaymentsTableUpdateCompanionBuilder,
+          (RemittanceFamilyPayment, $$RemittanceFamilyPaymentsTableReferences),
+          RemittanceFamilyPayment,
+          PrefetchHooks Function({bool entryId, bool purposeKey})
+        > {
+  $$RemittanceFamilyPaymentsTableTableManager(
+    _$LedgerDatabase db,
+    $RemittanceFamilyPaymentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemittanceFamilyPaymentsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$RemittanceFamilyPaymentsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$RemittanceFamilyPaymentsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                Value<String> purposeKey = const Value.absent(),
+              }) => RemittanceFamilyPaymentsCompanion(
+                entryId: entryId,
+                purposeKey: purposeKey,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required String purposeKey,
+              }) => RemittanceFamilyPaymentsCompanion.insert(
+                entryId: entryId,
+                purposeKey: purposeKey,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $RemittanceFamilyPaymentsTable,
+                    RemittanceFamilyPayment
+                  >(table),
+                  $$RemittanceFamilyPaymentsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({entryId = false, purposeKey = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (entryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.entryId,
+                        referencedTable:
+                            $$RemittanceFamilyPaymentsTableReferences
+                                ._entryIdTable(db),
+                        referencedColumn:
+                            $$RemittanceFamilyPaymentsTableReferences
+                                ._entryIdTable(db)
+                                .id,
+                      ) as T;
+                    }
+                    if (purposeKey) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.purposeKey,
+                        referencedTable:
+                            $$RemittanceFamilyPaymentsTableReferences
+                                ._purposeKeyTable(db),
+                        referencedColumn:
+                            $$RemittanceFamilyPaymentsTableReferences
+                                ._purposeKeyTable(db)
+                                .operationKey,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$RemittanceFamilyPaymentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $RemittanceFamilyPaymentsTable,
+      RemittanceFamilyPayment,
+      $$RemittanceFamilyPaymentsTableFilterComposer,
+      $$RemittanceFamilyPaymentsTableOrderingComposer,
+      $$RemittanceFamilyPaymentsTableAnnotationComposer,
+      $$RemittanceFamilyPaymentsTableCreateCompanionBuilder,
+      $$RemittanceFamilyPaymentsTableUpdateCompanionBuilder,
+      (RemittanceFamilyPayment, $$RemittanceFamilyPaymentsTableReferences),
+      RemittanceFamilyPayment,
+      PrefetchHooks Function({bool entryId, bool purposeKey})
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -8501,4 +12851,15 @@ class $LedgerDatabaseManager {
       $$CashReconciliationsTableTableManager(_db, _db.cashReconciliations);
   $$ExpenseDetailsTableTableManager get expenseDetails =>
       $$ExpenseDetailsTableTableManager(_db, _db.expenseDetails);
+  $$RemittancesTableTableManager get remittances =>
+      $$RemittancesTableTableManager(_db, _db.remittances);
+  $$RemittanceEventsTableTableManager get remittanceEvents =>
+      $$RemittanceEventsTableTableManager(_db, _db.remittanceEvents);
+  $$RemittancePurposesTableTableManager get remittancePurposes =>
+      $$RemittancePurposesTableTableManager(_db, _db.remittancePurposes);
+  $$RemittanceFamilyPaymentsTableTableManager get remittanceFamilyPayments =>
+      $$RemittanceFamilyPaymentsTableTableManager(
+        _db,
+        _db.remittanceFamilyPayments,
+      );
 }
