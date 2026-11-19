@@ -22,6 +22,12 @@ Use one Android-first Flutter app with Arabic-first RTL screens, Dart use cases 
 - Manual reconciliation records the statement date, balance and matches per account and currency. Show the variance and unresolved items. Any financial adjustment requires a separate reasoned entry. A stable idempotency key prevents duplicate posting on retry. An account-scoped statement reference can be unique when reliable. Similarity in date or amount prompts review because legitimate repeat movements are possible.
 - Count the principal of executed USD cash withdrawals once against the configurable monthly warning threshold. Earmarking creates no movement. A Thndr valuation change creates no cash. Gold owner and custodian may be different people.
 
+## T-009 manual remittance recording
+
+- Select the Nepal source and Egypt destination manually. Attach a unique reference to the observed debit, each receipt and each refund. A foreign receipt can be posted immediately against the exchange offset while its unproven source share remains in transit. Later source evidence settles that share through a separate posting without duplicating the receipt. Unexplained differences remain open.
+- Refunds apply only to observed returns to the source account in its own currency, up to the outstanding principal. A refund does not rewrite historical salary execution links. New salary links are unavailable once a refund exists. Corrections retain the original entry and are limited to the latest eligible movement before dependent family, salary or reconciliation records constrain it.
+- Real account routes, acceptable real-world evidence and correction dates for previously reconciled balances remain open under T-003. No foreign-currency refund, inferred charge, or automatic reallocation of refunded salary is applied.
+
 ## Persistence
 
 Use foreign keys and uniqueness checks on identifiers and reliable references. Validate cross-row balance and allocation constraints before committing every affected transaction. Persist correction links, match history and policy versions. Index account and date lookups and pending settlements. Version the schema and retain synthetic fixtures for every supported migration. The probe schema establishes feasibility. Review its code, error paths and licenses before considering reuse in the product.
