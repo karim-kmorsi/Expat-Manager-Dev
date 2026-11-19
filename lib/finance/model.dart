@@ -77,6 +77,7 @@ enum LedgerIssue {
   entryNotFound,
   reversalNotAllowed,
   alreadyReversed,
+  reconciledPeriod,
 }
 
 class LedgerException implements Exception {

@@ -159,8 +159,7 @@ class Ledger {
     final original = await _reversibleEntry(entryId);
     if (original.kind == JournalKind.salary ||
         original.kind == JournalKind.expense ||
-        original.kind == JournalKind.cashExpense ||
-        original.kind == JournalKind.cashAdjustment) {
+        original.kind == JournalKind.cashExpense) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }
     final explanation = _reason(reason);
@@ -182,6 +181,19 @@ class Ledger {
     String explanation,
   ) async {
     final postings = await _postingsFor(original.id);
+    if (await _findOperation(operationId) == null) {
+      final accounts = postings.map((line) => line.accountId).toList();
+      if (await _hasReconciliationOnOrAfter(
+            accounts,
+            original.effectiveMicros,
+          ) ||
+          await _hasReconciliationOnOrAfter(
+            accounts,
+            effectiveAt.microsecondsSinceEpoch,
+          )) {
+        throw const LedgerException(LedgerIssue.reconciledPeriod);
+      }
+    }
     return _persist(
       operationId,
       JournalKind.reversal,
@@ -202,10 +214,30 @@ class Ledger {
     if (entry == null) throw const LedgerException(LedgerIssue.entryNotFound);
     if (entry.kind == JournalKind.opening ||
         entry.kind == JournalKind.reversal ||
+        entry.kind == JournalKind.cashAdjustment ||
         entry.kind.isRemittance) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }
     return entry;
+  }
+
+  Future<bool> _hasReconciliationOnOrAfter(
+    Iterable<int> accounts,
+    int effectiveMicros,
+  ) async {
+    final reconciliation = _db.cashReconciliations;
+    final entries = _db.journalEntries;
+    final query =
+        _db.selectOnly(reconciliation).join([
+            innerJoin(entries, entries.id.equalsExp(reconciliation.entryId)),
+          ])
+          ..addColumns([reconciliation.entryId])
+          ..where(
+            reconciliation.accountId.isIn(accounts) &
+                entries.effectiveMicros.isBiggerOrEqualValue(effectiveMicros),
+          )
+          ..limit(1);
+    return await query.getSingleOrNull() != null;
   }
 
   Future<int> _persist(
@@ -247,6 +279,13 @@ class Ledger {
     if (reversalOf != null &&
         await _hasEntry((row) => row.reversalOf.equals(reversalOf))) {
       throw const LedgerException(LedgerIssue.alreadyReversed);
+    }
+    if (correctionOf != null &&
+        await _hasReconciliationOnOrAfter(
+          postings.map((line) => line.accountId),
+          micros,
+        )) {
+      throw const LedgerException(LedgerIssue.reconciledPeriod);
     }
     await _validatePostings(kind, postings);
 

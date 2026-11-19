@@ -296,6 +296,8 @@ String _expenseError(Object error) => switch (error) {
     'تعارض مع عملية مسجّلة.',
   LedgerException(issue: LedgerIssue.currencyMismatch) =>
     'اختر حسابًا بالعملة نفسها.',
+  LedgerException(issue: LedgerIssue.reconciledPeriod) =>
+    'الحركة ضمن فترة طابقت رصيدها. تصحيحها معلّق إلى حين اعتماد القاعدة.',
   LedgerException(issue: LedgerIssue.overflow) => 'تجاوز المبلغ الحد المدعوم.',
   _ => 'تعذّر حفظ العملية.',
 };

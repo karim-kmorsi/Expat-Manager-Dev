@@ -482,6 +482,8 @@ String _errorLabel(Object error) => switch (error) {
   },
   ExpenseOverlap() =>
     'تتداخل الحركة مع إجمالي مسجّل لهذا الحساب. صحّح الإجمالي أو ألغِه أولًا.',
+  LedgerException() when error.issue == LedgerIssue.reconciledPeriod =>
+    'الحركة ضمن فترة طابقت رصيدها. تصحيحها معلّق إلى حين اعتماد القاعدة.',
   LedgerException() when error.issue == LedgerIssue.alreadyReversed =>
     'الحركة معكوسة بالفعل.',
   LedgerException() when error.issue == LedgerIssue.duplicateConflict =>

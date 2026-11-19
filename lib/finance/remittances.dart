@@ -543,28 +543,14 @@ extension RemittanceLedger on Ledger {
     final explanation = _remittanceText(reason, 500);
     if (await _findOperation(operationId) == null) {
       final view = await _remittanceView(await _remittance(event.remittanceId));
-      final personalIds = original.lines
-          .where((line) => line.kind.isPersonal)
-          .map((line) => line.accountId);
-      final reconciled =
-          await (_db.select(_db.cashReconciliations).join([
-                innerJoin(
-                  _db.journalEntries,
-                  _db.journalEntries.id.equalsExp(
-                    _db.cashReconciliations.entryId,
-                  ),
-                ),
-              ])..where(
-                _db.cashReconciliations.accountId.isIn(personalIds) &
-                    _db.journalEntries.effectiveMicros.isBiggerOrEqualValue(
-                      original.entry.effectiveMicros,
-                    ),
-              ))
-              .get();
+      final reconciled = await _hasReconciliationOnOrAfter(
+        original.lines.map((line) => line.accountId),
+        original.entry.effectiveMicros,
+      );
       if (view.active.lastOrNull?.event.entryId != entryId ||
           effectiveAt.microsecondsSinceEpoch < original.entry.effectiveMicros ||
           await _linkedMinor(entryId) != 0 ||
-          reconciled.isNotEmpty) {
+          reconciled) {
         throw const RemittanceException(RemittanceIssue.protectedCorrection);
       }
       if (event.kind == RemittanceEventKind.receipt) {
