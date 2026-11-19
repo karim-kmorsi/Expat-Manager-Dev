@@ -4,6 +4,7 @@ import '../data/database.dart';
 import 'model.dart';
 
 part 'salary.dart';
+part 'usd_cash.dart';
 
 class Ledger {
   Ledger(this._db);
@@ -36,7 +37,7 @@ class Ledger {
     required String name,
     required String currency,
     required AccountKind kind,
-  }) async {
+  }) => _db.transaction(() async {
     final label = name.trim();
     if (label.isEmpty ||
         label.length > 100 ||
@@ -47,6 +48,11 @@ class Ledger {
             null) {
       throw const LedgerException(LedgerIssue.invalidInput);
     }
+    if (kind == AccountKind.cash &&
+        currency == usdCurrency &&
+        (await _usdCashAccounts()).isNotEmpty) {
+      throw const CashException(CashIssue.duplicateCashAccount);
+    }
     return _db
         .into(_db.ledgerAccounts)
         .insert(
@@ -56,7 +62,7 @@ class Ledger {
             kind: kind,
           ),
         );
-  }
+  });
 
   Future<Balance> balance(int accountId) => _db.transaction(() async {
     await _personalAccount(accountId);
@@ -80,6 +86,12 @@ class Ledger {
     required DateTime effectiveAt,
   }) => _db.transaction(() async {
     final account = await _personalAccount(accountId);
+    if (account.kind == AccountKind.cash &&
+        account.currency == usdCurrency &&
+        await _findOperation(operationId) == null &&
+        await _hasCashCount(accountId)) {
+      throw const CashException(CashIssue.openingAfterSettlement);
+    }
     _checkRange(minor);
     final offset = await _offset(account.currency, AccountKind.opening);
     final postings = <Posting>[
@@ -145,7 +157,8 @@ class Ledger {
     required List<Posting> replacement,
   }) => _db.transaction(() async {
     final original = await _reversibleEntry(entryId);
-    if (original.kind == JournalKind.salary) {
+    if (original.kind == JournalKind.salary ||
+        original.kind == JournalKind.cashAdjustment) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }
     final explanation = _reason(reason);
@@ -208,9 +221,7 @@ class Ledger {
     final micros = effectiveAt.microsecondsSinceEpoch;
     final postings = [...lines]
       ..sort((a, b) => a.accountId.compareTo(b.accountId));
-    final existing = await (_db.select(
-      _db.journalEntries,
-    )..where((row) => row.operationId.equals(operationId))).getSingleOrNull();
+    final existing = await _findOperation(operationId);
     if (existing != null) {
       if (existing.kind != kind ||
           existing.effectiveMicros != micros ||
@@ -269,7 +280,15 @@ class Ledger {
     JournalKind kind,
     List<Posting> postings,
   ) async {
-    if (kind == JournalKind.opening && postings.isEmpty) return;
+    if ((kind == JournalKind.opening || kind == JournalKind.cashAdjustment) &&
+        postings.isEmpty) {
+      return;
+    }
+    if (kind == JournalKind.cashIncome ||
+        kind == JournalKind.cashExpense ||
+        kind == JournalKind.cashAdjustment) {
+      await _validateCashPostings(kind, postings);
+    }
     if (postings.length < 2 ||
         (kind == JournalKind.internalTransfer && postings.length != 2) ||
         postings.map((posting) => posting.accountId).toSet().length !=
@@ -286,7 +305,10 @@ class Ledger {
       final account = await _account(posting.accountId);
       if ((account.kind == AccountKind.opening &&
               kind != JournalKind.opening) ||
-          (kind == JournalKind.internalTransfer && !account.kind.isPersonal)) {
+          (kind == JournalKind.internalTransfer && !account.kind.isPersonal) ||
+          (account.kind == AccountKind.cashAdjustment &&
+              kind != JournalKind.cashAdjustment &&
+              kind != JournalKind.reversal)) {
         throw const LedgerException(LedgerIssue.invalidInput);
       }
       final delta = BigInt.from(posting.minor);
@@ -304,6 +326,10 @@ class Ledger {
       checkedMinor(await _total(change.key) + change.value);
     }
   }
+
+  Future<JournalEntry?> _findOperation(String operationId) => (_db.select(
+    _db.journalEntries,
+  )..where((row) => row.operationId.equals(operationId))).getSingleOrNull();
 
   Future<bool> _hasEntry(
     Expression<bool> Function($JournalEntriesTable) predicate,

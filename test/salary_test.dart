@@ -380,6 +380,8 @@ void main() {
     try {
       unlockDatabase(old, key);
       for (final table in [
+        'cash_reconciliations',
+        'cash_settings',
         'movement_confirmations',
         'salary_executions',
         'salary_allocations',
@@ -388,6 +390,7 @@ void main() {
       ]) {
         old.execute('DROP TABLE $table');
       }
+      old.execute("DELETE FROM ledger_accounts WHERE kind = 'cashAdjustment'");
       old.execute('PRAGMA user_version = 1');
     } finally {
       old.close();

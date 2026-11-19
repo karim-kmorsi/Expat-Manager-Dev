@@ -12,8 +12,13 @@ void unlockDatabase(sqlite.Database database, String hexKey) {
   database.select('SELECT count(*) FROM sqlite_schema');
 }
 
-/// Saves the encrypted v1 main database while SQLite excludes concurrent writers.
-void protectV1Migration(sqlite.Database source, File file, String hexKey) {
+/// Saves the encrypted main database while SQLite excludes concurrent writers.
+void protectLedgerMigration(
+  sqlite.Database source,
+  File file,
+  String hexKey,
+  int version,
+) {
   final checkpoint = source.select('PRAGMA wal_checkpoint(TRUNCATE)').single;
   if (checkpoint['busy'] != 0) {
     throw StateError('Could not checkpoint the ledger');
@@ -24,9 +29,9 @@ void protectV1Migration(sqlite.Database source, File file, String hexKey) {
     if (wal.existsSync() && wal.lengthSync() != 0) {
       throw StateError('Ledger changed during migration preparation');
     }
-    final backup = File('${file.path}.v1.backup');
+    final backup = File('${file.path}.v$version.backup');
     if (backup.existsSync()) {
-      _verifyV1(backup, hexKey);
+      _verifySnapshot(backup, hexKey, version);
       return;
     }
     final staging = file.parent.createTempSync('ledger-migration-');
@@ -38,7 +43,7 @@ void protectV1Migration(sqlite.Database source, File file, String hexKey) {
       } finally {
         handle.closeSync();
       }
-      _verifyV1(copy, hexKey);
+      _verifySnapshot(copy, hexKey, version);
       copy.renameSync(backup.path);
     } finally {
       staging.deleteSync(recursive: true);
@@ -48,14 +53,15 @@ void protectV1Migration(sqlite.Database source, File file, String hexKey) {
   }
 }
 
-void _verifyV1(File file, String hexKey) {
+void _verifySnapshot(File file, String hexKey, int version) {
   final database = sqlite.sqlite3.open(
     file.path,
     mode: sqlite.OpenMode.readOnly,
   );
   try {
     unlockDatabase(database, hexKey);
-    if (database.select('PRAGMA user_version').single.values.single != 1 ||
+    if (database.select('PRAGMA user_version').single.values.single !=
+            version ||
         database.select('PRAGMA integrity_check').single.values.single !=
             'ok') {
       throw StateError('Could not verify the encrypted migration copy');

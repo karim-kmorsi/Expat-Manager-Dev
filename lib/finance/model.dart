@@ -4,15 +4,44 @@ enum AccountKind {
   savings,
   opening,
   income,
-  expense;
+  expense,
+  cashAdjustment;
 
   bool get isPersonal => switch (this) {
     bank || cash || savings => true,
-    opening || income || expense => false,
+    opening || income || expense || cashAdjustment => false,
   };
 }
 
-enum JournalKind { opening, entry, internalTransfer, reversal, salary }
+enum JournalKind {
+  opening,
+  entry,
+  internalTransfer,
+  reversal,
+  salary,
+  cashIncome,
+  cashExpense,
+  cashAdjustment,
+}
+
+const usdCurrency = 'USD';
+
+enum CashIssue {
+  walletRequired,
+  walletAlreadySelected,
+  duplicateCashAccount,
+  invalidAmount,
+  insufficientCash,
+  staleBalance,
+  openingAfterSettlement,
+  uncorrectableMovement,
+}
+
+class CashException implements Exception {
+  const CashException(this.issue);
+
+  final CashIssue issue;
+}
 
 enum LedgerIssue {
   invalidInput,

@@ -2586,6 +2586,598 @@ class MovementConfirmationsCompanion
   }
 }
 
+class $CashSettingsTable extends CashSettings
+    with TableInfo<$CashSettingsTable, CashSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CashSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cashAccountIdMeta = const VerificationMeta(
+    'cashAccountId',
+  );
+  @override
+  late final GeneratedColumn<int> cashAccountId = GeneratedColumn<int>(
+    'cash_account_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ledger_accounts (id)',
+    ),
+  );
+  static const VerificationMeta _withdrawalLimitMinorMeta =
+      const VerificationMeta('withdrawalLimitMinor');
+  @override
+  late final GeneratedColumn<int> withdrawalLimitMinor = GeneratedColumn<int>(
+    'withdrawal_limit_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    cashAccountId,
+    withdrawalLimitMinor,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cash_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CashSetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('cash_account_id')) {
+      context.handle(
+        _cashAccountIdMeta,
+        cashAccountId.isAcceptableOrUnknown(
+          data['cash_account_id']!,
+          _cashAccountIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('withdrawal_limit_minor')) {
+      context.handle(
+        _withdrawalLimitMinorMeta,
+        withdrawalLimitMinor.isAcceptableOrUnknown(
+          data['withdrawal_limit_minor']!,
+          _withdrawalLimitMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_withdrawalLimitMinorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CashSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CashSetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      cashAccountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cash_account_id'],
+      ),
+      withdrawalLimitMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}withdrawal_limit_minor'],
+      )!,
+    );
+  }
+
+  @override
+  $CashSettingsTable createAlias(String alias) {
+    return $CashSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class CashSetting extends DataClass implements Insertable<CashSetting> {
+  final int id;
+  final int? cashAccountId;
+  final int withdrawalLimitMinor;
+  const CashSetting({
+    required this.id,
+    this.cashAccountId,
+    required this.withdrawalLimitMinor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || cashAccountId != null) {
+      map['cash_account_id'] = Variable<int>(cashAccountId);
+    }
+    map['withdrawal_limit_minor'] = Variable<int>(withdrawalLimitMinor);
+    return map;
+  }
+
+  CashSettingsCompanion toCompanion(bool nullToAbsent) {
+    return CashSettingsCompanion(
+      id: Value(id),
+      cashAccountId: cashAccountId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashAccountId),
+      withdrawalLimitMinor: Value(withdrawalLimitMinor),
+    );
+  }
+
+  factory CashSetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CashSetting(
+      id: serializer.fromJson<int>(json['id']),
+      cashAccountId: serializer.fromJson<int?>(json['cashAccountId']),
+      withdrawalLimitMinor: serializer.fromJson<int>(
+        json['withdrawalLimitMinor'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'cashAccountId': serializer.toJson<int?>(cashAccountId),
+      'withdrawalLimitMinor': serializer.toJson<int>(withdrawalLimitMinor),
+    };
+  }
+
+  CashSetting copyWith({
+    int? id,
+    Value<int?> cashAccountId = const Value.absent(),
+    int? withdrawalLimitMinor,
+  }) => CashSetting(
+    id: id ?? this.id,
+    cashAccountId: cashAccountId.present
+        ? cashAccountId.value
+        : this.cashAccountId,
+    withdrawalLimitMinor: withdrawalLimitMinor ?? this.withdrawalLimitMinor,
+  );
+  CashSetting copyWithCompanion(CashSettingsCompanion data) {
+    return CashSetting(
+      id: data.id.present ? data.id.value : this.id,
+      cashAccountId: data.cashAccountId.present
+          ? data.cashAccountId.value
+          : this.cashAccountId,
+      withdrawalLimitMinor: data.withdrawalLimitMinor.present
+          ? data.withdrawalLimitMinor.value
+          : this.withdrawalLimitMinor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashSetting(')
+          ..write('id: $id, ')
+          ..write('cashAccountId: $cashAccountId, ')
+          ..write('withdrawalLimitMinor: $withdrawalLimitMinor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, cashAccountId, withdrawalLimitMinor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CashSetting &&
+          other.id == this.id &&
+          other.cashAccountId == this.cashAccountId &&
+          other.withdrawalLimitMinor == this.withdrawalLimitMinor);
+}
+
+class CashSettingsCompanion extends UpdateCompanion<CashSetting> {
+  final Value<int> id;
+  final Value<int?> cashAccountId;
+  final Value<int> withdrawalLimitMinor;
+  const CashSettingsCompanion({
+    this.id = const Value.absent(),
+    this.cashAccountId = const Value.absent(),
+    this.withdrawalLimitMinor = const Value.absent(),
+  });
+  CashSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.cashAccountId = const Value.absent(),
+    required int withdrawalLimitMinor,
+  }) : withdrawalLimitMinor = Value(withdrawalLimitMinor);
+  static Insertable<CashSetting> custom({
+    Expression<int>? id,
+    Expression<int>? cashAccountId,
+    Expression<int>? withdrawalLimitMinor,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (cashAccountId != null) 'cash_account_id': cashAccountId,
+      if (withdrawalLimitMinor != null)
+        'withdrawal_limit_minor': withdrawalLimitMinor,
+    });
+  }
+
+  CashSettingsCompanion copyWith({
+    Value<int>? id,
+    Value<int?>? cashAccountId,
+    Value<int>? withdrawalLimitMinor,
+  }) {
+    return CashSettingsCompanion(
+      id: id ?? this.id,
+      cashAccountId: cashAccountId ?? this.cashAccountId,
+      withdrawalLimitMinor: withdrawalLimitMinor ?? this.withdrawalLimitMinor,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (cashAccountId.present) {
+      map['cash_account_id'] = Variable<int>(cashAccountId.value);
+    }
+    if (withdrawalLimitMinor.present) {
+      map['withdrawal_limit_minor'] = Variable<int>(withdrawalLimitMinor.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('cashAccountId: $cashAccountId, ')
+          ..write('withdrawalLimitMinor: $withdrawalLimitMinor')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CashReconciliationsTable extends CashReconciliations
+    with TableInfo<$CashReconciliationsTable, CashReconciliation> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CashReconciliationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ledger_accounts (id)',
+    ),
+  );
+  static const VerificationMeta _priorMinorMeta = const VerificationMeta(
+    'priorMinor',
+  );
+  @override
+  late final GeneratedColumn<int> priorMinor = GeneratedColumn<int>(
+    'prior_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countedMinorMeta = const VerificationMeta(
+    'countedMinor',
+  );
+  @override
+  late final GeneratedColumn<int> countedMinor = GeneratedColumn<int>(
+    'counted_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    entryId,
+    accountId,
+    priorMinor,
+    countedMinor,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'cash_reconciliations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CashReconciliation> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('prior_minor')) {
+      context.handle(
+        _priorMinorMeta,
+        priorMinor.isAcceptableOrUnknown(data['prior_minor']!, _priorMinorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_priorMinorMeta);
+    }
+    if (data.containsKey('counted_minor')) {
+      context.handle(
+        _countedMinorMeta,
+        countedMinor.isAcceptableOrUnknown(
+          data['counted_minor']!,
+          _countedMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_countedMinorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  CashReconciliation map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CashReconciliation(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}account_id'],
+      )!,
+      priorMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}prior_minor'],
+      )!,
+      countedMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}counted_minor'],
+      )!,
+    );
+  }
+
+  @override
+  $CashReconciliationsTable createAlias(String alias) {
+    return $CashReconciliationsTable(attachedDatabase, alias);
+  }
+}
+
+class CashReconciliation extends DataClass
+    implements Insertable<CashReconciliation> {
+  final int entryId;
+  final int accountId;
+  final int priorMinor;
+  final int countedMinor;
+  const CashReconciliation({
+    required this.entryId,
+    required this.accountId,
+    required this.priorMinor,
+    required this.countedMinor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    map['account_id'] = Variable<int>(accountId);
+    map['prior_minor'] = Variable<int>(priorMinor);
+    map['counted_minor'] = Variable<int>(countedMinor);
+    return map;
+  }
+
+  CashReconciliationsCompanion toCompanion(bool nullToAbsent) {
+    return CashReconciliationsCompanion(
+      entryId: Value(entryId),
+      accountId: Value(accountId),
+      priorMinor: Value(priorMinor),
+      countedMinor: Value(countedMinor),
+    );
+  }
+
+  factory CashReconciliation.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CashReconciliation(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      accountId: serializer.fromJson<int>(json['accountId']),
+      priorMinor: serializer.fromJson<int>(json['priorMinor']),
+      countedMinor: serializer.fromJson<int>(json['countedMinor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'accountId': serializer.toJson<int>(accountId),
+      'priorMinor': serializer.toJson<int>(priorMinor),
+      'countedMinor': serializer.toJson<int>(countedMinor),
+    };
+  }
+
+  CashReconciliation copyWith({
+    int? entryId,
+    int? accountId,
+    int? priorMinor,
+    int? countedMinor,
+  }) => CashReconciliation(
+    entryId: entryId ?? this.entryId,
+    accountId: accountId ?? this.accountId,
+    priorMinor: priorMinor ?? this.priorMinor,
+    countedMinor: countedMinor ?? this.countedMinor,
+  );
+  CashReconciliation copyWithCompanion(CashReconciliationsCompanion data) {
+    return CashReconciliation(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      priorMinor: data.priorMinor.present
+          ? data.priorMinor.value
+          : this.priorMinor,
+      countedMinor: data.countedMinor.present
+          ? data.countedMinor.value
+          : this.countedMinor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashReconciliation(')
+          ..write('entryId: $entryId, ')
+          ..write('accountId: $accountId, ')
+          ..write('priorMinor: $priorMinor, ')
+          ..write('countedMinor: $countedMinor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, accountId, priorMinor, countedMinor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CashReconciliation &&
+          other.entryId == this.entryId &&
+          other.accountId == this.accountId &&
+          other.priorMinor == this.priorMinor &&
+          other.countedMinor == this.countedMinor);
+}
+
+class CashReconciliationsCompanion extends UpdateCompanion<CashReconciliation> {
+  final Value<int> entryId;
+  final Value<int> accountId;
+  final Value<int> priorMinor;
+  final Value<int> countedMinor;
+  const CashReconciliationsCompanion({
+    this.entryId = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.priorMinor = const Value.absent(),
+    this.countedMinor = const Value.absent(),
+  });
+  CashReconciliationsCompanion.insert({
+    this.entryId = const Value.absent(),
+    required int accountId,
+    required int priorMinor,
+    required int countedMinor,
+  }) : accountId = Value(accountId),
+       priorMinor = Value(priorMinor),
+       countedMinor = Value(countedMinor);
+  static Insertable<CashReconciliation> custom({
+    Expression<int>? entryId,
+    Expression<int>? accountId,
+    Expression<int>? priorMinor,
+    Expression<int>? countedMinor,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (accountId != null) 'account_id': accountId,
+      if (priorMinor != null) 'prior_minor': priorMinor,
+      if (countedMinor != null) 'counted_minor': countedMinor,
+    });
+  }
+
+  CashReconciliationsCompanion copyWith({
+    Value<int>? entryId,
+    Value<int>? accountId,
+    Value<int>? priorMinor,
+    Value<int>? countedMinor,
+  }) {
+    return CashReconciliationsCompanion(
+      entryId: entryId ?? this.entryId,
+      accountId: accountId ?? this.accountId,
+      priorMinor: priorMinor ?? this.priorMinor,
+      countedMinor: countedMinor ?? this.countedMinor,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (priorMinor.present) {
+      map['prior_minor'] = Variable<int>(priorMinor.value);
+    }
+    if (countedMinor.present) {
+      map['counted_minor'] = Variable<int>(countedMinor.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CashReconciliationsCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('accountId: $accountId, ')
+          ..write('priorMinor: $priorMinor, ')
+          ..write('countedMinor: $countedMinor')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -2604,6 +3196,9 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   );
   late final $MovementConfirmationsTable movementConfirmations =
       $MovementConfirmationsTable(this);
+  late final $CashSettingsTable cashSettings = $CashSettingsTable(this);
+  late final $CashReconciliationsTable cashReconciliations =
+      $CashReconciliationsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2618,6 +3213,8 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     salaryAllocations,
     salaryExecutions,
     movementConfirmations,
+    cashSettings,
+    cashReconciliations,
   ];
 }
 
@@ -2961,6 +3558,48 @@ final class $$LedgerAccountsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$CashSettingsTable, List<CashSetting>>
+  _cashSettingsRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.cashSettings,
+    aliasName: 'ledger_accounts__id__cash_settings__cash_account_id',
+  );
+
+  $$CashSettingsTableProcessedTableManager get cashSettingsRefs {
+    final manager = $$CashSettingsTableTableManager(
+      $_db,
+      $_db.cashSettings,
+    ).filter((f) => f.cashAccountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_cashSettingsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CashReconciliationsTable,
+    List<CashReconciliation>
+  >
+  _cashReconciliationsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.cashReconciliations,
+        aliasName: 'ledger_accounts__id__cash_reconciliations__account_id',
+      );
+
+  $$CashReconciliationsTableProcessedTableManager get cashReconciliationsRefs {
+    final manager = $$CashReconciliationsTableTableManager(
+      $_db,
+      $_db.cashReconciliations,
+    ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _cashReconciliationsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$LedgerAccountsTableFilterComposer
@@ -3077,6 +3716,56 @@ class $$LedgerAccountsTableFilterComposer
           }) => $$SalaryReceiptsTableFilterComposer(
             $db: $db,
             $table: $db.salaryReceipts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> cashSettingsRefs(
+    Expression<bool> Function($$CashSettingsTableFilterComposer f) f,
+  ) {
+    final $$CashSettingsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cashSettings,
+      getReferencedColumn: (t) => t.cashAccountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashSettingsTableFilterComposer(
+            $db: $db,
+            $table: $db.cashSettings,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> cashReconciliationsRefs(
+    Expression<bool> Function($$CashReconciliationsTableFilterComposer f) f,
+  ) {
+    final $$CashReconciliationsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cashReconciliations,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashReconciliationsTableFilterComposer(
+            $db: $db,
+            $table: $db.cashReconciliations,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3250,6 +3939,57 @@ class $$LedgerAccountsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> cashSettingsRefs<T extends Object>(
+    Expression<T> Function($$CashSettingsTableAnnotationComposer a) f,
+  ) {
+    final $$CashSettingsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cashSettings,
+      getReferencedColumn: (t) => t.cashAccountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashSettingsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.cashSettings,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> cashReconciliationsRefs<T extends Object>(
+    Expression<T> Function($$CashReconciliationsTableAnnotationComposer a) f,
+  ) {
+    final $$CashReconciliationsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.cashReconciliations,
+          getReferencedColumn: (t) => t.accountId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CashReconciliationsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.cashReconciliations,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$LedgerAccountsTableTableManager
@@ -3270,6 +4010,8 @@ class $$LedgerAccountsTableTableManager
             bool journalEntriesRefs,
             bool journalPostingsRefs,
             bool salaryReceiptsRefs,
+            bool cashSettingsRefs,
+            bool cashReconciliationsRefs,
           })
         > {
   $$LedgerAccountsTableTableManager(
@@ -3323,6 +4065,8 @@ class $$LedgerAccountsTableTableManager
                 journalEntriesRefs = false,
                 journalPostingsRefs = false,
                 salaryReceiptsRefs = false,
+                cashSettingsRefs = false,
+                cashReconciliationsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -3330,6 +4074,8 @@ class $$LedgerAccountsTableTableManager
                     if (journalEntriesRefs) db.journalEntries,
                     if (journalPostingsRefs) db.journalPostings,
                     if (salaryReceiptsRefs) db.salaryReceipts,
+                    if (cashSettingsRefs) db.cashSettings,
+                    if (cashReconciliationsRefs) db.cashReconciliations,
                   ],
                   addJoins:
                       <
@@ -3423,6 +4169,46 @@ class $$LedgerAccountsTableTableManager
                           referencedColumn: 'account_id',
                           typedResults: items,
                         ),
+                      if (cashSettingsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          LedgerAccount,
+                          $LedgerAccountsTable,
+                          CashSetting,
+                          $CashSettingsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LedgerAccountsTableReferences
+                              ._cashSettingsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LedgerAccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).cashSettingsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'cash_account_id',
+                          typedResults: items,
+                        ),
+                      if (cashReconciliationsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          LedgerAccount,
+                          $LedgerAccountsTable,
+                          CashReconciliation,
+                          $CashReconciliationsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LedgerAccountsTableReferences
+                              ._cashReconciliationsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LedgerAccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).cashReconciliationsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'account_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -3448,6 +4234,8 @@ typedef $$LedgerAccountsTableProcessedTableManager =
         bool journalEntriesRefs,
         bool journalPostingsRefs,
         bool salaryReceiptsRefs,
+        bool cashSettingsRefs,
+        bool cashReconciliationsRefs,
       })
     >;
 typedef $$JournalEntriesTableCreateCompanionBuilder =
@@ -3616,6 +4404,30 @@ final class $$JournalEntriesTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _movementConfirmationsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $CashReconciliationsTable,
+    List<CashReconciliation>
+  >
+  _cashReconciliationsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.cashReconciliations,
+        aliasName: 'journal_entries__id__cash_reconciliations__entry_id',
+      );
+
+  $$CashReconciliationsTableProcessedTableManager get cashReconciliationsRefs {
+    final manager = $$CashReconciliationsTableTableManager(
+      $_db,
+      $_db.cashReconciliations,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _cashReconciliationsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -3825,6 +4637,31 @@ class $$JournalEntriesTableFilterComposer
                     $removeJoinBuilderFromRootComposer,
               ),
         );
+    return f(composer);
+  }
+
+  Expression<bool> cashReconciliationsRefs(
+    Expression<bool> Function($$CashReconciliationsTableFilterComposer f) f,
+  ) {
+    final $$CashReconciliationsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.cashReconciliations,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CashReconciliationsTableFilterComposer(
+            $db: $db,
+            $table: $db.cashReconciliations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -4130,6 +4967,32 @@ class $$JournalEntriesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> cashReconciliationsRefs<T extends Object>(
+    Expression<T> Function($$CashReconciliationsTableAnnotationComposer a) f,
+  ) {
+    final $$CashReconciliationsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.cashReconciliations,
+          getReferencedColumn: (t) => t.entryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CashReconciliationsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.cashReconciliations,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$JournalEntriesTableTableManager
@@ -4153,6 +5016,7 @@ class $$JournalEntriesTableTableManager
             bool salaryReceiptsRefs,
             bool salaryExecutionsRefs,
             bool movementConfirmationsRefs,
+            bool cashReconciliationsRefs,
           })
         > {
   $$JournalEntriesTableTableManager(
@@ -4225,6 +5089,7 @@ class $$JournalEntriesTableTableManager
                 salaryReceiptsRefs = false,
                 salaryExecutionsRefs = false,
                 movementConfirmationsRefs = false,
+                cashReconciliationsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -4233,6 +5098,7 @@ class $$JournalEntriesTableTableManager
                     if (salaryReceiptsRefs) db.salaryReceipts,
                     if (salaryExecutionsRefs) db.salaryExecutions,
                     if (movementConfirmationsRefs) db.movementConfirmations,
+                    if (cashReconciliationsRefs) db.cashReconciliations,
                   ],
                   addJoins:
                       <
@@ -4368,6 +5234,26 @@ class $$JournalEntriesTableTableManager
                           referencedColumn: 'entry_id',
                           typedResults: items,
                         ),
+                      if (cashReconciliationsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          CashReconciliation,
+                          $CashReconciliationsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._cashReconciliationsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).cashReconciliationsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'entry_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -4396,6 +5282,7 @@ typedef $$JournalEntriesTableProcessedTableManager =
         bool salaryReceiptsRefs,
         bool salaryExecutionsRefs,
         bool movementConfirmationsRefs,
+        bool cashReconciliationsRefs,
       })
     >;
 typedef $$JournalPostingsTableCreateCompanionBuilder =
@@ -6200,6 +7087,679 @@ typedef $$MovementConfirmationsTableProcessedTableManager =
       MovementConfirmation,
       PrefetchHooks Function({bool entryId})
     >;
+typedef $$CashSettingsTableCreateCompanionBuilder =
+    CashSettingsCompanion Function({
+      Value<int> id,
+      Value<int?> cashAccountId,
+      required int withdrawalLimitMinor,
+    });
+typedef $$CashSettingsTableUpdateCompanionBuilder =
+    CashSettingsCompanion Function({
+      Value<int> id,
+      Value<int?> cashAccountId,
+      Value<int> withdrawalLimitMinor,
+    });
+
+final class $$CashSettingsTableReferences
+    extends BaseReferences<_$LedgerDatabase, $CashSettingsTable, CashSetting> {
+  $$CashSettingsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $LedgerAccountsTable _cashAccountIdTable(_$LedgerDatabase db) => db
+      .ledgerAccounts
+      .createAlias('cash_settings__cash_account_id__ledger_accounts__id');
+
+  $$LedgerAccountsTableProcessedTableManager? get cashAccountId {
+    final $_column = $_itemColumn<int>('cash_account_id');
+    if ($_column == null) return null;
+    final manager = $$LedgerAccountsTableTableManager(
+      $_db,
+      $_db.ledgerAccounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_cashAccountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CashSettingsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $CashSettingsTable> {
+  $$CashSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get withdrawalLimitMinor => $composableBuilder(
+    column: $table.withdrawalLimitMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$LedgerAccountsTableFilterComposer get cashAccountId {
+    final $$LedgerAccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cashAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashSettingsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $CashSettingsTable> {
+  $$CashSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get withdrawalLimitMinor => $composableBuilder(
+    column: $table.withdrawalLimitMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$LedgerAccountsTableOrderingComposer get cashAccountId {
+    final $$LedgerAccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cashAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashSettingsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $CashSettingsTable> {
+  $$CashSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get withdrawalLimitMinor => $composableBuilder(
+    column: $table.withdrawalLimitMinor,
+    builder: (column) => column,
+  );
+
+  $$LedgerAccountsTableAnnotationComposer get cashAccountId {
+    final $$LedgerAccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.cashAccountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $CashSettingsTable,
+          CashSetting,
+          $$CashSettingsTableFilterComposer,
+          $$CashSettingsTableOrderingComposer,
+          $$CashSettingsTableAnnotationComposer,
+          $$CashSettingsTableCreateCompanionBuilder,
+          $$CashSettingsTableUpdateCompanionBuilder,
+          (CashSetting, $$CashSettingsTableReferences),
+          CashSetting,
+          PrefetchHooks Function({bool cashAccountId})
+        > {
+  $$CashSettingsTableTableManager(_$LedgerDatabase db, $CashSettingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CashSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CashSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CashSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int?> cashAccountId = const Value.absent(),
+                Value<int> withdrawalLimitMinor = const Value.absent(),
+              }) => CashSettingsCompanion(
+                id: id,
+                cashAccountId: cashAccountId,
+                withdrawalLimitMinor: withdrawalLimitMinor,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int?> cashAccountId = const Value.absent(),
+                required int withdrawalLimitMinor,
+              }) => CashSettingsCompanion.insert(
+                id: id,
+                cashAccountId: cashAccountId,
+                withdrawalLimitMinor: withdrawalLimitMinor,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CashSettingsTable, CashSetting>(table),
+                  $$CashSettingsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({cashAccountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (cashAccountId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.cashAccountId,
+                        referencedTable: $$CashSettingsTableReferences
+                            ._cashAccountIdTable(db),
+                        referencedColumn: $$CashSettingsTableReferences
+                            ._cashAccountIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CashSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $CashSettingsTable,
+      CashSetting,
+      $$CashSettingsTableFilterComposer,
+      $$CashSettingsTableOrderingComposer,
+      $$CashSettingsTableAnnotationComposer,
+      $$CashSettingsTableCreateCompanionBuilder,
+      $$CashSettingsTableUpdateCompanionBuilder,
+      (CashSetting, $$CashSettingsTableReferences),
+      CashSetting,
+      PrefetchHooks Function({bool cashAccountId})
+    >;
+typedef $$CashReconciliationsTableCreateCompanionBuilder =
+    CashReconciliationsCompanion Function({
+      Value<int> entryId,
+      required int accountId,
+      required int priorMinor,
+      required int countedMinor,
+    });
+typedef $$CashReconciliationsTableUpdateCompanionBuilder =
+    CashReconciliationsCompanion Function({
+      Value<int> entryId,
+      Value<int> accountId,
+      Value<int> priorMinor,
+      Value<int> countedMinor,
+    });
+
+final class $$CashReconciliationsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $CashReconciliationsTable,
+          CashReconciliation
+        > {
+  $$CashReconciliationsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $JournalEntriesTable _entryIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('cash_reconciliations__entry_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LedgerAccountsTable _accountIdTable(_$LedgerDatabase db) => db
+      .ledgerAccounts
+      .createAlias('cash_reconciliations__account_id__ledger_accounts__id');
+
+  $$LedgerAccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<int>('account_id')!;
+
+    final manager = $$LedgerAccountsTableTableManager(
+      $_db,
+      $_db.ledgerAccounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CashReconciliationsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $CashReconciliationsTable> {
+  $$CashReconciliationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get priorMinor => $composableBuilder(
+    column: $table.priorMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get countedMinor => $composableBuilder(
+    column: $table.countedMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$JournalEntriesTableFilterComposer get entryId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableFilterComposer get accountId {
+    final $$LedgerAccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashReconciliationsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $CashReconciliationsTable> {
+  $$CashReconciliationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get priorMinor => $composableBuilder(
+    column: $table.priorMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get countedMinor => $composableBuilder(
+    column: $table.countedMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$JournalEntriesTableOrderingComposer get entryId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableOrderingComposer get accountId {
+    final $$LedgerAccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashReconciliationsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $CashReconciliationsTable> {
+  $$CashReconciliationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get priorMinor => $composableBuilder(
+    column: $table.priorMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get countedMinor => $composableBuilder(
+    column: $table.countedMinor,
+    builder: (column) => column,
+  );
+
+  $$JournalEntriesTableAnnotationComposer get entryId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableAnnotationComposer get accountId {
+    final $$LedgerAccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CashReconciliationsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $CashReconciliationsTable,
+          CashReconciliation,
+          $$CashReconciliationsTableFilterComposer,
+          $$CashReconciliationsTableOrderingComposer,
+          $$CashReconciliationsTableAnnotationComposer,
+          $$CashReconciliationsTableCreateCompanionBuilder,
+          $$CashReconciliationsTableUpdateCompanionBuilder,
+          (CashReconciliation, $$CashReconciliationsTableReferences),
+          CashReconciliation,
+          PrefetchHooks Function({bool entryId, bool accountId})
+        > {
+  $$CashReconciliationsTableTableManager(
+    _$LedgerDatabase db,
+    $CashReconciliationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CashReconciliationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CashReconciliationsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CashReconciliationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                Value<int> accountId = const Value.absent(),
+                Value<int> priorMinor = const Value.absent(),
+                Value<int> countedMinor = const Value.absent(),
+              }) => CashReconciliationsCompanion(
+                entryId: entryId,
+                accountId: accountId,
+                priorMinor: priorMinor,
+                countedMinor: countedMinor,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required int accountId,
+                required int priorMinor,
+                required int countedMinor,
+              }) => CashReconciliationsCompanion.insert(
+                entryId: entryId,
+                accountId: accountId,
+                priorMinor: priorMinor,
+                countedMinor: countedMinor,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CashReconciliationsTable, CashReconciliation>(
+                    table,
+                  ),
+                  $$CashReconciliationsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({entryId = false, accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (entryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.entryId,
+                        referencedTable: $$CashReconciliationsTableReferences
+                            ._entryIdTable(db),
+                        referencedColumn: $$CashReconciliationsTableReferences
+                            ._entryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (accountId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.accountId,
+                        referencedTable: $$CashReconciliationsTableReferences
+                            ._accountIdTable(db),
+                        referencedColumn: $$CashReconciliationsTableReferences
+                            ._accountIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CashReconciliationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $CashReconciliationsTable,
+      CashReconciliation,
+      $$CashReconciliationsTableFilterComposer,
+      $$CashReconciliationsTableOrderingComposer,
+      $$CashReconciliationsTableAnnotationComposer,
+      $$CashReconciliationsTableCreateCompanionBuilder,
+      $$CashReconciliationsTableUpdateCompanionBuilder,
+      (CashReconciliation, $$CashReconciliationsTableReferences),
+      CashReconciliation,
+      PrefetchHooks Function({bool entryId, bool accountId})
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -6222,4 +7782,8 @@ class $LedgerDatabaseManager {
       $$SalaryExecutionsTableTableManager(_db, _db.salaryExecutions);
   $$MovementConfirmationsTableTableManager get movementConfirmations =>
       $$MovementConfirmationsTableTableManager(_db, _db.movementConfirmations);
+  $$CashSettingsTableTableManager get cashSettings =>
+      $$CashSettingsTableTableManager(_db, _db.cashSettings);
+  $$CashReconciliationsTableTableManager get cashReconciliations =>
+      $$CashReconciliationsTableTableManager(_db, _db.cashReconciliations);
 }

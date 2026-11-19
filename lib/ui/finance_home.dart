@@ -7,6 +7,7 @@ import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
 import 'salary_screen.dart';
+import 'usd_cash_screen.dart';
 
 typedef _AccountView = ({LedgerAccount account, Balance balance});
 typedef _Overview = ({
@@ -52,6 +53,18 @@ class _FinanceHomeState extends State<FinanceHome> {
     try {
       await action();
       if (mounted) _refresh();
+    } on CashException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.issue == CashIssue.openingAfterSettlement
+                  ? 'الرصيد محدّد بتسوية سابقة. استخدم تسوية الرصيد للتصحيح.'
+                  : 'يوجد حساب نقدي بالدولار بالفعل.',
+            ),
+          ),
+        );
+      }
     } on LedgerException catch (error) {
       if (!mounted) return;
       final message = switch (error.issue) {
@@ -78,7 +91,7 @@ class _FinanceHomeState extends State<FinanceHome> {
     bottomNavigationBar: NavigationBar(
       selectedIndex: _tab,
       onDestinationSelected: (value) => setState(() {
-        if (_tab == 2) _overview = _load();
+        if (_tab >= 2) _overview = _load();
         _tab = value;
       }),
       destinations: const [
@@ -94,10 +107,16 @@ class _FinanceHomeState extends State<FinanceHome> {
           icon: Icon(Icons.payments_outlined),
           label: 'الرواتب',
         ),
+        NavigationDestination(
+          icon: Icon(Icons.wallet_outlined),
+          label: 'النقد',
+        ),
       ],
     ),
     body: SafeArea(
-      child: _tab == 2
+      child: _tab == 3
+          ? UsdCashScreen(ledger: ledger, newOperationId: _operationId)
+          : _tab == 2
           ? SalaryScreen(ledger: ledger, newOperationId: _operationId)
           : FutureBuilder(
               future: _overview,
@@ -156,7 +175,7 @@ class _FinanceHomeState extends State<FinanceHome> {
             subtitle: Text(
               view.balance.openingKnown
                   ? 'الرصيد المحسوب'
-                  : 'صافي الحركات المسجلة · الرصيد الفعلي غير معلوم',
+                  : 'صافي الحركات المسجلة · لم يُسجّل رصيد افتتاحي',
             ),
             trailing: Text(
               '${formatMinor(view.balance.minor, scale[view.account.currency]!)} ${view.account.currency}',
@@ -183,6 +202,9 @@ class _FinanceHomeState extends State<FinanceHome> {
             JournalKind.internalTransfer => 'تحويل داخلي',
             JournalKind.reversal => 'عكس قيد',
             JournalKind.salary => 'إيداع راتب',
+            JournalKind.cashIncome => 'دخل نقدي خارجي',
+            JournalKind.cashExpense => 'مصروف نقدي',
+            JournalKind.cashAdjustment => 'تسوية نقدية',
           }),
           subtitle: entry.reason == null ? null : Text(entry.reason!),
           trailing: Text(
