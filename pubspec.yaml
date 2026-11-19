@@ -1,0 +1,35 @@
+name: expat_manager
+description: Offline-first personal finance and expatriate management.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.14.0 <3.15.0'
+  flutter: '3.50.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  material_ui: 1.1.0
+  drift: 2.35.4
+  sqlite3: 3.9.1
+  sodium: 4.1.2+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: 6.0.0
+  drift_dev: 2.35.3
+  build_runner: 2.17.1
+
+flutter:
+  uses-material-design: true
+
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlite3mc
