@@ -11,6 +11,10 @@ Owner disposition is **conditionally accepted** for the isolated probe. Product 
 | Android | Platform 36 revision 2, compile/target SDK 36, minimum SDK 24, Build Tools 36.0.0, NDK 28.2.13676358 and Platform Tools 37.0.1 |
 | JVM/build | OpenJDK 17.0.21.0.3 scoped to Flutter and Gradle, Gradle Wrapper 9.5.0 and AGP 9.3.1 |
 
+## Product build security update
+
+The product uses Gradle 9.9.1 with the official Wrapper JAR and a pinned SHA-256 for the binary distribution. This version addresses the Gradle advisories affecting the T-006 baseline. The table above records the original probe environment. [Gradle security advisory](https://github.com/gradle/gradle/security/advisories/GHSA-3cfg-jpcr-gfp3)
+
 ## Reviewed evidence
 
 The external operator file `T-006-verification.txt` (2026-11-19, SHA-256 `b93312e217d705e44107381789a66477379b1ae5305faea6dc149efa2445e94f`) was checked against the raw probe logs. Release APK SHA-256 `140824c60fb99cab889321ac3c7663f3aff9bf64c9b39845e314a69c4c726cac` matched the local artifact. The evidence identifies the isolated workspace. Probe source, logs, database files and binaries are kept outside this repository.

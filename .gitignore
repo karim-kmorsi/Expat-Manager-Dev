@@ -1,21 +1,35 @@
 # Secrets, personal data and exports
 .env
 .env.*
+.envrc
 *.jks
 *.keystore
 *.p12
+*.pfx
+*.pem
 *.key
+key.properties
+local.properties
+ledger-key.*
 *.sqlite
 *.sqlite3
 *.db
+*.sqlite-*
+*.sqlite3-*
+*.db-*
 *.backup
 *.bak
 private/
 backups/
 exports/
+logs/
+*.log
 # Future Flutter/Dart build artifacts
 .dart_tool/
 build/
+*.apk
+*.aab
+*.apks
 .flutter-plugins
 .flutter-plugins-dependencies
 .idea/
