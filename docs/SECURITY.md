@@ -1,10 +1,15 @@
 # Security and privacy baseline
 
-- Private GitHub repository; never upload real financial data, account IDs, recipient identities, actual balances, medical details, gold addresses, credentials, tokens or signing keys.
-- Only fictional fixtures in tests or documentation.
-- App must work offline for core functions. Design encrypted on-device storage/backups and recoverable export/import before processing real data.
-- Record sick leave documentation presence/status, not medical diagnosis by default.
-- No direct bank or Thndr authentication or automated transactions.
-- Test backup restores, database migration, financial reconciliation and data integrity.
-- Audit open-source dependency licenses before distribution; private repository alone is not sufficient secret protection.
-- Exclude environment secrets, signing keys, private exports, databases, backups and local build artifacts from Git commits.
+## Local storage and portable backups
+
+- Use an encrypted Drift database from its first write. Generate a random database key and wrap it with Android Keystore using AES-GCM. Keep storage, wrapped keys and staging files private and exclude them from Android automatic backup and device transfer. Check that the encrypted engine and key are available before writing. On failure, keep the existing files and expose recovery.
+- Export a consistent logical snapshot with stable IDs and format/schema versions. Derive a separate backup key from the user-entered password with Argon2id and a fresh salt. Bound the accepted format, file size and KDF parameters. Authenticate the header and content with libsodium secretstream using XChaCha20-Poly1305. Require an authenticated final record. Keep passwords and database keys out of exported payloads, logs and crash reports. A lost password makes its backup unusable.
+- Read the selected file locally. Authenticate it before affecting active data. Import into encrypted staging, migrate if required, and check integrity, references and financial invariants. Preview replacement, require the user's confirmation when data exists, pause writes and create a verified encrypted rollback snapshot.
+- Replace the live contents inside a single SQLite transaction on the active database connection. Include a restore marker in that transaction and use durable settings such as WAL with `synchronous=FULL`. Reopen and validate before retiring the rollback snapshot. A failed check, cancellation, corrupt input or interruption before commit preserves the old contents. After a successful commit and restart, expect the complete new state. SQLite transactional guarantees cover the writes inside the database and depend on underlying storage honoring durability operations. File renames or copying database files and sidecars have separate failure modes.
+- Validate each supported migration on a fixture from the earlier schema. Preserve a verified encrypted recovery copy before migration. For a newer unsupported format or a lost local key, preserve existing files and offer the appropriate supported restore path.
+
+## Privacy and release evidence
+
+- Use fictional data only in tests and documentation. Keep real balances, account IDs, beneficiary identities, medical details, locations, credentials, signing keys, local databases, backups and private exports out of Git and logs.
+- Keep core workflows offline. Avoid bank or Thndr authentication and automated financial transactions. Record the presence/status of a sick leave report.
+- T-006 provides emulator evidence for key rejection, encrypted backup, restore to a new database, corruption rejection, offline operation and process interruption around commit. See [Toolchain](TOOLCHAIN.md). Test clean-install restore, supported migrations, storage failures, device/network behavior and native 16 KB operation on a matching physical device before making those claims. Complete privacy and dependency notice review under T-017 through T-019 before real-data or release acceptance.

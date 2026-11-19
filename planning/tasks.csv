@@ -1,21 +1,21 @@
 task_id,milestone,title,priority,depends_on,status,acceptance_criteria
-T-001,M0,Approve requirements and exclusions,P0,,Draft,Scope approved without ambiguous must-haves
-T-002,M0,Verify employer leave rules,P0,,Proposed,Leave rules and primary reference recorded
-T-003,M0,Approve financial account and transfer model,P0,T-001,Proposed,Ledger reconciles without duplicate counting
-T-004,M0,Approve backup and security design,P0,T-001,Proposed,Encrypted backup and recovery strategy agreed
-T-005,M0,Define salary-day wireflow,P0,T-001;T-003,Proposed,Every plan and execution state represented
-T-006,M1,Initialize approved Flutter prototype,P1,T-005;T-004,Blocked: approval,Only after explicit build approval
-T-007,M1,Salary plan allocation lifecycle,P0,T-006,Proposed,Planned and executed clearly distinct
-T-008,M1,Account transfer and FX ledger,P0,T-006,Proposed,Balances reconcile in 3 currencies
-T-009,M1,Grouped Egypt remittance purposes,P0,T-008,Proposed,One transfer multiple purposes
+T-001,M0,Approve requirements and exclusions,P0,,Scope documented,Approved v0.1 scope and exclusions recorded
+T-002,M0,Verify employer leave rules,P0,,Open: official employer reference,Primary reference supports leave counting carryover holidays and flight eligibility
+T-003,M0,Approve financial account and transfer model,P0,T-001,Model approved; operational inputs open,Confirm account routes receipt evidence and reconciled-period correction dates; reconcile without duplicate counting
+T-004,M0,Approve backup and security design,P0,T-001,Design documented; feasibility accepted conditionally,Document encrypted storage keys portable backup and transactional recovery; full validation in T-017
+T-005,M0,Define salary-day wireflow,P0,T-001;T-003,Wireflow documented; affected T-003 inputs open,Represent salary plan execution pending settlement confirmation and correction in Arabic RTL
+T-006,M1,Validate isolated Android encryption and restore feasibility,P1,T-004,Conditional acceptance: emulator evidence,Verify release APK and encrypted restoration offline on emulator; retain physical and full recovery coverage gaps
+T-007,M1,Salary plan allocation lifecycle,P0,T-005;T-008,Proposed,Record salary once; distinguish plans partial execution and confirmation
+T-008,M1,Account transfer and FX ledger,P0,T-003;T-004;T-006,Proposed,After applicable M0 gate and separate authorization verify encrypted bootstrap and journal balances in 3 currencies
+T-009,M1,Grouped Egypt remittance purposes,P0,T-003;T-007;T-008,Proposed,Confirm routes and receipt evidence; one debit with pending settlement multiple purposes cancellation and linked refunds
 T-010,M1,USD cash withdrawal and ceiling,P0,T-008,Proposed,Transfer not spending; warning correct
-T-011,M1,Offline persistence and reconciliation tests,P0,T-007;T-008;T-009;T-010,Proposed,Salary scenarios pass
+T-011,M1,Offline persistence and reconciliation tests,P0,T-003;T-007;T-008;T-009;T-010,Proposed,Confirm correction dates; verify statement matching and salary fixtures offline across restart
 T-012,M2,Nepal mixed expense recording,P1,T-008,Proposed,NPR cash and card entries accurate
-T-013,M2,Leave balances and calendar,P1,T-006;T-002,Proposed,Entitlements and weekend counting verified
+T-013,M2,Leave balances and calendar,P1,T-002;T-008,Proposed,Entitlements and weekend counting verified
 T-014,M2,Travel ticket and leave savings,P1,T-007;T-013,Proposed,Flexible target without double count
-T-015,M2,Gold item and custody register,P1,T-006,Proposed,Piece records and ownership distinct
-T-016,M2,Thndr manual portfolio summary,P2,T-006,Proposed,Dated snapshots not cash
-T-017,M3,Protected backup and restore,P0,T-004;T-011,Proposed,Restore validated against known fixture
+T-015,M2,Gold item and custody register,P1,T-008,Proposed,Piece records and ownership distinct
+T-016,M2,Thndr manual portfolio summary,P2,T-008,Proposed,Dated snapshots not cash
+T-017,M3,Protected backup and restore,P0,T-004;T-011,Proposed,Validate clean-install restore schema migrations and recovery from invalid or interrupted restore with matching data
 T-018,M3,Privacy and license audit,P0,T-017,Proposed,No confidential data leaks
-T-019,M3,Device testing and regression,P0,T-012;T-013;T-014;T-015;T-016;T-017,Proposed,All acceptance scenarios pass
+T-019,M3,Device testing and regression,P0,T-012;T-013;T-014;T-015;T-016;T-017,Proposed,Record physical Android arm64 evidence and verify native 16 KB operation on matching hardware for that claim
 T-020,M3,Reproducible test build and release notes,P1,T-018;T-019,Blocked: approval,Explicit build approval required
