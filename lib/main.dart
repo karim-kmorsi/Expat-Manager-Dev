@@ -52,10 +52,14 @@ class ExpatManager extends StatefulWidget {
 class _ExpatManagerState extends State<ExpatManager> {
   ThemeMode _appearance = ThemeMode.system;
   bool _changedAppearance = false;
+  bool _startupDelayComplete = false;
 
   @override
   void initState() {
     super.initState();
+    Future<void>.delayed(const Duration(milliseconds: 2500), () {
+      if (mounted) setState(() => _startupDelayComplete = true);
+    });
     widget.initialAppearance?.then((mode) {
       if (mounted && !_changedAppearance) setState(() => _appearance = mode);
     });
@@ -113,14 +117,44 @@ class _ExpatManagerState extends State<ExpatManager> {
             ),
           );
         }
-        return snapshot.hasData
+        return snapshot.hasData && _startupDelayComplete
             ? FinanceHome(
                 ledger: snapshot.data!,
                 openBackup: widget.openBackup,
                 appearance: _appearance,
                 onAppearance: _setAppearance,
               )
-            : const Scaffold(body: Center(child: CircularProgressIndicator()));
+            : Scaffold(
+                body: SafeArea(
+                  child: Stack(
+                    children: [
+                      const Center(child: CircularProgressIndicator()),
+                      Positioned(
+                        left: 16,
+                        right: 16,
+                        bottom: 28,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Expat Manager v0.1.1',
+                              textDirection: TextDirection.ltr,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              '© Karim S.K. Morsi 2026',
+                              textDirection: TextDirection.ltr,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
       },
     ),
   );
