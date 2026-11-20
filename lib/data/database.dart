@@ -6,6 +6,7 @@ import 'package:sodium/sodium.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../finance/model.dart';
+import '../finance/transfer_quote.dart';
 import '../leave/model.dart';
 import 'schema_recovery.dart';
 
@@ -93,12 +94,15 @@ class StorageLocked implements Exception {
     GoldPieces,
     GoldSales,
     GoldEvents,
+    SalaryAllocationDetails,
+    SalaryExchangeRates,
+    RemittanceExchangeRates,
   ],
 )
 class LedgerDatabase extends _$LedgerDatabase {
   LedgerDatabase._(super.executor);
 
-  static const _currentSchemaVersion = 8;
+  static const _currentSchemaVersion = 9;
 
   /// Takes ownership of a writable copy of the key.
   static Future<LedgerDatabase> open(File file, Uint8List key) async {
@@ -159,10 +163,15 @@ class LedgerDatabase extends _$LedgerDatabase {
         await migrator.createTable(travelGoals);
         await migrator.createTable(travelContributions);
       }
-      await migrator.createTable(goldPieces);
-      await migrator.createTable(goldSales);
-      await migrator.createTable(goldEvents);
-      await migrator.createIndex(goldEventsByPiece);
+      if (from < 8) {
+        await migrator.createTable(goldPieces);
+        await migrator.createTable(goldSales);
+        await migrator.createTable(goldEvents);
+        await migrator.createIndex(goldEventsByPiece);
+      }
+      await migrator.createTable(salaryAllocationDetails);
+      await migrator.createTable(salaryExchangeRates);
+      await migrator.createTable(remittanceExchangeRates);
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
     onCreate: (migrator) => transaction(() async {

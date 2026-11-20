@@ -6,6 +6,7 @@ import '../data/database.dart';
 import '../leave/leave_book.dart';
 import '../leave/model.dart';
 import 'model.dart';
+import 'transfer_quote.dart';
 
 part 'salary.dart';
 part 'usd_cash.dart';

@@ -372,12 +372,13 @@ void main() {
         """SELECT name FROM sqlite_schema WHERE type = 'table'
         AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'gold_%' ORDER BY name""",
       ))
-        table['name'] as String: [
-          for (final row in raw.select(
-            'SELECT * FROM "${table['name']}" ORDER BY rowid',
-          ))
-            Map<String, Object?>.of(row),
-        ],
+        if (!smartTransferTables.contains(table['name']))
+          table['name'] as String: [
+            for (final row in raw.select(
+              'SELECT * FROM "${table['name']}" ORDER BY rowid',
+            ))
+              Map<String, Object?>.of(row),
+          ],
     };
     final old = sqlite.sqlite3.open(file.path);
     late final Map<String, List<Map<String, Object?>>> previous;
@@ -390,7 +391,7 @@ void main() {
       old.close();
     }
     await open();
-    expect(db.schemaVersion, 8);
+    expect(db.schemaVersion, 9);
     expect((await ledger.personalLeave.overview()).entries.single.id, leave);
     expect((await ledger.ticket(2024))!.leaveId, leave);
     expect((await ledger.travelSavings())!.progress.saved, 700);
@@ -405,7 +406,7 @@ void main() {
       'ok',
     );
     for (final (path, version) in [
-      (file.path, 8),
+      (file.path, db.schemaVersion),
       ('${file.path}.v7.backup', 7),
     ]) {
       final raw = sqlite.sqlite3.open(path, mode: sqlite.OpenMode.readOnly);

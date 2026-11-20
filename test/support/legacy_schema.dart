@@ -21,7 +21,20 @@ void dropEntitlementSchema(sqlite.Database database) {
 }
 
 void dropGoldSchema(sqlite.Database database) {
+  dropSmartTransferSchema(database);
   for (final table in ['gold_events', 'gold_sales', 'gold_pieces']) {
+    database.execute('DROP TABLE $table');
+  }
+}
+
+const smartTransferTables = [
+  'salary_allocation_details',
+  'salary_exchange_rates',
+  'remittance_exchange_rates',
+];
+
+void dropSmartTransferSchema(sqlite.Database database) {
+  for (final table in smartTransferTables) {
     database.execute('DROP TABLE $table');
   }
 }

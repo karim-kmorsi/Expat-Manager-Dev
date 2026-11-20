@@ -60,10 +60,10 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('إنشاء خطة توزيع'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('إضافة بند'));
+      await tester.tap(find.text('إضافة توزيع'));
       await tester.pumpAndSettle();
       await tester.enterText(
-        find.byType(TextFormField).first,
+        find.widgetWithText(TextFormField, 'الوجهة أو الغرض (اختياري)'),
         'بند نقد اختباري',
       );
       await tester.enterText(find.byType(TextFormField).last, '300');

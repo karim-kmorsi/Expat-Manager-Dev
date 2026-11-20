@@ -51,3 +51,24 @@ class MovementConfirmations extends Table {
   @override
   Set<Column<Object>> get primaryKey => {entryId};
 }
+
+class SalaryAllocationDetails extends Table {
+  IntColumn get allocationId => integer().references(
+    SalaryAllocations,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
+  TextColumn get category => textEnum<AllocationCategory>().nullable()();
+  TextColumn get transferJson => text().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {allocationId};
+}
+
+class SalaryExchangeRates extends Table {
+  TextColumn get currency => text().references(Currencies, #code)();
+  TextColumn get rate => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {currency};
+}

@@ -19,6 +19,7 @@ class RemittanceException implements Exception {
 
 typedef RemittanceActivity = ({
   RemittanceEvent event,
+  String? actualRate,
   SalaryMovement movement,
   JournalEntry? reversal,
   int transit,
@@ -188,6 +189,7 @@ extension RemittanceLedger on Ledger {
     int? feeMinor,
     int? sourceMinor,
     int? receiptEntryId,
+    String? actualRate,
   }) => _db.transaction(
     () => _recordRemittanceEvent(
       remittanceId: remittanceId,
@@ -199,6 +201,7 @@ extension RemittanceLedger on Ledger {
       feeMinor: feeMinor,
       sourceMinor: sourceMinor,
       receiptEntryId: receiptEntryId,
+      actualRate: actualRate,
     ),
   );
 
@@ -213,12 +216,18 @@ extension RemittanceLedger on Ledger {
     int? sourceMinor,
     int? receiptEntryId,
     int? correctionOf,
+    String? actualRate,
   }) async {
     final note = _remittanceText(evidence, 500);
     final view = await _remittanceView(await _remittance(remittanceId));
     final record = view.record;
     final foreign = view.source.currency != record.destinationCurrency;
+    final rate = actualRate?.trim();
     if (minor <= 0 ||
+        (rate != null &&
+            (!foreign ||
+                kind != RemittanceEventKind.receipt ||
+                exchangeRateUnits(rate) == null)) ||
         (feeMinor != null &&
             (kind != RemittanceEventKind.debit ||
                 feeMinor < 0 ||
@@ -248,7 +257,8 @@ extension RemittanceLedger on Ledger {
           existing.kind != kind ||
           existing.evidence != note ||
           existing.receiptEntryId != receiptEntryId ||
-          existing.feeMinor != feeMinor) {
+          existing.feeMinor != feeMinor ||
+          await _actualRemittanceRate(previous.id) != rate) {
         throw const LedgerException(LedgerIssue.duplicateConflict);
       }
     } else {
@@ -361,6 +371,11 @@ extension RemittanceLedger on Ledger {
               feeMinor: feeMinor,
             ),
           );
+      if (rate != null) {
+        await _db
+            .into(_db.remittanceExchangeRates)
+            .insert(RemittanceExchangeRate(entryId: id, rate: rate));
+      }
     }
     return id;
   }
@@ -502,6 +517,7 @@ extension RemittanceLedger on Ledger {
     required String evidence,
     int? feeMinor,
     int? sourceMinor,
+    String? actualRate,
   }) => _db.transaction(() async {
     final event = await _remittanceEvent(entryId);
     if (event == null) {
@@ -525,6 +541,7 @@ extension RemittanceLedger on Ledger {
       feeMinor: feeMinor,
       receiptEntryId: event.receiptEntryId,
       correctionOf: entryId,
+      actualRate: actualRate,
     );
   });
 
@@ -629,6 +646,19 @@ extension RemittanceLedger on Ledger {
     }
   }
 
+  Future<RemittanceView?> remittanceForEntry(int entryId) =>
+      _db.transaction(() async {
+        final event = await _remittanceEvent(entryId);
+        return event == null
+            ? null
+            : _remittanceView(await _remittance(event.remittanceId));
+      });
+
+  Future<String?> _actualRemittanceRate(int entryId) async =>
+      (await (_db.select(
+        _db.remittanceExchangeRates,
+      )..where((row) => row.entryId.equals(entryId))).getSingleOrNull())?.rate;
+
   Future<RemittanceView> _remittanceView(Remittance record) async {
     final source = await _account(record.sourceAccountId);
     final currenciesByCode = {
@@ -644,6 +674,7 @@ extension RemittanceLedger on Ledger {
       final movement = await salaryMovement(event.entryId);
       activity.add((
         event: event,
+        actualRate: await _actualRemittanceRate(event.entryId),
         movement: movement,
         reversal: movement.reversed
             ? await (_db.select(_db.journalEntries)

@@ -23,6 +23,10 @@ Schema 7 adds the yearly Dashain plan and ticket records, and the travel goal an
 
 Schema 8 adds the piece register, one optional sale per piece, and an operation history with changed values or journal links. Weight uses integer milligrams and karat uses integer hundredths. The sale receipt points to a balanced income entry. Corrections and undo use the same receipt and reversal mechanisms as Dashain, with a piece-specific revision and transaction. Sale prices and acquisition costs are descriptive.
 
+## Salary allocations and transfer estimates
+
+Schema 9 adds optional allocation details, the last saved planning rate for EGP and NPR, and optional observed rates attached to actual receipt events. Existing allocation rows and journal entries retain their meaning. A calculated allocation retains each need in its original currency. Group needs by currency, estimate each foreign route separately, and treat USD needs as reservations in USD. Apply an additional margin only to a rate that excludes it. Round the source principal up to cover the target. The fixed fee and the percentage of the gross debit are estimated in USD. Only the existing remittance, internal transfer and expense workflows post actual movements. A calculated allocation can link the gross debit including the observed fee. Legacy plain allocations retain their principal-only limit for a remittance debit, and all links share the available debit to prevent double counting.
+
 ## Financial model
 
 - A user account has one currency and a type such as bank, cash or a separate real savings account. A card is a payment method for its account. Use integer minor units with fixed precision per currency once used. Report totals per currency. Any converted display value requires a known, dated rate.

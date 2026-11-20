@@ -9258,6 +9258,722 @@ class GoldEventsCompanion extends UpdateCompanion<GoldEvent> {
   }
 }
 
+class $SalaryAllocationDetailsTable extends SalaryAllocationDetails
+    with TableInfo<$SalaryAllocationDetailsTable, SalaryAllocationDetail> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalaryAllocationDetailsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _allocationIdMeta = const VerificationMeta(
+    'allocationId',
+  );
+  @override
+  late final GeneratedColumn<int> allocationId = GeneratedColumn<int>(
+    'allocation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES salary_allocations (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<AllocationCategory?, String>
+  category =
+      GeneratedColumn<String>(
+        'category',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<AllocationCategory?>(
+        $SalaryAllocationDetailsTable.$convertercategoryn,
+      );
+  static const VerificationMeta _transferJsonMeta = const VerificationMeta(
+    'transferJson',
+  );
+  @override
+  late final GeneratedColumn<String> transferJson = GeneratedColumn<String>(
+    'transfer_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [allocationId, category, transferJson];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'salary_allocation_details';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalaryAllocationDetail> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('allocation_id')) {
+      context.handle(
+        _allocationIdMeta,
+        allocationId.isAcceptableOrUnknown(
+          data['allocation_id']!,
+          _allocationIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('transfer_json')) {
+      context.handle(
+        _transferJsonMeta,
+        transferJson.isAcceptableOrUnknown(
+          data['transfer_json']!,
+          _transferJsonMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {allocationId};
+  @override
+  SalaryAllocationDetail map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalaryAllocationDetail(
+      allocationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}allocation_id'],
+      )!,
+      category: $SalaryAllocationDetailsTable.$convertercategoryn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}category'],
+        ),
+      ),
+      transferJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transfer_json'],
+      ),
+    );
+  }
+
+  @override
+  $SalaryAllocationDetailsTable createAlias(String alias) {
+    return $SalaryAllocationDetailsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<AllocationCategory, String, String>
+  $convertercategory = const EnumNameConverter<AllocationCategory>(
+    AllocationCategory.values,
+  );
+  static JsonTypeConverter2<AllocationCategory?, String?, String?>
+  $convertercategoryn = JsonTypeConverter2.asNullable($convertercategory);
+}
+
+class SalaryAllocationDetail extends DataClass
+    implements Insertable<SalaryAllocationDetail> {
+  final int allocationId;
+  final AllocationCategory? category;
+  final String? transferJson;
+  const SalaryAllocationDetail({
+    required this.allocationId,
+    this.category,
+    this.transferJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['allocation_id'] = Variable<int>(allocationId);
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(
+        $SalaryAllocationDetailsTable.$convertercategoryn.toSql(category),
+      );
+    }
+    if (!nullToAbsent || transferJson != null) {
+      map['transfer_json'] = Variable<String>(transferJson);
+    }
+    return map;
+  }
+
+  SalaryAllocationDetailsCompanion toCompanion(bool nullToAbsent) {
+    return SalaryAllocationDetailsCompanion(
+      allocationId: Value(allocationId),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
+      transferJson: transferJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transferJson),
+    );
+  }
+
+  factory SalaryAllocationDetail.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalaryAllocationDetail(
+      allocationId: serializer.fromJson<int>(json['allocationId']),
+      category: $SalaryAllocationDetailsTable.$convertercategoryn.fromJson(
+        serializer.fromJson<String?>(json['category']),
+      ),
+      transferJson: serializer.fromJson<String?>(json['transferJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'allocationId': serializer.toJson<int>(allocationId),
+      'category': serializer.toJson<String?>(
+        $SalaryAllocationDetailsTable.$convertercategoryn.toJson(category),
+      ),
+      'transferJson': serializer.toJson<String?>(transferJson),
+    };
+  }
+
+  SalaryAllocationDetail copyWith({
+    int? allocationId,
+    Value<AllocationCategory?> category = const Value.absent(),
+    Value<String?> transferJson = const Value.absent(),
+  }) => SalaryAllocationDetail(
+    allocationId: allocationId ?? this.allocationId,
+    category: category.present ? category.value : this.category,
+    transferJson: transferJson.present ? transferJson.value : this.transferJson,
+  );
+  SalaryAllocationDetail copyWithCompanion(
+    SalaryAllocationDetailsCompanion data,
+  ) {
+    return SalaryAllocationDetail(
+      allocationId: data.allocationId.present
+          ? data.allocationId.value
+          : this.allocationId,
+      category: data.category.present ? data.category.value : this.category,
+      transferJson: data.transferJson.present
+          ? data.transferJson.value
+          : this.transferJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryAllocationDetail(')
+          ..write('allocationId: $allocationId, ')
+          ..write('category: $category, ')
+          ..write('transferJson: $transferJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(allocationId, category, transferJson);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalaryAllocationDetail &&
+          other.allocationId == this.allocationId &&
+          other.category == this.category &&
+          other.transferJson == this.transferJson);
+}
+
+class SalaryAllocationDetailsCompanion
+    extends UpdateCompanion<SalaryAllocationDetail> {
+  final Value<int> allocationId;
+  final Value<AllocationCategory?> category;
+  final Value<String?> transferJson;
+  const SalaryAllocationDetailsCompanion({
+    this.allocationId = const Value.absent(),
+    this.category = const Value.absent(),
+    this.transferJson = const Value.absent(),
+  });
+  SalaryAllocationDetailsCompanion.insert({
+    this.allocationId = const Value.absent(),
+    this.category = const Value.absent(),
+    this.transferJson = const Value.absent(),
+  });
+  static Insertable<SalaryAllocationDetail> custom({
+    Expression<int>? allocationId,
+    Expression<String>? category,
+    Expression<String>? transferJson,
+  }) {
+    return RawValuesInsertable({
+      if (allocationId != null) 'allocation_id': allocationId,
+      if (category != null) 'category': category,
+      if (transferJson != null) 'transfer_json': transferJson,
+    });
+  }
+
+  SalaryAllocationDetailsCompanion copyWith({
+    Value<int>? allocationId,
+    Value<AllocationCategory?>? category,
+    Value<String?>? transferJson,
+  }) {
+    return SalaryAllocationDetailsCompanion(
+      allocationId: allocationId ?? this.allocationId,
+      category: category ?? this.category,
+      transferJson: transferJson ?? this.transferJson,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (allocationId.present) {
+      map['allocation_id'] = Variable<int>(allocationId.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(
+        $SalaryAllocationDetailsTable.$convertercategoryn.toSql(category.value),
+      );
+    }
+    if (transferJson.present) {
+      map['transfer_json'] = Variable<String>(transferJson.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryAllocationDetailsCompanion(')
+          ..write('allocationId: $allocationId, ')
+          ..write('category: $category, ')
+          ..write('transferJson: $transferJson')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SalaryExchangeRatesTable extends SalaryExchangeRates
+    with TableInfo<$SalaryExchangeRatesTable, SalaryExchangeRate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SalaryExchangeRatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _currencyMeta = const VerificationMeta(
+    'currency',
+  );
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+    'currency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES currencies (code)',
+    ),
+  );
+  static const VerificationMeta _rateMeta = const VerificationMeta('rate');
+  @override
+  late final GeneratedColumn<String> rate = GeneratedColumn<String>(
+    'rate',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [currency, rate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'salary_exchange_rates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SalaryExchangeRate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('currency')) {
+      context.handle(
+        _currencyMeta,
+        currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyMeta);
+    }
+    if (data.containsKey('rate')) {
+      context.handle(
+        _rateMeta,
+        rate.isAcceptableOrUnknown(data['rate']!, _rateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {currency};
+  @override
+  SalaryExchangeRate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SalaryExchangeRate(
+      currency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency'],
+      )!,
+      rate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rate'],
+      )!,
+    );
+  }
+
+  @override
+  $SalaryExchangeRatesTable createAlias(String alias) {
+    return $SalaryExchangeRatesTable(attachedDatabase, alias);
+  }
+}
+
+class SalaryExchangeRate extends DataClass
+    implements Insertable<SalaryExchangeRate> {
+  final String currency;
+  final String rate;
+  const SalaryExchangeRate({required this.currency, required this.rate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['currency'] = Variable<String>(currency);
+    map['rate'] = Variable<String>(rate);
+    return map;
+  }
+
+  SalaryExchangeRatesCompanion toCompanion(bool nullToAbsent) {
+    return SalaryExchangeRatesCompanion(
+      currency: Value(currency),
+      rate: Value(rate),
+    );
+  }
+
+  factory SalaryExchangeRate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SalaryExchangeRate(
+      currency: serializer.fromJson<String>(json['currency']),
+      rate: serializer.fromJson<String>(json['rate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'currency': serializer.toJson<String>(currency),
+      'rate': serializer.toJson<String>(rate),
+    };
+  }
+
+  SalaryExchangeRate copyWith({String? currency, String? rate}) =>
+      SalaryExchangeRate(
+        currency: currency ?? this.currency,
+        rate: rate ?? this.rate,
+      );
+  SalaryExchangeRate copyWithCompanion(SalaryExchangeRatesCompanion data) {
+    return SalaryExchangeRate(
+      currency: data.currency.present ? data.currency.value : this.currency,
+      rate: data.rate.present ? data.rate.value : this.rate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryExchangeRate(')
+          ..write('currency: $currency, ')
+          ..write('rate: $rate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(currency, rate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SalaryExchangeRate &&
+          other.currency == this.currency &&
+          other.rate == this.rate);
+}
+
+class SalaryExchangeRatesCompanion extends UpdateCompanion<SalaryExchangeRate> {
+  final Value<String> currency;
+  final Value<String> rate;
+  final Value<int> rowid;
+  const SalaryExchangeRatesCompanion({
+    this.currency = const Value.absent(),
+    this.rate = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SalaryExchangeRatesCompanion.insert({
+    required String currency,
+    required String rate,
+    this.rowid = const Value.absent(),
+  }) : currency = Value(currency),
+       rate = Value(rate);
+  static Insertable<SalaryExchangeRate> custom({
+    Expression<String>? currency,
+    Expression<String>? rate,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (currency != null) 'currency': currency,
+      if (rate != null) 'rate': rate,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SalaryExchangeRatesCompanion copyWith({
+    Value<String>? currency,
+    Value<String>? rate,
+    Value<int>? rowid,
+  }) {
+    return SalaryExchangeRatesCompanion(
+      currency: currency ?? this.currency,
+      rate: rate ?? this.rate,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (rate.present) {
+      map['rate'] = Variable<String>(rate.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SalaryExchangeRatesCompanion(')
+          ..write('currency: $currency, ')
+          ..write('rate: $rate, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RemittanceExchangeRatesTable extends RemittanceExchangeRates
+    with TableInfo<$RemittanceExchangeRatesTable, RemittanceExchangeRate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemittanceExchangeRatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES remittance_events (entry_id)',
+    ),
+  );
+  static const VerificationMeta _rateMeta = const VerificationMeta('rate');
+  @override
+  late final GeneratedColumn<String> rate = GeneratedColumn<String>(
+    'rate',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [entryId, rate];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'remittance_exchange_rates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RemittanceExchangeRate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    }
+    if (data.containsKey('rate')) {
+      context.handle(
+        _rateMeta,
+        rate.isAcceptableOrUnknown(data['rate']!, _rateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  RemittanceExchangeRate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RemittanceExchangeRate(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      rate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rate'],
+      )!,
+    );
+  }
+
+  @override
+  $RemittanceExchangeRatesTable createAlias(String alias) {
+    return $RemittanceExchangeRatesTable(attachedDatabase, alias);
+  }
+}
+
+class RemittanceExchangeRate extends DataClass
+    implements Insertable<RemittanceExchangeRate> {
+  final int entryId;
+  final String rate;
+  const RemittanceExchangeRate({required this.entryId, required this.rate});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<int>(entryId);
+    map['rate'] = Variable<String>(rate);
+    return map;
+  }
+
+  RemittanceExchangeRatesCompanion toCompanion(bool nullToAbsent) {
+    return RemittanceExchangeRatesCompanion(
+      entryId: Value(entryId),
+      rate: Value(rate),
+    );
+  }
+
+  factory RemittanceExchangeRate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RemittanceExchangeRate(
+      entryId: serializer.fromJson<int>(json['entryId']),
+      rate: serializer.fromJson<String>(json['rate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<int>(entryId),
+      'rate': serializer.toJson<String>(rate),
+    };
+  }
+
+  RemittanceExchangeRate copyWith({int? entryId, String? rate}) =>
+      RemittanceExchangeRate(
+        entryId: entryId ?? this.entryId,
+        rate: rate ?? this.rate,
+      );
+  RemittanceExchangeRate copyWithCompanion(
+    RemittanceExchangeRatesCompanion data,
+  ) {
+    return RemittanceExchangeRate(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      rate: data.rate.present ? data.rate.value : this.rate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittanceExchangeRate(')
+          ..write('entryId: $entryId, ')
+          ..write('rate: $rate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, rate);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RemittanceExchangeRate &&
+          other.entryId == this.entryId &&
+          other.rate == this.rate);
+}
+
+class RemittanceExchangeRatesCompanion
+    extends UpdateCompanion<RemittanceExchangeRate> {
+  final Value<int> entryId;
+  final Value<String> rate;
+  const RemittanceExchangeRatesCompanion({
+    this.entryId = const Value.absent(),
+    this.rate = const Value.absent(),
+  });
+  RemittanceExchangeRatesCompanion.insert({
+    this.entryId = const Value.absent(),
+    required String rate,
+  }) : rate = Value(rate);
+  static Insertable<RemittanceExchangeRate> custom({
+    Expression<int>? entryId,
+    Expression<String>? rate,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (rate != null) 'rate': rate,
+    });
+  }
+
+  RemittanceExchangeRatesCompanion copyWith({
+    Value<int>? entryId,
+    Value<String>? rate,
+  }) {
+    return RemittanceExchangeRatesCompanion(
+      entryId: entryId ?? this.entryId,
+      rate: rate ?? this.rate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (rate.present) {
+      map['rate'] = Variable<String>(rate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemittanceExchangeRatesCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('rate: $rate')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -9299,6 +10015,12 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   late final $GoldPiecesTable goldPieces = $GoldPiecesTable(this);
   late final $GoldSalesTable goldSales = $GoldSalesTable(this);
   late final $GoldEventsTable goldEvents = $GoldEventsTable(this);
+  late final $SalaryAllocationDetailsTable salaryAllocationDetails =
+      $SalaryAllocationDetailsTable(this);
+  late final $SalaryExchangeRatesTable salaryExchangeRates =
+      $SalaryExchangeRatesTable(this);
+  late final $RemittanceExchangeRatesTable remittanceExchangeRates =
+      $RemittanceExchangeRatesTable(this);
   late final Index goldEventsByPiece = Index(
     'gold_events_by_piece',
     'CREATE INDEX gold_events_by_piece ON gold_events (piece_id, id)',
@@ -9334,8 +10056,23 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     goldPieces,
     goldSales,
     goldEvents,
+    salaryAllocationDetails,
+    salaryExchangeRates,
+    remittanceExchangeRates,
     goldEventsByPiece,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'salary_allocations',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('salary_allocation_details', kind: UpdateKind.delete),
+      ],
+    ),
+  ]);
 }
 
 typedef $$CurrenciesTableCreateCompanionBuilder = CurrenciesCompanion Function({
@@ -9457,6 +10194,30 @@ final class $$CurrenciesTableReferences
     );
 
     final cache = $_typedResult.readTableOrNull(_goldSalesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $SalaryExchangeRatesTable,
+    List<SalaryExchangeRate>
+  >
+  _salaryExchangeRatesRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.salaryExchangeRates,
+        aliasName: 'currencies__code__salary_exchange_rates__currency',
+      );
+
+  $$SalaryExchangeRatesTableProcessedTableManager get salaryExchangeRatesRefs {
+    final manager = $$SalaryExchangeRatesTableTableManager(
+      $_db,
+      $_db.salaryExchangeRates,
+    ).filter((f) => f.currency.code.sqlEquals($_itemColumn<String>('code')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salaryExchangeRatesRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -9623,6 +10384,31 @@ class $$CurrenciesTableFilterComposer
           }) => $$GoldSalesTableFilterComposer(
             $db: $db,
             $table: $db.goldSales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> salaryExchangeRatesRefs(
+    Expression<bool> Function($$SalaryExchangeRatesTableFilterComposer f) f,
+  ) {
+    final $$SalaryExchangeRatesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.salaryExchangeRates,
+      getReferencedColumn: (t) => t.currency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryExchangeRatesTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryExchangeRates,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -9817,6 +10603,32 @@ class $$CurrenciesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> salaryExchangeRatesRefs<T extends Object>(
+    Expression<T> Function($$SalaryExchangeRatesTableAnnotationComposer a) f,
+  ) {
+    final $$SalaryExchangeRatesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.code,
+          referencedTable: $db.salaryExchangeRates,
+          getReferencedColumn: (t) => t.currency,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalaryExchangeRatesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salaryExchangeRates,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$CurrenciesTableTableManager
@@ -9839,6 +10651,7 @@ class $$CurrenciesTableTableManager
             bool travelGoalsRefs,
             bool goldPiecesRefs,
             bool goldSalesRefs,
+            bool salaryExchangeRatesRefs,
           })
         > {
   $$CurrenciesTableTableManager(_$LedgerDatabase db, $CurrenciesTable table)
@@ -9883,6 +10696,7 @@ class $$CurrenciesTableTableManager
                 travelGoalsRefs = false,
                 goldPiecesRefs = false,
                 goldSalesRefs = false,
+                salaryExchangeRatesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -9893,6 +10707,7 @@ class $$CurrenciesTableTableManager
                     if (travelGoalsRefs) db.travelGoals,
                     if (goldPiecesRefs) db.goldPieces,
                     if (goldSalesRefs) db.goldSales,
+                    if (salaryExchangeRatesRefs) db.salaryExchangeRates,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -10017,6 +10832,26 @@ class $$CurrenciesTableTableManager
                           referencedColumn: 'price_currency',
                           typedResults: items,
                         ),
+                      if (salaryExchangeRatesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          SalaryExchangeRate,
+                          $SalaryExchangeRatesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._salaryExchangeRatesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salaryExchangeRatesRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'currency',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -10044,6 +10879,7 @@ typedef $$CurrenciesTableProcessedTableManager =
         bool travelGoalsRefs,
         bool goldPiecesRefs,
         bool goldSalesRefs,
+        bool salaryExchangeRatesRefs,
       })
     >;
 typedef $$LedgerAccountsTableCreateCompanionBuilder =
@@ -13717,6 +14553,32 @@ final class $$SalaryAllocationsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $SalaryAllocationDetailsTable,
+    List<SalaryAllocationDetail>
+  >
+  _salaryAllocationDetailsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.salaryAllocationDetails,
+        aliasName:
+            'salary_allocations__id__salary_allocation_details__allocation_id',
+      );
+
+  $$SalaryAllocationDetailsTableProcessedTableManager
+  get salaryAllocationDetailsRefs {
+    final manager = $$SalaryAllocationDetailsTableTableManager(
+      $_db,
+      $_db.salaryAllocationDetails,
+    ).filter((f) => f.allocationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _salaryAllocationDetailsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$SalaryAllocationsTableFilterComposer
@@ -13765,6 +14627,32 @@ class $$SalaryAllocationsTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> salaryAllocationDetailsRefs(
+    Expression<bool> Function($$SalaryAllocationDetailsTableFilterComposer f) f,
+  ) {
+    final $$SalaryAllocationDetailsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salaryAllocationDetails,
+          getReferencedColumn: (t) => t.allocationId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalaryAllocationDetailsTableFilterComposer(
+                $db: $db,
+                $table: $db.salaryAllocationDetails,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -13838,6 +14726,33 @@ class $$SalaryAllocationsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> salaryAllocationDetailsRefs<T extends Object>(
+    Expression<T> Function($$SalaryAllocationDetailsTableAnnotationComposer a)
+    f,
+  ) {
+    final $$SalaryAllocationDetailsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.salaryAllocationDetails,
+          getReferencedColumn: (t) => t.allocationId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalaryAllocationDetailsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salaryAllocationDetails,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$SalaryAllocationsTableTableManager
@@ -13853,7 +14768,10 @@ class $$SalaryAllocationsTableTableManager
           $$SalaryAllocationsTableUpdateCompanionBuilder,
           (SalaryAllocation, $$SalaryAllocationsTableReferences),
           SalaryAllocation,
-          PrefetchHooks Function({bool salaryExecutionsRefs})
+          PrefetchHooks Function({
+            bool salaryExecutionsRefs,
+            bool salaryAllocationDetailsRefs,
+          })
         > {
   $$SalaryAllocationsTableTableManager(
     _$LedgerDatabase db,
@@ -13903,39 +14821,64 @@ class $$SalaryAllocationsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({salaryExecutionsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (salaryExecutionsRefs) db.salaryExecutions,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (salaryExecutionsRefs)
-                    await $_getPrefetchedDataByColumns<
-                      SalaryAllocation,
-                      $SalaryAllocationsTable,
-                      SalaryExecution,
-                      $SalaryExecutionsTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$SalaryAllocationsTableReferences
-                          ._salaryExecutionsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$SalaryAllocationsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).salaryExecutionsRefs,
-                      currentColumn: 'id',
-                      referencedColumn: 'allocation_id',
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                salaryExecutionsRefs = false,
+                salaryAllocationDetailsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (salaryExecutionsRefs) db.salaryExecutions,
+                    if (salaryAllocationDetailsRefs) db.salaryAllocationDetails,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (salaryExecutionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          SalaryAllocation,
+                          $SalaryAllocationsTable,
+                          SalaryExecution,
+                          $SalaryExecutionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SalaryAllocationsTableReferences
+                              ._salaryExecutionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SalaryAllocationsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salaryExecutionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'allocation_id',
+                          typedResults: items,
+                        ),
+                      if (salaryAllocationDetailsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          SalaryAllocation,
+                          $SalaryAllocationsTable,
+                          SalaryAllocationDetail,
+                          $SalaryAllocationDetailsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SalaryAllocationsTableReferences
+                              ._salaryAllocationDetailsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SalaryAllocationsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).salaryAllocationDetailsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'allocation_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -13952,7 +14895,10 @@ typedef $$SalaryAllocationsTableProcessedTableManager =
       $$SalaryAllocationsTableUpdateCompanionBuilder,
       (SalaryAllocation, $$SalaryAllocationsTableReferences),
       SalaryAllocation,
-      PrefetchHooks Function({bool salaryExecutionsRefs})
+      PrefetchHooks Function({
+        bool salaryExecutionsRefs,
+        bool salaryAllocationDetailsRefs,
+      })
     >;
 typedef $$SalaryExecutionsTableCreateCompanionBuilder =
     SalaryExecutionsCompanion Function({
@@ -21534,6 +22480,740 @@ typedef $$GoldEventsTableProcessedTableManager =
       GoldEvent,
       PrefetchHooks Function({bool pieceId, bool journalId})
     >;
+typedef $$SalaryAllocationDetailsTableCreateCompanionBuilder =
+    SalaryAllocationDetailsCompanion Function({
+      Value<int> allocationId,
+      Value<AllocationCategory?> category,
+      Value<String?> transferJson,
+    });
+typedef $$SalaryAllocationDetailsTableUpdateCompanionBuilder =
+    SalaryAllocationDetailsCompanion Function({
+      Value<int> allocationId,
+      Value<AllocationCategory?> category,
+      Value<String?> transferJson,
+    });
+
+final class $$SalaryAllocationDetailsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $SalaryAllocationDetailsTable,
+          SalaryAllocationDetail
+        > {
+  $$SalaryAllocationDetailsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SalaryAllocationsTable _allocationIdTable(_$LedgerDatabase db) =>
+      db.salaryAllocations.createAlias(
+        'salary_allocation_details__allocation_id__salary_allocations__id',
+      );
+
+  $$SalaryAllocationsTableProcessedTableManager get allocationId {
+    final $_column = $_itemColumn<int>('allocation_id')!;
+
+    final manager = $$SalaryAllocationsTableTableManager(
+      $_db,
+      $_db.salaryAllocations,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_allocationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalaryAllocationDetailsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $SalaryAllocationDetailsTable> {
+  $$SalaryAllocationDetailsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnWithTypeConverterFilters<
+    AllocationCategory?,
+    AllocationCategory,
+    String
+  >
+  get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get transferJson => $composableBuilder(
+    column: $table.transferJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$SalaryAllocationsTableFilterComposer get allocationId {
+    final $$SalaryAllocationsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.allocationId,
+      referencedTable: $db.salaryAllocations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryAllocationsTableFilterComposer(
+            $db: $db,
+            $table: $db.salaryAllocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryAllocationDetailsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $SalaryAllocationDetailsTable> {
+  $$SalaryAllocationDetailsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get transferJson => $composableBuilder(
+    column: $table.transferJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$SalaryAllocationsTableOrderingComposer get allocationId {
+    final $$SalaryAllocationsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.allocationId,
+      referencedTable: $db.salaryAllocations,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SalaryAllocationsTableOrderingComposer(
+            $db: $db,
+            $table: $db.salaryAllocations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryAllocationDetailsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $SalaryAllocationDetailsTable> {
+  $$SalaryAllocationDetailsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumnWithTypeConverter<AllocationCategory?, String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<String> get transferJson => $composableBuilder(
+    column: $table.transferJson,
+    builder: (column) => column,
+  );
+
+  $$SalaryAllocationsTableAnnotationComposer get allocationId {
+    final $$SalaryAllocationsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.allocationId,
+          referencedTable: $db.salaryAllocations,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SalaryAllocationsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.salaryAllocations,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$SalaryAllocationDetailsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $SalaryAllocationDetailsTable,
+          SalaryAllocationDetail,
+          $$SalaryAllocationDetailsTableFilterComposer,
+          $$SalaryAllocationDetailsTableOrderingComposer,
+          $$SalaryAllocationDetailsTableAnnotationComposer,
+          $$SalaryAllocationDetailsTableCreateCompanionBuilder,
+          $$SalaryAllocationDetailsTableUpdateCompanionBuilder,
+          (SalaryAllocationDetail, $$SalaryAllocationDetailsTableReferences),
+          SalaryAllocationDetail,
+          PrefetchHooks Function({bool allocationId})
+        > {
+  $$SalaryAllocationDetailsTableTableManager(
+    _$LedgerDatabase db,
+    $SalaryAllocationDetailsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalaryAllocationDetailsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$SalaryAllocationDetailsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SalaryAllocationDetailsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> allocationId = const Value.absent(),
+                Value<AllocationCategory?> category = const Value.absent(),
+                Value<String?> transferJson = const Value.absent(),
+              }) => SalaryAllocationDetailsCompanion(
+                allocationId: allocationId,
+                category: category,
+                transferJson: transferJson,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> allocationId = const Value.absent(),
+                Value<AllocationCategory?> category = const Value.absent(),
+                Value<String?> transferJson = const Value.absent(),
+              }) => SalaryAllocationDetailsCompanion.insert(
+                allocationId: allocationId,
+                category: category,
+                transferJson: transferJson,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $SalaryAllocationDetailsTable,
+                    SalaryAllocationDetail
+                  >(table),
+                  $$SalaryAllocationDetailsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({allocationId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (allocationId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.allocationId,
+                        referencedTable:
+                            $$SalaryAllocationDetailsTableReferences
+                                ._allocationIdTable(db),
+                        referencedColumn:
+                            $$SalaryAllocationDetailsTableReferences
+                                ._allocationIdTable(db)
+                                .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SalaryAllocationDetailsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $SalaryAllocationDetailsTable,
+      SalaryAllocationDetail,
+      $$SalaryAllocationDetailsTableFilterComposer,
+      $$SalaryAllocationDetailsTableOrderingComposer,
+      $$SalaryAllocationDetailsTableAnnotationComposer,
+      $$SalaryAllocationDetailsTableCreateCompanionBuilder,
+      $$SalaryAllocationDetailsTableUpdateCompanionBuilder,
+      (SalaryAllocationDetail, $$SalaryAllocationDetailsTableReferences),
+      SalaryAllocationDetail,
+      PrefetchHooks Function({bool allocationId})
+    >;
+typedef $$SalaryExchangeRatesTableCreateCompanionBuilder =
+    SalaryExchangeRatesCompanion Function({
+      required String currency,
+      required String rate,
+      Value<int> rowid,
+    });
+typedef $$SalaryExchangeRatesTableUpdateCompanionBuilder =
+    SalaryExchangeRatesCompanion Function({
+      Value<String> currency,
+      Value<String> rate,
+      Value<int> rowid,
+    });
+
+final class $$SalaryExchangeRatesTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $SalaryExchangeRatesTable,
+          SalaryExchangeRate
+        > {
+  $$SalaryExchangeRatesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CurrenciesTable _currencyTable(_$LedgerDatabase db) => db.currencies
+      .createAlias('salary_exchange_rates__currency__currencies__code');
+
+  $$CurrenciesTableProcessedTableManager get currency {
+    final $_column = $_itemColumn<String>('currency')!;
+
+    final manager = $$CurrenciesTableTableManager(
+      $_db,
+      $_db.currencies,
+    ).filter((f) => f.code.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_currencyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SalaryExchangeRatesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $SalaryExchangeRatesTable> {
+  $$SalaryExchangeRatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get rate => $composableBuilder(
+    column: $table.rate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurrenciesTableFilterComposer get currency {
+    final $$CurrenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryExchangeRatesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $SalaryExchangeRatesTable> {
+  $$SalaryExchangeRatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get rate => $composableBuilder(
+    column: $table.rate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurrenciesTableOrderingComposer get currency {
+    final $$CurrenciesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableOrderingComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryExchangeRatesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $SalaryExchangeRatesTable> {
+  $$SalaryExchangeRatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get rate =>
+      $composableBuilder(column: $table.rate, builder: (column) => column);
+
+  $$CurrenciesTableAnnotationComposer get currency {
+    final $$CurrenciesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SalaryExchangeRatesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $SalaryExchangeRatesTable,
+          SalaryExchangeRate,
+          $$SalaryExchangeRatesTableFilterComposer,
+          $$SalaryExchangeRatesTableOrderingComposer,
+          $$SalaryExchangeRatesTableAnnotationComposer,
+          $$SalaryExchangeRatesTableCreateCompanionBuilder,
+          $$SalaryExchangeRatesTableUpdateCompanionBuilder,
+          (SalaryExchangeRate, $$SalaryExchangeRatesTableReferences),
+          SalaryExchangeRate,
+          PrefetchHooks Function({bool currency})
+        > {
+  $$SalaryExchangeRatesTableTableManager(
+    _$LedgerDatabase db,
+    $SalaryExchangeRatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SalaryExchangeRatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SalaryExchangeRatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$SalaryExchangeRatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> currency = const Value.absent(),
+                Value<String> rate = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SalaryExchangeRatesCompanion(
+                currency: currency,
+                rate: rate,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String currency,
+                required String rate,
+                Value<int> rowid = const Value.absent(),
+              }) => SalaryExchangeRatesCompanion.insert(
+                currency: currency,
+                rate: rate,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SalaryExchangeRatesTable, SalaryExchangeRate>(
+                    table,
+                  ),
+                  $$SalaryExchangeRatesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({currency = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (currency) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.currency,
+                        referencedTable: $$SalaryExchangeRatesTableReferences
+                            ._currencyTable(db),
+                        referencedColumn: $$SalaryExchangeRatesTableReferences
+                            ._currencyTable(db)
+                            .code,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SalaryExchangeRatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $SalaryExchangeRatesTable,
+      SalaryExchangeRate,
+      $$SalaryExchangeRatesTableFilterComposer,
+      $$SalaryExchangeRatesTableOrderingComposer,
+      $$SalaryExchangeRatesTableAnnotationComposer,
+      $$SalaryExchangeRatesTableCreateCompanionBuilder,
+      $$SalaryExchangeRatesTableUpdateCompanionBuilder,
+      (SalaryExchangeRate, $$SalaryExchangeRatesTableReferences),
+      SalaryExchangeRate,
+      PrefetchHooks Function({bool currency})
+    >;
+typedef $$RemittanceExchangeRatesTableCreateCompanionBuilder =
+    RemittanceExchangeRatesCompanion Function({
+      Value<int> entryId,
+      required String rate,
+    });
+typedef $$RemittanceExchangeRatesTableUpdateCompanionBuilder =
+    RemittanceExchangeRatesCompanion Function({
+      Value<int> entryId,
+      Value<String> rate,
+    });
+
+class $$RemittanceExchangeRatesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $RemittanceExchangeRatesTable> {
+  $$RemittanceExchangeRatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get rate => $composableBuilder(
+    column: $table.rate,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RemittanceExchangeRatesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $RemittanceExchangeRatesTable> {
+  $$RemittanceExchangeRatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get rate => $composableBuilder(
+    column: $table.rate,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RemittanceExchangeRatesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $RemittanceExchangeRatesTable> {
+  $$RemittanceExchangeRatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get rate =>
+      $composableBuilder(column: $table.rate, builder: (column) => column);
+}
+
+class $$RemittanceExchangeRatesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $RemittanceExchangeRatesTable,
+          RemittanceExchangeRate,
+          $$RemittanceExchangeRatesTableFilterComposer,
+          $$RemittanceExchangeRatesTableOrderingComposer,
+          $$RemittanceExchangeRatesTableAnnotationComposer,
+          $$RemittanceExchangeRatesTableCreateCompanionBuilder,
+          $$RemittanceExchangeRatesTableUpdateCompanionBuilder,
+          (
+            RemittanceExchangeRate,
+            BaseReferences<
+              _$LedgerDatabase,
+              $RemittanceExchangeRatesTable,
+              RemittanceExchangeRate
+            >,
+          ),
+          RemittanceExchangeRate,
+          PrefetchHooks Function()
+        > {
+  $$RemittanceExchangeRatesTableTableManager(
+    _$LedgerDatabase db,
+    $RemittanceExchangeRatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemittanceExchangeRatesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$RemittanceExchangeRatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$RemittanceExchangeRatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback: ({
+            Value<int> entryId = const Value.absent(),
+            Value<String> rate = const Value.absent(),
+          }) => RemittanceExchangeRatesCompanion(entryId: entryId, rate: rate),
+          createCompanionCallback:
+              ({
+                Value<int> entryId = const Value.absent(),
+                required String rate,
+              }) => RemittanceExchangeRatesCompanion.insert(
+                entryId: entryId,
+                rate: rate,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $RemittanceExchangeRatesTable,
+                    RemittanceExchangeRate
+                  >(table),
+                  BaseReferences<
+                    _$LedgerDatabase,
+                    $RemittanceExchangeRatesTable,
+                    RemittanceExchangeRate
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RemittanceExchangeRatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $RemittanceExchangeRatesTable,
+      RemittanceExchangeRate,
+      $$RemittanceExchangeRatesTableFilterComposer,
+      $$RemittanceExchangeRatesTableOrderingComposer,
+      $$RemittanceExchangeRatesTableAnnotationComposer,
+      $$RemittanceExchangeRatesTableCreateCompanionBuilder,
+      $$RemittanceExchangeRatesTableUpdateCompanionBuilder,
+      (
+        RemittanceExchangeRate,
+        BaseReferences<
+          _$LedgerDatabase,
+          $RemittanceExchangeRatesTable,
+          RemittanceExchangeRate
+        >,
+      ),
+      RemittanceExchangeRate,
+      PrefetchHooks Function()
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -21593,4 +23273,16 @@ class $LedgerDatabaseManager {
       $$GoldSalesTableTableManager(_db, _db.goldSales);
   $$GoldEventsTableTableManager get goldEvents =>
       $$GoldEventsTableTableManager(_db, _db.goldEvents);
+  $$SalaryAllocationDetailsTableTableManager get salaryAllocationDetails =>
+      $$SalaryAllocationDetailsTableTableManager(
+        _db,
+        _db.salaryAllocationDetails,
+      );
+  $$SalaryExchangeRatesTableTableManager get salaryExchangeRates =>
+      $$SalaryExchangeRatesTableTableManager(_db, _db.salaryExchangeRates);
+  $$RemittanceExchangeRatesTableTableManager get remittanceExchangeRates =>
+      $$RemittanceExchangeRatesTableTableManager(
+        _db,
+        _db.remittanceExchangeRates,
+      );
 }

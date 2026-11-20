@@ -61,3 +61,11 @@ class RemittanceFamilyPayments extends Table {
   @override
   Set<Column<Object>> get primaryKey => {entryId};
 }
+
+class RemittanceExchangeRates extends Table {
+  IntColumn get entryId => integer().references(RemittanceEvents, #entryId)();
+  TextColumn get rate => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {entryId};
+}

@@ -469,12 +469,13 @@ void main() {
              AND name NOT LIKE 'gold_%'
              AND name NOT IN ('dashain_plans', 'annual_tickets', 'travel_goals', 'travel_contributions')""",
       ))
-        row['name'] as String: [
-          for (final item in raw.select(
-            'SELECT * FROM "${row['name']}" ORDER BY rowid',
-          ))
-            Map<String, Object?>.from(item),
-        ],
+        if (!smartTransferTables.contains(row['name']))
+          row['name'] as String: [
+            for (final item in raw.select(
+              'SELECT * FROM "${row['name']}" ORDER BY rowid',
+            ))
+              Map<String, Object?>.from(item),
+          ],
     };
 
     final old = sqlite.sqlite3.open(file.path);

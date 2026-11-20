@@ -410,7 +410,7 @@ void main() {
         raw.close();
       }
       await open();
-      expect(db.schemaVersion, 8);
+      expect(db.schemaVersion, 9);
       expect((await ledger.balance(account)).minor, 1280);
       expect((await ledger.personalLeave.overview()).entries.single.id, leave);
       await plan(2024, day(2024, 10, 12));

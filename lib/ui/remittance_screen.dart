@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
+import '../finance/transfer_quote.dart';
 import 'amount.dart';
 import 'date_picker.dart';
 import 'digits.dart';
@@ -53,7 +54,7 @@ class _RemittanceScreenState extends State<RemittanceScreen> {
   Future<void> _open(int id) async {
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (_) => _RemittanceDetail(ledger: widget.ledger, id: id),
+        builder: (_) => RemittanceDetail(ledger: widget.ledger, id: id),
       ),
     );
     if (mounted) setState(() => _items = widget.ledger.remittances());
@@ -269,16 +270,16 @@ class _PlanDialogState extends State<_PlanDialog> {
   );
 }
 
-class _RemittanceDetail extends StatefulWidget {
-  const _RemittanceDetail({required this.ledger, required this.id});
+class RemittanceDetail extends StatefulWidget {
+  const RemittanceDetail({required this.ledger, required this.id, super.key});
   final Ledger ledger;
   final int id;
 
   @override
-  State<_RemittanceDetail> createState() => _RemittanceDetailState();
+  State<RemittanceDetail> createState() => _RemittanceDetailState();
 }
 
-class _RemittanceDetailState extends State<_RemittanceDetail> {
+class _RemittanceDetailState extends State<RemittanceDetail> {
   late Future<RemittanceView> _data = widget.ledger.remittance(widget.id);
   bool _busy = false;
 
@@ -311,6 +312,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
         kind: kind,
         correction: original != null,
         reverse: reverse,
+        currentRate: original?.actualRate,
         save: (input) async {
           if (original == null) {
             await widget.ledger.recordRemittanceEvent(
@@ -322,6 +324,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
               effectiveAt: input.date,
               feeMinor: input.fee,
               sourceMinor: input.share,
+              actualRate: input.actualRate,
               receiptEntryId: receiptId,
             );
           } else if (reverse) {
@@ -341,6 +344,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
               effectiveAt: input.date,
               feeMinor: input.fee,
               sourceMinor: input.share,
+              actualRate: input.actualRate,
             );
           }
         },
@@ -547,6 +551,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
             subtitle: Text(
               '${_date(DateTime.fromMicrosecondsSinceEpoch(row.movement.entry.effectiveMicros))}'
               ' · ${latinDigits(row.event.evidence)}'
+              '${row.actualRate == null ? '' : '\nالسعر الفعلي: ${row.actualRate} ${view.record.destinationCurrency} لكل 1 ${view.source.currency}'}'
               '${row.movement.entry.correctionOf == null ? '' : ' · تصحيح #${row.movement.entry.correctionOf}'}'
               '${row.reversal == null ? '' : '\nعكس #${row.reversal!.id} · ${latinDigits(row.reversal!.reason ?? '')}'}',
             ),
@@ -651,6 +656,7 @@ typedef _EventInput = ({
   int minor,
   int? fee,
   int? share,
+  String? actualRate,
   String evidence,
   String reason,
   DateTime date,
@@ -663,11 +669,13 @@ class _EventDialog extends StatefulWidget {
     required this.correction,
     required this.reverse,
     required this.save,
+    this.currentRate,
   });
   final RemittanceView view;
   final RemittanceEventKind kind;
   final bool correction;
   final bool reverse;
+  final String? currentRate;
   final Future<void> Function(_EventInput) save;
 
   @override
@@ -677,6 +685,9 @@ class _EventDialog extends StatefulWidget {
 class _EventDialogState extends State<_EventDialog> {
   final _amount = TextEditingController();
   final _extra = TextEditingController();
+  late final _rate = TextEditingController(
+    text: widget.reverse ? null : widget.currentRate,
+  );
   final _evidence = TextEditingController();
   final _reason = TextEditingController();
   DateTime _day = DateUtils.dateOnly(DateTime.now());
@@ -693,7 +704,7 @@ class _EventDialogState extends State<_EventDialog> {
 
   @override
   void dispose() {
-    for (final controller in [_amount, _extra, _evidence, _reason]) {
+    for (final controller in [_amount, _extra, _rate, _evidence, _reason]) {
       controller.dispose();
     }
     super.dispose();
@@ -726,6 +737,11 @@ class _EventDialogState extends State<_EventDialog> {
       setState(() => _error = 'أدخل مبلغًا صالحًا بالعملة المعروضة.');
       return;
     }
+    final rate = latinAmount(_rate.text.trim());
+    if (rate.isNotEmpty && exchangeRateUnits(rate) == null) {
+      setState(() => _error = 'أدخل سعر صرف فعليًا صالحًا.');
+      return;
+    }
     setState(() {
       _error = null;
       _busy = true;
@@ -735,6 +751,7 @@ class _EventDialogState extends State<_EventDialog> {
         minor: minor,
         fee: _debit ? extra : null,
         share: _receipt ? extra : null,
+        actualRate: rate.isEmpty ? null : rate,
         evidence: _evidence.text,
         reason: _reason.text,
         date: _day,
@@ -779,6 +796,11 @@ class _EventDialogState extends State<_EventDialog> {
                   _debit
                       ? 'رسوم مضمّنة موثّقة، اختياري'
                       : 'حصة الخصم المثبتة · ${widget.view.source.currency}، اختياري',
+                ),
+              if (_receipt && _extraVisible)
+                _amountField(
+                  _rate,
+                  'السعر الفعلي · ${widget.view.record.destinationCurrency} لكل 1 ${widget.view.source.currency} (اختياري)',
                 ),
               TextField(
                 controller: _evidence,

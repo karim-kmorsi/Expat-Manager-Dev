@@ -3,9 +3,12 @@ import 'package:material_ui/material_ui.dart';
 import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
+import '../finance/transfer_quote.dart';
 import 'amount.dart';
 import 'date_picker.dart';
 import 'digits.dart';
+import 'remittance_screen.dart';
+import 'salary_transfer_dialog.dart';
 
 class SalaryScreen extends StatefulWidget {
   const SalaryScreen({
@@ -131,6 +134,11 @@ class _PlanPage extends StatefulWidget {
 class _PlanPageState extends State<_PlanPage> {
   late Future<SalaryPlanView> _future = ledger.salaryPlan(widget.salaryId);
   bool _busy = false;
+  late final Future<Map<String, int>> _scales = ledger.currencies().then(
+    (currencies) => {
+      for (final currency in currencies) currency.code: currency.scale,
+    },
+  );
 
   Ledger get ledger => widget.ledger;
 
@@ -155,17 +163,63 @@ class _PlanPageState extends State<_PlanPage> {
     SalaryDeposit salary, [
     SalaryAllocationView? item,
   ]) => _run(() async {
-    final result = await showDialog<({String label, int minor})>(
-      context: context,
-      builder: (_) => _AllocationDialog(scale: salary.scale, item: item),
-    );
+    final result =
+        await showDialog<
+          ({String label, int minor, AllocationCategory? category})
+        >(
+          context: context,
+          builder: (_) => _AllocationDialog(scale: salary.scale, item: item),
+        );
     if (result == null) return;
     if (item == null) {
-      await ledger.addSalaryAllocation(salary.id, result.label, result.minor);
+      await ledger.addSalaryAllocation(
+        salary.id,
+        result.label,
+        result.minor,
+        category: result.category,
+      );
     } else {
-      await ledger.updateSalaryAllocation(item.id, result.label, result.minor);
+      await ledger.updateSalaryAllocation(
+        item.id,
+        result.label,
+        result.minor,
+        category: result.category,
+      );
     }
   });
+
+  Future<void> _calculate(SalaryPlanView plan, [SalaryAllocationView? item]) =>
+      _run(() async {
+        final scales = await _scales;
+        final lastRates = await ledger.salaryExchangeRates();
+        if (!mounted) return;
+        final result = await showDialog<TransferPlan>(
+          context: context,
+          builder: (_) => SalaryTransferDialog(
+            available: plan.unallocated + (item?.planned ?? 0),
+            scales: scales,
+            lastRates: lastRates,
+            item: item,
+          ),
+        );
+        if (result == null) return;
+        const label = 'احتياجات التحويل';
+        if (item == null) {
+          await ledger.addSalaryAllocation(
+            plan.salary.id,
+            label,
+            0,
+            transfer: result,
+          );
+        } else {
+          await ledger.updateSalaryAllocation(
+            item.id,
+            label,
+            0,
+            transfer: result,
+          );
+        }
+      });
 
   Future<void> _link(SalaryDeposit salary, SalaryAllocationView item) =>
       _run(() async {
@@ -203,7 +257,7 @@ class _PlanPageState extends State<_PlanPage> {
   void _openMovement(int id) {
     Navigator.of(context).push<void>(
       MaterialPageRoute(
-        builder: (_) => _MovementPage(movement: ledger.salaryMovement(id)),
+        builder: (_) => _MovementPage(ledger: ledger, id: id),
       ),
     );
   }
@@ -228,8 +282,10 @@ class _PlanPageState extends State<_PlanPage> {
             children: [
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(latinDigits(salary.account)),
-                subtitle: Text(_date(context, salary.receivedOn)),
+                title: const Text('الراتب الفعلي'),
+                subtitle: Text(
+                  '${latinDigits(salary.account)} · ${_date(context, salary.receivedOn)}',
+                ),
                 trailing: _money(salary.minor, salary.scale, salary.currency),
                 onTap: () => _openMovement(salary.id),
               ),
@@ -256,14 +312,21 @@ class _PlanPageState extends State<_PlanPage> {
                   ('المتبقي للتنفيذ', plan.planned - plan.executed),
                 ]),
                 if (!salary.reversed)
-                  Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: FilledButton(
-                      onPressed: _busy ? null : () => _allocation(salary),
-                      child: const Text('إضافة بند'),
-                    ),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      FilledButton(
+                        onPressed: _busy ? null : () => _allocation(salary),
+                        child: const Text('إضافة توزيع'),
+                      ),
+                      if (salary.currency == usdCurrency)
+                        OutlinedButton(
+                          onPressed: _busy ? null : () => _calculate(plan),
+                          child: const Text('احسب التحويل المطلوب'),
+                        ),
+                    ],
                   ),
-                for (final item in plan.allocations) _item(salary, item),
+                for (final item in plan.allocations) _item(plan, item),
               ],
             ],
           );
@@ -272,7 +335,8 @@ class _PlanPageState extends State<_PlanPage> {
     ),
   );
 
-  Widget _item(SalaryDeposit salary, SalaryAllocationView item) {
+  Widget _item(SalaryPlanView plan, SalaryAllocationView item) {
+    final salary = plan.salary;
     final editable = !_busy && !salary.reversed;
     return Card(
       child: Padding(
@@ -289,6 +353,35 @@ class _PlanPageState extends State<_PlanPage> {
                 salaryProgress(item.planned, item.executed, item.confirmed),
               ),
             ),
+            if (item.category case final category?)
+              Text(allocationCategoryLabel(category)),
+            if (item.transfer case final transfer?)
+              FutureBuilder(
+                future: _scales,
+                builder: (context, snapshot) {
+                  final scales = snapshot.data;
+                  if (scales == null) return const SizedBox.shrink();
+                  final quote = transfer.calculate(scales);
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final need in transfer.needs)
+                        Text(
+                          '${allocationCategoryLabel(need.category)}'
+                          '${need.label.isEmpty ? '' : ' · ${latinDigits(need.label)}'}'
+                          ' · ${formatMinor(need.minor, scales[need.currency]!)} ${need.currency}',
+                        ),
+                      if (transfer.terms.isNotEmpty)
+                        Text(
+                          'الرسوم المقدّرة: ${formatMinor(quote.fee, salary.scale)} USD',
+                        ),
+                      for (final MapEntry(:key, :value)
+                          in transfer.terms.entries)
+                        Text('السعر التقديري: ${value.rate} $key لكل 1 USD'),
+                    ],
+                  );
+                },
+              ),
             _totals(salary, [
               ('المخطط', item.planned),
               ('المنفّذ', item.executed),
@@ -300,7 +393,9 @@ class _PlanPageState extends State<_PlanPage> {
                 if (item.executions.isEmpty && !salary.reversed) ...[
                   TextButton(
                     onPressed: editable
-                        ? () => _allocation(salary, item)
+                        ? () => item.transfer == null
+                              ? _allocation(salary, item)
+                              : _calculate(plan, item)
                         : null,
                     child: const Text('تعديل'),
                   ),
@@ -435,9 +530,19 @@ String _explain(Object error) {
   };
 }
 
-class _MovementPage extends StatelessWidget {
-  const _MovementPage({required this.movement});
-  final Future<SalaryMovement> movement;
+class _MovementPage extends StatefulWidget {
+  const _MovementPage({required this.ledger, required this.id});
+
+  final Ledger ledger;
+  final int id;
+
+  @override
+  State<_MovementPage> createState() => _MovementPageState();
+}
+
+class _MovementPageState extends State<_MovementPage> {
+  late final movement = widget.ledger.salaryMovement(widget.id);
+  late final remittance = widget.ledger.remittanceForEntry(widget.id);
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -464,6 +569,28 @@ class _MovementPage extends StatelessWidget {
               subtitle: Text(_date(context, date)),
               trailing: Text(data.reversed ? 'معكوس' : 'مسجّل'),
             ),
+            if (data.entry.kind.isRemittance)
+              FutureBuilder(
+                future: remittance,
+                builder: (context, snapshot) {
+                  final view = snapshot.data;
+                  if (view == null) return const SizedBox.shrink();
+                  return ListTile(
+                    title: const Text('تفاصيل التحويل الفعلي'),
+                    subtitle: Text(
+                      'المستلم: ${formatMinor(view.received, view.destinationScale)} ${view.record.destinationCurrency}',
+                    ),
+                    onTap: () => Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (_) => RemittanceDetail(
+                          ledger: widget.ledger,
+                          id: view.record.id,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             for (final line in data.lines)
               ListTile(
                 title: Text(switch (line.kind) {
@@ -580,6 +707,9 @@ class _AllocationDialog extends StatefulWidget {
 class _AllocationDialogState extends State<_AllocationDialog> {
   final _form = GlobalKey<FormState>();
   late final _label = TextEditingController(text: widget.item?.label);
+  late AllocationCategory? _category =
+      widget.item?.category ??
+      (widget.item == null ? AllocationCategory.personal : null);
   late final _amount = TextEditingController(
     text: widget.item == null
         ? null
@@ -596,14 +726,32 @@ class _AllocationDialogState extends State<_AllocationDialog> {
   @override
   Widget build(BuildContext context) => _dialog(
     context,
-    widget.item == null ? 'إضافة بند' : 'تعديل بند',
+    widget.item == null ? 'إضافة توزيع' : 'تعديل التوزيع',
     _form,
     [
-      _requiredField(_label, 'اسم البند', 100),
+      allocationCategoryField(
+        _category,
+        (value) => setState(() => _category = value),
+      ),
+      TextFormField(
+        controller: _label,
+        maxLength: 100,
+        decoration: InputDecoration(
+          labelText: _category == null
+              ? 'اسم البند'
+              : 'الوجهة أو الغرض (اختياري)',
+        ),
+        validator: (value) => _category == null && (value ?? '').trim().isEmpty
+            ? 'هذا الحقل مطلوب'
+            : null,
+      ),
       _amountField(_amount, widget.scale, 'المبلغ المخطط'),
     ],
     () => Navigator.pop(context, (
-      label: _label.text,
+      label: _label.text.trim().isEmpty
+          ? allocationCategoryLabel(_category!)
+          : _label.text,
+      category: _category,
       minor: parseMinor(_amount.text, widget.scale)!,
     )),
   );

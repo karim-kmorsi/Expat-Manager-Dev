@@ -48,6 +48,8 @@ typedef SalaryExecutionView = ({
 typedef SalaryAllocationView = ({
   int id,
   String label,
+  AllocationCategory? category,
+  TransferPlan? transfer,
   int planned,
   int executed,
   int confirmed,
@@ -184,6 +186,10 @@ extension SalaryLedger on Ledger {
     final rows = await _allocations(salaryId);
     final allocations = <SalaryAllocationView>[];
     for (final row in rows) {
+      final details = await (_db.select(
+        _db.salaryAllocationDetails,
+      )..where((item) => item.allocationId.equals(row.id))).getSingleOrNull();
+      final transferJson = details?.transferJson;
       final links = await _executions(row.id);
       final active = links.where((link) => !link.reversed);
       final executed = active.fold(0, (sum, link) => sum + link.minor);
@@ -193,6 +199,12 @@ extension SalaryLedger on Ledger {
       allocations.add((
         id: row.id,
         label: row.label,
+        category: details?.category,
+        transfer: transferJson == null
+            ? null
+            : TransferPlan.fromJson(
+                jsonDecode(transferJson) as Map<String, dynamic>,
+              ),
         planned: row.plannedMinor,
         executed: executed,
         confirmed: confirmed,
@@ -211,41 +223,109 @@ extension SalaryLedger on Ledger {
     );
   });
 
-  Future<int> addSalaryAllocation(int salaryId, String label, int minor) =>
-      _db.transaction(() async {
-        final salary = await _activePlan(salaryId);
-        final name = _allocationInput(label, minor);
-        await _checkBudget(salary, minor);
-        return _db
-            .into(_db.salaryAllocations)
-            .insert(
-              SalaryAllocationsCompanion.insert(
-                salaryId: salaryId,
-                label: name,
-                plannedMinor: minor,
-              ),
-            );
-      });
+  Future<int> addSalaryAllocation(
+    int salaryId,
+    String label,
+    int minor, {
+    AllocationCategory? category,
+    TransferPlan? transfer,
+  }) => _db.transaction(() async {
+    final salary = await _activePlan(salaryId);
+    final planned = await _plannedMinor(salary, minor, transfer);
+    final name = _allocationInput(label, planned);
+    await _checkBudget(salary, planned);
+    final id = await _db
+        .into(_db.salaryAllocations)
+        .insert(
+          SalaryAllocationsCompanion.insert(
+            salaryId: salaryId,
+            label: name,
+            plannedMinor: planned,
+          ),
+        );
+    await _saveAllocationDetails(id, category, transfer);
+    return id;
+  });
 
   Future<void> updateSalaryAllocation(
     int allocationId,
     String label,
-    int minor,
-  ) => _db.transaction(() async {
+    int minor, {
+    AllocationCategory? category,
+    TransferPlan? transfer,
+  }) => _db.transaction(() async {
     final allocation = await _allocation(allocationId);
     final salary = await _activePlan(allocation.salaryId);
-    final name = _allocationInput(label, minor);
     await _requireDraft(allocationId);
-    await _checkBudget(salary, minor, except: allocationId);
+    final planned = await _plannedMinor(salary, minor, transfer);
+    final name = _allocationInput(label, planned);
+    await _checkBudget(salary, planned, except: allocationId);
     await (_db.update(
       _db.salaryAllocations,
     )..where((a) => a.id.equals(allocationId))).write(
       SalaryAllocationsCompanion(
         label: Value(name),
-        plannedMinor: Value(minor),
+        plannedMinor: Value(planned),
       ),
     );
+    await _saveAllocationDetails(allocationId, category, transfer);
   });
+
+  Future<Map<String, String>> salaryExchangeRates() async => {
+    for (final row in await _db.select(_db.salaryExchangeRates).get())
+      row.currency: row.rate,
+  };
+
+  Future<int> _plannedMinor(
+    SalaryDeposit salary,
+    int minor,
+    TransferPlan? transfer,
+  ) async {
+    if (transfer == null) return minor;
+    if (salary.currency != usdCurrency) {
+      throw const SalaryException(SalaryIssue.invalidInput);
+    }
+    return transfer.calculate({
+      for (final currency in await currencies()) currency.code: currency.scale,
+    }).debit;
+  }
+
+  Future<void> _saveAllocationDetails(
+    int id,
+    AllocationCategory? category,
+    TransferPlan? transfer,
+  ) async {
+    if (category == null && transfer == null) {
+      await (_db.delete(
+        _db.salaryAllocationDetails,
+      )..where((row) => row.allocationId.equals(id))).go();
+      return;
+    }
+    await _db
+        .into(_db.salaryAllocationDetails)
+        .insertOnConflictUpdate(
+          SalaryAllocationDetail(
+            allocationId: id,
+            category: category,
+            transferJson: transfer == null
+                ? null
+                : jsonEncode(transfer.toJson()),
+          ),
+        );
+    if (transfer == null) return;
+    for (final currency
+        in transfer.needs.map((need) => need.currency).toSet()) {
+      if (currency == usdCurrency) continue;
+      await _db
+          .into(_db.salaryExchangeRates)
+          .insertOnConflictUpdate(
+            SalaryExchangeRate(
+              currency: currency,
+              rate: transfer.terms[currency]!.rate,
+            ),
+          );
+    }
+  }
 
   Future<void> deleteSalaryAllocation(int allocationId) =>
       _db.transaction(() async {
@@ -278,7 +358,11 @@ extension SalaryLedger on Ledger {
     }
 
     final movement = await salaryMovement(entryId);
-    final capacity = _movementCapacity(salary, movement);
+    final capacity = _movementCapacity(
+      salary,
+      movement,
+      includeRemittanceFee: await _hasTransferPlan(allocationId),
+    );
     if (movement.entry.kind == JournalKind.remittanceDebit &&
         await _remittanceHasRefundForDebit(entryId)) {
       throw const SalaryException(SalaryIssue.ineligibleMovement);
@@ -379,6 +463,7 @@ extension SalaryLedger on Ledger {
             )
             .get();
         final results = <ExecutionCandidate>[];
+        final includeFee = await _hasTransferPlan(allocationId);
         for (final row in rows) {
           final entryId = row.read<int>('id');
           final movement = await salaryMovement(entryId);
@@ -388,13 +473,25 @@ extension SalaryLedger on Ledger {
             continue;
           }
           final available =
-              _movementCapacity(salary, movement) - await _linkedMinor(entryId);
+              _movementCapacity(
+                salary,
+                movement,
+                includeRemittanceFee: includeFee,
+              ) -
+              await _linkedMinor(entryId);
           if (available > 0) {
             results.add((movement: movement, available: available));
           }
         }
         return results;
       });
+
+  Future<bool> _hasTransferPlan(int allocationId) async =>
+      (await (_db.select(_db.salaryAllocationDetails)
+                ..where((row) => row.allocationId.equals(allocationId)))
+              .getSingleOrNull())
+          ?.transferJson !=
+      null;
 
   Future<List<QueryRow>> _salaryRows([int? id]) => _db
       .customSelect(
@@ -554,7 +651,11 @@ bool _eligibleMovement(SalaryDeposit salary, SalaryMovement movement) {
       (credit.kind.isPersonal || credit.kind == AccountKind.expense);
 }
 
-int _movementCapacity(SalaryDeposit salary, SalaryMovement movement) {
+int _movementCapacity(
+  SalaryDeposit salary,
+  SalaryMovement movement, {
+  required bool includeRemittanceFee,
+}) {
   if (movement.reversed) {
     throw const SalaryException(SalaryIssue.reversedMovement);
   }
@@ -562,9 +663,14 @@ int _movementCapacity(SalaryDeposit salary, SalaryMovement movement) {
     throw const SalaryException(SalaryIssue.ineligibleMovement);
   }
   if (movement.entry.kind == JournalKind.remittanceDebit) {
-    return movement.lines
-        .singleWhere((line) => line.kind == AccountKind.remittanceTransit)
-        .minor;
+    // Existing allocations reserve principal. Calculated plans reserve gross debit.
+    return includeRemittanceFee
+        ? -movement.lines
+              .singleWhere((line) => line.accountId == salary.accountId)
+              .minor
+        : movement.lines
+              .singleWhere((line) => line.kind == AccountKind.remittanceTransit)
+              .minor;
   }
   return -movement.lines.first.minor;
 }
