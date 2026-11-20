@@ -9,8 +9,8 @@ All values are fictional fixtures. Scenarios below describe product acceptance. 
 5. Direct family remittance counts as support expense, unlike own-account remittance.
 6. NPR cash and bank/card expenses post once to the correct account, including daily aggregation.
 7. Earmark cash for travel without duplicating money; changing target/date recalculates the suggestion.
-8. Thirty annual days Jan–Dec with zero carryover; Fri/Sat in approved range count; unknown public-holiday edge cases remain configurable/unresolved.
-9. Casual 13 and sick 15 recorded; sick leave report-status recorded without requiring personal medical files.
+8. Verify the current annual leave setting of 30 paid calendar days per January–December year with no carryover. Verify that Fridays and Saturdays inside an approved annual leave period count against the balance. Verify offline planning for a specific date, a future period and an occasion using the balance, holiday calendar and Friday/Saturday weekly rest days. Where a result depends on an unresolved rule, show it as provisional.
+9. Verify 13 casual days per year, 15 sick days per year and one employer-funded round trip per year for the employee under the current settings. Verify that sick leave records capture the presence or status of a medical report without storing sensitive medical documents. Verify that requested, approved and used leave remain distinct. Verify that users can edit leave rules and travel entitlement settings, and that edits to leave rules retain previous versions and their effective dates.
 10. Gold item can lack cost and have holder separate from owner; Thndr manual valuation does not create bank cash.
 11. Offline entry persists across app restart (M1 and M2). In M3, an encrypted backup imports to a clean installation with matching totals, including all supported source schema versions.
 12. No real financial data, beneficiary details or keys in repository or test samples; verify no unintended financial-data network traffic.

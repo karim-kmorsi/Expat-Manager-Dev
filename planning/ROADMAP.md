@@ -7,13 +7,13 @@ Task IDs refer to [tasks.csv](tasks.csv). This file records the evidence and seq
 | Task | Documentation disposition | Evidence or remaining condition |
 |---|---|---|
 | T-001 | Scope complete | Approved v0.1 boundaries, Android/offline, Arabic RTL and currency assumptions in [Requirements](../docs/REQUIREMENTS.md) and [Decisions](../docs/DECISIONS.md) |
-| T-002 | Open, awaiting official source | Confirm employer leave counting and carryover, approved calendar, exceptions and employee flight eligibility. Record the primary reference. Keep uncertain outputs provisional |
+| T-002 | Approved personal rules documented | The [leave requirements](../docs/REQUIREMENTS.md#personal-leave-and-travel-rules-t-002) record the settings approved by the user and list unresolved details separately |
 | T-003 | Model approved, operational inputs open | [Architecture](../docs/ARCHITECTURE.md) defines the ledger, pending remittance, cancellation, corrections and manual matching. Confirm real account roles and remittance routes, evidence for destination receipts, and effective dates of corrections affecting reconciled periods |
 | T-004 | Design complete with conditional technical evidence | [Security](../docs/SECURITY.md) defines encryption, key handling and recovery. T-006 exercised the approach. Product implementation and physical-device evidence remain under M1 and M3 |
 | T-005 | Wireflow documented; affected cases await T-003 | See the salary-day wireflow below. The T-003 operational inputs must be confirmed before accepting affected settlement and correction paths |
 | T-006 | Isolated feasibility complete, accepted with conditions | [Toolchain and evidence](../docs/TOOLCHAIN.md) cover three final emulator runs. Physical arm64, physical 16 KB and full failure/migration coverage remain open. The separately authorized probe did not depend on the product salary wireflow |
 
-Full M0 exit requires scope and design acceptance, a recorded employer source and resolution of critical financial reconciliation rules. **Proposed finance-only gate:** the owner may separately authorize the synthetic-data financial foundation using the approved design and conditional T-006 baseline. T-002 can remain open during that work. Unresolved T-003 inputs block the affected remittance and reconciled-period correction workflows. Hold those substeps until their inputs are confirmed. This proposal requires owner approval under D-007 before any product coding.
+Full M0 exit requires scope and design acceptance, documented user-approved personal leave settings and resolution of critical financial reconciliation rules. **Proposed finance-only gate:** the owner may separately authorize the synthetic-data financial foundation using the approved design and conditional T-006 baseline. Unresolved T-003 inputs block the affected remittance and reconciled-period correction workflows. Hold those substeps until their inputs are confirmed. This proposal requires owner approval under D-007 before any product coding.
 
 ### T-005 salary-day wireflow
 
@@ -36,11 +36,11 @@ Start only after the owner approves the applicable M0 path and separately author
 | 5. T-010 — USD cash withdrawals | T-008 journal and approved configurable withdrawal warning | Bank-to-cash transfer and monthly warning | USD 300 moves between personal accounts without spending. USD 550 in executed monthly withdrawals triggers the example USD 500 warning | Manual withdrawal recording and threshold tests |
 | 6. T-011 — Reconciliation and offline regression | T-007 through T-010 and confirmed T-003 effective-date treatment for reconciled-period corrections | Manual statement matching, variance, linked reversal/replacement with re-matching, and recorded Android results | Keep history, balances and unmatched items correct through retry, correction and app restart. Run the salary-day fixture offline. Keep the affected correction path gated while its rule is open | Manual reconciliation and regression. Escalate a policy choice instead of inferring it |
 
-**M1 exit:** approved salary-day paths balance, retain data across Android restart and pass offline with synthetic fixtures. The earlier T-006 encryption and restore check remains feasibility evidence.
+**M1 exit:** approved salary-day paths balance, retain data across Android restart and pass offline with synthetic fixtures. [T-011 acceptance](../docs/T-011-ACCEPTANCE.md) remains conditional while T-003 decisions and physical-device validation are open. The earlier T-006 encryption and restore check remains feasibility evidence.
 
 ## M2 — Core v0.1 workflows
 
-T-012 NPR expenses, T-013 leave ledger/calendar, T-014 leave savings and flight, T-015 physical gold and T-016 Thndr manual summary. T-013 and dependent leave/flight behavior require the verified T-002 inputs.
+T-012 NPR expenses, T-013 personal leave balances, calendar and planning, T-014 leave savings and flight, T-015 physical gold and T-016 Thndr manual summary. T-013 uses the documented user-approved settings from T-002 and the local storage foundation from T-008. A pending user decision affects only the behavior that depends on it. T-014 builds on T-013 and T-007.
 
 **M2 exit:** in-scope financial, leave, savings and asset workflows meet their [acceptance scenarios](../docs/ACCEPTANCE.md) with synthetic data, including offline persistence. Full backup and restore acceptance is evaluated under T-017 in M3.
 

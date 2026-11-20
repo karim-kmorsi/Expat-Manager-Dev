@@ -1,6 +1,6 @@
 task_id,milestone,title,priority,depends_on,status,acceptance_criteria
 T-001,M0,Approve requirements and exclusions,P0,,Scope documented,Approved v0.1 scope and exclusions recorded
-T-002,M0,Verify employer leave rules,P0,,Open: official employer reference,Primary reference supports leave counting carryover holidays and flight eligibility
+T-002,M0,Document personal leave rules,P0,,Approved personal rules documented,Record editable user-approved leave and travel settings and list unresolved details separately in docs/REQUIREMENTS.md
 T-003,M0,Approve financial account and transfer model,P0,T-001,Model approved; operational inputs open,Confirm account routes receipt evidence and reconciled-period correction dates; reconcile without duplicate counting
 T-004,M0,Approve backup and security design,P0,T-001,Design documented; feasibility accepted conditionally,Document encrypted storage keys portable backup and transactional recovery; full validation in T-017
 T-005,M0,Define salary-day wireflow,P0,T-001;T-003,Wireflow documented; affected T-003 inputs open,Represent salary plan execution pending settlement confirmation and correction in Arabic RTL
@@ -9,9 +9,9 @@ T-007,M1,Salary plan allocation lifecycle,P0,T-005;T-008,Proposed,Record salary 
 T-008,M1,Account transfer and FX ledger,P0,T-003;T-004;T-006,Proposed,After applicable M0 gate and separate authorization verify encrypted bootstrap and journal balances in 3 currencies
 T-009,M1,Grouped Egypt remittance purposes,P0,T-003;T-007;T-008,Proposed,Confirm routes and receipt evidence; one debit with pending settlement multiple purposes cancellation and linked refunds
 T-010,M1,USD cash withdrawal and ceiling,P0,T-008,Proposed,Transfer not spending; warning correct
-T-011,M1,Offline persistence and reconciliation tests,P0,T-003;T-007;T-008;T-009;T-010,Proposed,Confirm correction dates; verify statement matching and salary fixtures offline across restart
+T-011,M1,Offline persistence and reconciliation tests,P0,T-003;T-007;T-008;T-009;T-010,Conditional acceptance: T-003 and physical-device validation open,Confirm correction dates; verify statement matching and salary fixtures offline across restart
 T-012,M2,Nepal mixed expense recording,P1,T-008,Proposed,NPR cash and card entries accurate
-T-013,M2,Leave balances and calendar,P1,T-002;T-008,Proposed,Entitlements and weekend counting verified
+T-013,M2,"Personal leave balances, calendar and planning",P1,T-002;T-008,Proposed,"Use the documented T-002 settings and T-008 storage to plan offline for a specific date, a future period or an occasion. Flag results that depend on undecided rules."
 T-014,M2,Travel ticket and leave savings,P1,T-007;T-013,Proposed,Flexible target without double count
 T-015,M2,Gold item and custody register,P1,T-008,Proposed,Piece records and ownership distinct
 T-016,M2,Thndr manual portfolio summary,P2,T-008,Proposed,Dated snapshots not cash

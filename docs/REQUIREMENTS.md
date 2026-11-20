@@ -1,14 +1,31 @@
 # Requirements — v0.1 scope baseline
 
 ## Goal
-Offline-first Android personal expatriate manager encompassing Work • Leave • Money • Home. Focus on simple salary-day planning and accurate leave, saving and asset tracking. The interface is Arabic-first with right-to-left layout. Product implementation requires a separate authorization and the applicable M0 gate.
+Personal Android app for managing expatriate affairs across Work • Leave • Money • Home. It runs locally without an internet connection and covers salary-day planning, leave, savings and assets. The interface is Arabic-first with right-to-left layout. Product implementation requires a separate authorization and the applicable M0 gate.
 
-## Confirmed leave and work rules
-- Annual leave: 30 paid calendar days per January–December year; no carryover; Fridays and Saturdays count when within leave dates.
-- Casual leave: 13 days/year. Sick leave: 15 days/year with hospital report. Counting details/carryover for both require confirmation.
-- Fridays and Saturdays are weekends.
-- Employer-funded employee-only round-trip flight once annually; eligibility/use details still to verify.
-- Nepal/mission holidays require employer-approved calendar; do not assume all Nepal public holidays apply or automatically exclude annual leave days.
+## Personal leave and travel rules (T-002)
+
+The user is the authority for leave and entitlement rules. The app serves personal planning only, outside the scope of government services and official HR systems. The user can set rules without a legal citation, employer approval or an official employer reference. The app assumes no applicability of Qatari labor law. The user can adjust the rules in the future. Retain each rule version and its effective date. Keep requested, approved and used leave distinct. Leave planning works locally without an internet connection, AI or a chat interface.
+
+### Approved settings
+
+- Annual leave is 30 paid calendar days per January–December year, with no carryover in the current setting. Fridays and Saturdays count when they fall within the approved annual leave period.
+- Casual leave is 13 days per year.
+- Sick leave is 15 days per year. Record the presence or status of the medical report without storing sensitive medical documents.
+- Weekly rest days are Friday and Saturday.
+- The employee has one round-trip flight entitlement per year, funded by the employer under the current personal setting.
+- Planning uses the remaining leave balance, holidays and weekly rest days. It supports a specific date, a future period or a particular occasion.
+
+### Details awaiting user decisions
+
+- Which holiday dates apply and how holidays affect deductions for each leave type. How weekly rest days affect casual and sick leave deductions remains open.
+- Inclusivity of start and end dates, return-to-work timing, and the treatment of leave that spans two entitlement years.
+- Counting units, carryover and renewal dates for casual and sick leave, and any prorating rules.
+- How to handle edits and cancellations, including when to debit, release or restore a balance.
+- When a medical report is required, and whether any pay or other conditions apply to casual or sick leave.
+- The dates of the travel entitlement cycle, booking and usage conditions, and treatment of an unused trip.
+
+Use only rules approved by the user. Where a planning result depends on an undecided rule, identify the result as provisional.
 
 ## Salary and finance
 - Salary paid in USD into Nepal bank. Salary-day workflow distinguishes planned, executed and confirmed actions.
@@ -19,7 +36,7 @@ Offline-first Android personal expatriate manager encompassing Work • Leave �
 - Start with USD, NPR and EGP and allow additional currencies. Opening balances are optional. Where no opening balance is supplied, show net recorded movements and mark the real balance as unknown.
 - Use the simplified double-entry ledger described in [Architecture](ARCHITECTURE.md). Record actual amounts, dates and observed exchange information when known. Support pending settlement, linked corrections and manual statement reconciliation. Show planned, executed and confirmed amounts separately.
 - Fixed and flexible family support, savings and living commitments; no current debt/instalments.
-- Leave saving: flexible contributions toward a target, recalculate monthly suggestion; employer-paid airfare not automatically a personal cost.
+- Leave saving uses flexible contributions toward a target and recalculates the monthly suggestion. Include airfare in the target only when the user identifies it as a personal expense.
 
 ## Assets and investments
 - Physical gold in Egypt: piece/purchase entries, weight, purity, cost if known, owner, holder/custodian (mother or brother), distinct from brokerage investments.
@@ -39,4 +56,4 @@ Offline-first Android personal expatriate manager encompassing Work • Leave �
 Bank/broker integrations; live stock/gold pricing; investment order execution; AI advisor; multi-device sync; complex debt management; public release.
 
 ## Open questions
-Official leave rules and calendar remain pending under T-002. Show provisional leave results as such. The real account layout, remittance custody and evidence, and correction treatment for a reconciled period remain open under T-003. Record confirmed inputs before enabling affected financial workflows. Release branding and licensing remain separate decisions.
+The real account layout, remittance custody and evidence, and correction treatment for a reconciled period remain open under T-003. Record confirmed inputs before enabling affected financial workflows. Release branding and licensing remain separate decisions.

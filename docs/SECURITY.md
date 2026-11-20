@@ -11,5 +11,5 @@
 ## Privacy and release evidence
 
 - Use fictional data only in tests and documentation. Keep real balances, account IDs, beneficiary identities, medical details, locations, credentials, signing keys, local databases, backups and private exports out of Git and logs.
-- Keep core workflows offline. Avoid bank or Thndr authentication and automated financial transactions. Record the presence/status of a sick leave report.
+- Keep core workflows offline. Avoid bank or Thndr authentication and automated financial transactions. Record the presence or status of the sick leave medical report without storing sensitive medical documents.
 - T-006 provides emulator evidence for key rejection, encrypted backup, restore to a new database, corruption rejection, offline operation and process interruption around commit. See [Toolchain](TOOLCHAIN.md). Test clean-install restore, supported migrations, storage failures, device/network behavior and native 16 KB operation on a matching physical device before making those claims. Complete privacy and dependency notice review under T-017 through T-019 before real-data or release acceptance.

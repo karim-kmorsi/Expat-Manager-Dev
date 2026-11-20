@@ -17,10 +17,12 @@
 | D-013 | Arabic-first with RTL and legible dates, signed amounts, currency codes and bank references. USD, NPR and EGP initially, with additional currencies supported | Approved |
 | D-014 | Keystore-wrapped local database keys. Password-encrypted portable backup with sodium 4.1.2+1 / libsodium 1.0.22. Verified staging and transactional replacement of live data | Approved design direction and conditionally accepted feasibility. Product and physical-device acceptance remain open |
 | D-015 | Early isolated encryption/restore check under T-006. Full backup and restore acceptance under T-017 in M3 | Approved sequence |
+| D-016 | Expat Manager is a personal app for managing expatriate affairs. T-002 uses editable, effective-dated rules approved by the user. The scope excludes government and official HR workflows. The user can set rules without a legal citation, employer approval or an official employer reference. The app assumes no applicability of Qatari labor law | Approved |
+| D-017 | Leave planning runs locally and offline, with no AI or chat interface required | Approved |
 
 ## Open decisions
 
-- T-002 needs the employer's official rules for casual/sick leave accounting, holidays, exceptions and flight eligibility.
+- T-002 records the approved personal settings and identifies the [details awaiting user decisions](REQUIREMENTS.md#details-awaiting-user-decisions).
 - T-003 needs representative source and destination accounts and settlement evidence for the actual remittance routes. Confirm the financial effective-date treatment of corrections that affect a previously reconciled period.
 - The finance-only M0 gate is a proposal for the owner to approve with a separate implementation authorization. See the [roadmap](../planning/ROADMAP.md).
 - Brand availability and the final release license remain open before publication.

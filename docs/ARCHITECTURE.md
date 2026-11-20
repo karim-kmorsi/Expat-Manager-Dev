@@ -7,7 +7,7 @@ Use one Android-first Flutter app with Arabic-first RTL screens, Dart use cases 
 | Module | Data and responsibilities |
 |---|---|
 | Money | Currency, account, payment method, journal entry and posting, salary plan and allocation, execution link, transfer, purpose, observed FX, expense category, reconciliation session and match |
-| Work and Leave | Effective-dated leave policy, dated leave entry, holiday calendar and flight entitlement. Requested, approved and used leave remain distinct. Provisional rules stay configurable and visibly provisional |
+| Personal leave planning | Editable, user-defined leave rules with retained versions and effective dates, dated entries, balances, holiday calendar, weekly rest days and flight entitlement. Keep requested, approved and used leave distinct. Local planning supports a specific date, a future period or an occasion. Results that depend on unresolved rules are visibly provisional |
 | Savings and assets | Travel goal and earmarks, gold item and custody history, Thndr valuation snapshots and cash flows. Link actual cash movements to their ledger entries |
 | Core | Database migrations, local encryption, backup, restore, settings and validation |
 
