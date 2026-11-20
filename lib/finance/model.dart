@@ -21,6 +21,7 @@ enum JournalKind {
   internalTransfer,
   reversal,
   salary,
+  dashainBonus,
   cashIncome,
   cashExpense,
   expense,

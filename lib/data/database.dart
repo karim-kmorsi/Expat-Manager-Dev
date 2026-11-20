@@ -15,6 +15,7 @@ part 'cash_tables.dart';
 part 'expense_tables.dart';
 part 'remittance_tables.dart';
 part 'leave_tables.dart';
+part 'entitlement_tables.dart';
 
 class Currencies extends Table {
   TextColumn get code => text()();
@@ -84,12 +85,16 @@ class StorageLocked implements Exception {
     LeaveRules,
     LeaveEntries,
     LeaveHolidays,
+    DashainPlans,
+    AnnualTickets,
+    TravelGoals,
+    TravelContributions,
   ],
 )
 class LedgerDatabase extends _$LedgerDatabase {
   LedgerDatabase._(super.executor);
 
-  static const _currentSchemaVersion = 6;
+  static const _currentSchemaVersion = 7;
 
   /// Takes ownership of a writable copy of the key.
   static Future<LedgerDatabase> open(File file, Uint8List key) async {
@@ -138,10 +143,16 @@ class LedgerDatabase extends _$LedgerDatabase {
         throw StateError('Unsupported ledger schema');
       }
       if (from < 5) await _upgradeFinance(migrator, from);
-      await migrator.createTable(leaveRules);
-      await migrator.createTable(leaveEntries);
-      await migrator.createTable(leaveHolidays);
-      await _seedLeaveRules();
+      if (from < 6) {
+        await migrator.createTable(leaveRules);
+        await migrator.createTable(leaveEntries);
+        await migrator.createTable(leaveHolidays);
+        await _seedLeaveRules();
+      }
+      await migrator.createTable(dashainPlans);
+      await migrator.createTable(annualTickets);
+      await migrator.createTable(travelGoals);
+      await migrator.createTable(travelContributions);
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
     onCreate: (migrator) => transaction(() async {

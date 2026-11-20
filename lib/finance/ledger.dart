@@ -2,12 +2,14 @@ import 'package:drift/drift.dart';
 
 import '../data/database.dart';
 import '../leave/leave_book.dart';
+import '../leave/model.dart';
 import 'model.dart';
 
 part 'salary.dart';
 part 'usd_cash.dart';
 part 'expenses.dart';
 part 'remittances.dart';
+part 'entitlements.dart';
 
 class Ledger {
   Ledger(this._db);
@@ -217,6 +219,7 @@ class Ledger {
     if (entry.kind == JournalKind.opening ||
         entry.kind == JournalKind.reversal ||
         entry.kind == JournalKind.cashAdjustment ||
+        entry.kind == JournalKind.dashainBonus ||
         entry.kind.isRemittance) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }

@@ -7,6 +7,7 @@ import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
 import 'digits.dart';
+import 'entitlement_screen.dart';
 import 'expense_screen.dart';
 import 'leave_screen.dart';
 import 'remittance_screen.dart';
@@ -94,6 +95,18 @@ class _FinanceHomeState extends State<FinanceHome> {
     appBar: AppBar(
       title: const Text('Expat Manager'),
       actions: [
+        IconButton(
+          tooltip: 'الاستحقاقات والادخار',
+          icon: const Icon(Icons.card_giftcard_outlined),
+          onPressed: () async {
+            await Navigator.of(context).push<void>(
+              MaterialPageRoute(
+                builder: (_) => EntitlementScreen(ledger: ledger),
+              ),
+            );
+            if (mounted) _refresh();
+          },
+        ),
         IconButton(
           tooltip: 'الإجازات',
           icon: const Icon(Icons.event_available_outlined),
@@ -225,38 +238,50 @@ class _FinanceHomeState extends State<FinanceHome> {
     );
   }
 
-  Widget _journalList(List<JournalEntry> entries) => ListView(
-    padding: const EdgeInsets.all(16),
-    children: [
-      if (entries.isEmpty) const Text('لا توجد قيود مسجّلة.'),
+  Widget _journalList(List<JournalEntry> entries) {
+    final bonusIds = {
       for (final entry in entries)
-        ListTile(
-          title: Text(switch (entry.kind) {
-            JournalKind.opening => 'رصيد افتتاحي',
-            JournalKind.entry => 'قيد مالي',
-            JournalKind.internalTransfer => 'تحويل داخلي',
-            JournalKind.reversal => 'عكس قيد',
-            JournalKind.salary => 'إيداع راتب',
-            JournalKind.cashIncome => 'دخل نقدي خارجي',
-            JournalKind.cashExpense => 'مصروف نقدي',
-            JournalKind.expense => 'مصروف',
-            JournalKind.cashAdjustment => 'تسوية رصيد',
-            JournalKind.remittanceDebit => 'خصم حوالة',
-            JournalKind.remittanceReceipt => 'استلام حوالة',
-            JournalKind.remittanceRefund => 'استرداد حوالة',
-            JournalKind.remittanceSettlement => 'تسوية حوالة',
-          }),
-          subtitle: entry.reason == null
-              ? null
-              : Text(latinDigits(entry.reason!)),
-          trailing: Text(
-            MaterialLocalizations.of(context).formatShortDate(
-              DateTime.fromMicrosecondsSinceEpoch(entry.effectiveMicros),
+        if (entry.kind == JournalKind.dashainBonus) entry.id,
+    };
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        if (entries.isEmpty) const Text('لا توجد قيود مسجّلة.'),
+        for (final entry in entries)
+          ListTile(
+            title: Text(switch (entry.kind) {
+              JournalKind.opening => 'رصيد افتتاحي',
+              JournalKind.entry => 'قيد مالي',
+              JournalKind.internalTransfer => 'تحويل داخلي',
+              JournalKind.reversal => 'عكس قيد',
+              JournalKind.salary => 'إيداع راتب',
+              JournalKind.dashainBonus => 'مكافأة الدساي',
+              JournalKind.cashIncome => 'دخل نقدي خارجي',
+              JournalKind.cashExpense => 'مصروف نقدي',
+              JournalKind.expense => 'مصروف',
+              JournalKind.cashAdjustment => 'تسوية رصيد',
+              JournalKind.remittanceDebit => 'خصم حوالة',
+              JournalKind.remittanceReceipt => 'استلام حوالة',
+              JournalKind.remittanceRefund => 'استرداد حوالة',
+              JournalKind.remittanceSettlement => 'تسوية حوالة',
+            }),
+            subtitle: entry.reason == null
+                ? null
+                : Text(latinDigits(entry.reason!)),
+            trailing: Text(
+              MaterialLocalizations.of(context).formatShortDate(
+                DateTime.fromMicrosecondsSinceEpoch(
+                  entry.effectiveMicros,
+                  isUtc:
+                      bonusIds.contains(entry.id) ||
+                      bonusIds.contains(entry.reversalOf),
+                ),
+              ),
             ),
           ),
-        ),
-    ],
-  );
+      ],
+    );
+  }
 
   Future<void> _addAccount(List<Currency> currencies) async {
     final input =

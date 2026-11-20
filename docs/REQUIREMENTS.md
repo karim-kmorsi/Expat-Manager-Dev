@@ -23,7 +23,7 @@ The user is the authority for leave and entitlement rules. The app serves person
 - Carryover, renewal dates and prorating for casual and sick leave remain open. The app shows provisional balances for those types using the start calendar year, with no inferred carryover.
 - Formal approval procedures remain open. For personal tracking, requested entries have no balance impact. Approved entries reserve days and used entries count as used once. Cancellation releases only unused days. When cancelling the remainder of a partly used approved period, record the last day actually used and keep the used part charged to the original start year. Used periods allow edits to descriptive details only.
 - When a medical report is required, and whether any pay or other conditions apply to casual or sick leave.
-- The dates of the travel entitlement cycle, booking and usage conditions, and treatment of an unused trip.
+- Travel booking and usage conditions beyond cycle dates remain open.
 
 Use only rules approved by the user. Where a planning result depends on an undecided rule, identify the result as provisional.
 
@@ -37,6 +37,12 @@ Use only rules approved by the user. Where a planning result depends on an undec
 - Use the simplified double-entry ledger described in [Architecture](ARCHITECTURE.md). Record actual amounts, dates and observed exchange information when known. Support pending settlement, linked corrections and manual statement reconciliation. Show planned, executed and confirmed amounts separately.
 - Fixed and flexible family support, savings and living commitments; no current debt/instalments.
 - Leave saving uses flexible contributions toward a target and recalculates the monthly suggestion. Include airfare in the target only when the user identifies it as a personal expense.
+
+## T-014 personal entitlements and travel savings
+
+- Record the Dashain celebration date for each calendar year. Expected payment falls 15 calendar days before that date. Enter the monthly base salary and allowances in the applicable currency to calculate the gross estimate. Confirm the actual account, amount and receipt date to post one income receipt for that year. Correct or undo it through linked ledger reversals within the existing reconciliation rules.
+- One employer-funded employee round trip per January–December cycle with no automatic carryover. Receiving and using the ticket are independently dated and can be corrected. Optionally link the ticket to a leave entry. The ticket never posts cash income. Record receipt and usage within the selected cycle. Exceptional travel across entitlement cycles remains outside the current rule.
+- Maintain one editable travel savings goal in a selected currency with a target date and optional self-funded airfare. Record or correct contributions from existing funds. Contributions earmark the recorded balance of a same-currency account, with no journal posting, expense or foreign exchange. Limit progress to the earmarks still covered by each account's recorded balance. Calculate the suggested monthly amount over the current month through the target month, rounding up to a minor unit. If the goal is overdue and incomplete, show the remaining amount without a monthly suggestion.
 
 ## Assets and investments
 - Physical gold in Egypt: piece/purchase entries, weight, purity, cost if known, owner, holder/custodian (mother or brother), distinct from brokerage investments.

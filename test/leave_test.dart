@@ -464,7 +464,9 @@ void main() {
       sqlite.Database raw,
     ) => {
       for (final row in raw.select(
-        "SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'leave_%'",
+        """SELECT name FROM sqlite_schema
+           WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'leave_%'
+             AND name NOT IN ('dashain_plans', 'annual_tickets', 'travel_goals', 'travel_contributions')""",
       ))
         row['name'] as String: [
           for (final item in raw.select(
@@ -490,7 +492,7 @@ void main() {
           .data
           .values
           .single,
-      6,
+      db.schemaVersion,
     );
     expect((await Ledger(db).balance(account)).minor, 12345);
     await book.save(
@@ -508,7 +510,7 @@ void main() {
     );
 
     for (final (path, version) in [
-      (file.path, 6),
+      (file.path, db.schemaVersion),
       ('${file.path}.v5.backup', 5),
     ]) {
       final copy = sqlite.sqlite3.open(path, mode: sqlite.OpenMode.readOnly);

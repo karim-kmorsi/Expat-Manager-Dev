@@ -6109,6 +6109,1577 @@ class LeaveHolidaysCompanion extends UpdateCompanion<LeaveHoliday> {
   }
 }
 
+class $DashainPlansTable extends DashainPlans
+    with TableInfo<$DashainPlansTable, DashainPlan> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DashainPlansTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _festivalDayMeta = const VerificationMeta(
+    'festivalDay',
+  );
+  @override
+  late final GeneratedColumn<int> festivalDay = GeneratedColumn<int>(
+    'festival_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currencyMeta = const VerificationMeta(
+    'currency',
+  );
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+    'currency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES currencies (code)',
+    ),
+  );
+  static const VerificationMeta _salaryMinorMeta = const VerificationMeta(
+    'salaryMinor',
+  );
+  @override
+  late final GeneratedColumn<int> salaryMinor = GeneratedColumn<int>(
+    'salary_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _allowancesMinorMeta = const VerificationMeta(
+    'allowancesMinor',
+  );
+  @override
+  late final GeneratedColumn<int> allowancesMinor = GeneratedColumn<int>(
+    'allowances_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _receiptIdMeta = const VerificationMeta(
+    'receiptId',
+  );
+  @override
+  late final GeneratedColumn<int> receiptId = GeneratedColumn<int>(
+    'receipt_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _revisionMeta = const VerificationMeta(
+    'revision',
+  );
+  @override
+  late final GeneratedColumn<int> revision = GeneratedColumn<int>(
+    'revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    year,
+    festivalDay,
+    currency,
+    salaryMinor,
+    allowancesMinor,
+    receiptId,
+    revision,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dashain_plans';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DashainPlan> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    }
+    if (data.containsKey('festival_day')) {
+      context.handle(
+        _festivalDayMeta,
+        festivalDay.isAcceptableOrUnknown(
+          data['festival_day']!,
+          _festivalDayMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_festivalDayMeta);
+    }
+    if (data.containsKey('currency')) {
+      context.handle(
+        _currencyMeta,
+        currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyMeta);
+    }
+    if (data.containsKey('salary_minor')) {
+      context.handle(
+        _salaryMinorMeta,
+        salaryMinor.isAcceptableOrUnknown(
+          data['salary_minor']!,
+          _salaryMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_salaryMinorMeta);
+    }
+    if (data.containsKey('allowances_minor')) {
+      context.handle(
+        _allowancesMinorMeta,
+        allowancesMinor.isAcceptableOrUnknown(
+          data['allowances_minor']!,
+          _allowancesMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_allowancesMinorMeta);
+    }
+    if (data.containsKey('receipt_id')) {
+      context.handle(
+        _receiptIdMeta,
+        receiptId.isAcceptableOrUnknown(data['receipt_id']!, _receiptIdMeta),
+      );
+    }
+    if (data.containsKey('revision')) {
+      context.handle(
+        _revisionMeta,
+        revision.isAcceptableOrUnknown(data['revision']!, _revisionMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {year};
+  @override
+  DashainPlan map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DashainPlan(
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}year'],
+      )!,
+      festivalDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}festival_day'],
+      )!,
+      currency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency'],
+      )!,
+      salaryMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}salary_minor'],
+      )!,
+      allowancesMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}allowances_minor'],
+      )!,
+      receiptId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}receipt_id'],
+      ),
+      revision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}revision'],
+      )!,
+    );
+  }
+
+  @override
+  $DashainPlansTable createAlias(String alias) {
+    return $DashainPlansTable(attachedDatabase, alias);
+  }
+}
+
+class DashainPlan extends DataClass implements Insertable<DashainPlan> {
+  final int year;
+  final int festivalDay;
+  final String currency;
+  final int salaryMinor;
+  final int allowancesMinor;
+  final int? receiptId;
+  final int revision;
+  const DashainPlan({
+    required this.year,
+    required this.festivalDay,
+    required this.currency,
+    required this.salaryMinor,
+    required this.allowancesMinor,
+    this.receiptId,
+    required this.revision,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['year'] = Variable<int>(year);
+    map['festival_day'] = Variable<int>(festivalDay);
+    map['currency'] = Variable<String>(currency);
+    map['salary_minor'] = Variable<int>(salaryMinor);
+    map['allowances_minor'] = Variable<int>(allowancesMinor);
+    if (!nullToAbsent || receiptId != null) {
+      map['receipt_id'] = Variable<int>(receiptId);
+    }
+    map['revision'] = Variable<int>(revision);
+    return map;
+  }
+
+  DashainPlansCompanion toCompanion(bool nullToAbsent) {
+    return DashainPlansCompanion(
+      year: Value(year),
+      festivalDay: Value(festivalDay),
+      currency: Value(currency),
+      salaryMinor: Value(salaryMinor),
+      allowancesMinor: Value(allowancesMinor),
+      receiptId: receiptId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receiptId),
+      revision: Value(revision),
+    );
+  }
+
+  factory DashainPlan.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DashainPlan(
+      year: serializer.fromJson<int>(json['year']),
+      festivalDay: serializer.fromJson<int>(json['festivalDay']),
+      currency: serializer.fromJson<String>(json['currency']),
+      salaryMinor: serializer.fromJson<int>(json['salaryMinor']),
+      allowancesMinor: serializer.fromJson<int>(json['allowancesMinor']),
+      receiptId: serializer.fromJson<int?>(json['receiptId']),
+      revision: serializer.fromJson<int>(json['revision']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'year': serializer.toJson<int>(year),
+      'festivalDay': serializer.toJson<int>(festivalDay),
+      'currency': serializer.toJson<String>(currency),
+      'salaryMinor': serializer.toJson<int>(salaryMinor),
+      'allowancesMinor': serializer.toJson<int>(allowancesMinor),
+      'receiptId': serializer.toJson<int?>(receiptId),
+      'revision': serializer.toJson<int>(revision),
+    };
+  }
+
+  DashainPlan copyWith({
+    int? year,
+    int? festivalDay,
+    String? currency,
+    int? salaryMinor,
+    int? allowancesMinor,
+    Value<int?> receiptId = const Value.absent(),
+    int? revision,
+  }) => DashainPlan(
+    year: year ?? this.year,
+    festivalDay: festivalDay ?? this.festivalDay,
+    currency: currency ?? this.currency,
+    salaryMinor: salaryMinor ?? this.salaryMinor,
+    allowancesMinor: allowancesMinor ?? this.allowancesMinor,
+    receiptId: receiptId.present ? receiptId.value : this.receiptId,
+    revision: revision ?? this.revision,
+  );
+  DashainPlan copyWithCompanion(DashainPlansCompanion data) {
+    return DashainPlan(
+      year: data.year.present ? data.year.value : this.year,
+      festivalDay: data.festivalDay.present
+          ? data.festivalDay.value
+          : this.festivalDay,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      salaryMinor: data.salaryMinor.present
+          ? data.salaryMinor.value
+          : this.salaryMinor,
+      allowancesMinor: data.allowancesMinor.present
+          ? data.allowancesMinor.value
+          : this.allowancesMinor,
+      receiptId: data.receiptId.present ? data.receiptId.value : this.receiptId,
+      revision: data.revision.present ? data.revision.value : this.revision,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashainPlan(')
+          ..write('year: $year, ')
+          ..write('festivalDay: $festivalDay, ')
+          ..write('currency: $currency, ')
+          ..write('salaryMinor: $salaryMinor, ')
+          ..write('allowancesMinor: $allowancesMinor, ')
+          ..write('receiptId: $receiptId, ')
+          ..write('revision: $revision')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    year,
+    festivalDay,
+    currency,
+    salaryMinor,
+    allowancesMinor,
+    receiptId,
+    revision,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DashainPlan &&
+          other.year == this.year &&
+          other.festivalDay == this.festivalDay &&
+          other.currency == this.currency &&
+          other.salaryMinor == this.salaryMinor &&
+          other.allowancesMinor == this.allowancesMinor &&
+          other.receiptId == this.receiptId &&
+          other.revision == this.revision);
+}
+
+class DashainPlansCompanion extends UpdateCompanion<DashainPlan> {
+  final Value<int> year;
+  final Value<int> festivalDay;
+  final Value<String> currency;
+  final Value<int> salaryMinor;
+  final Value<int> allowancesMinor;
+  final Value<int?> receiptId;
+  final Value<int> revision;
+  const DashainPlansCompanion({
+    this.year = const Value.absent(),
+    this.festivalDay = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.salaryMinor = const Value.absent(),
+    this.allowancesMinor = const Value.absent(),
+    this.receiptId = const Value.absent(),
+    this.revision = const Value.absent(),
+  });
+  DashainPlansCompanion.insert({
+    this.year = const Value.absent(),
+    required int festivalDay,
+    required String currency,
+    required int salaryMinor,
+    required int allowancesMinor,
+    this.receiptId = const Value.absent(),
+    this.revision = const Value.absent(),
+  }) : festivalDay = Value(festivalDay),
+       currency = Value(currency),
+       salaryMinor = Value(salaryMinor),
+       allowancesMinor = Value(allowancesMinor);
+  static Insertable<DashainPlan> custom({
+    Expression<int>? year,
+    Expression<int>? festivalDay,
+    Expression<String>? currency,
+    Expression<int>? salaryMinor,
+    Expression<int>? allowancesMinor,
+    Expression<int>? receiptId,
+    Expression<int>? revision,
+  }) {
+    return RawValuesInsertable({
+      if (year != null) 'year': year,
+      if (festivalDay != null) 'festival_day': festivalDay,
+      if (currency != null) 'currency': currency,
+      if (salaryMinor != null) 'salary_minor': salaryMinor,
+      if (allowancesMinor != null) 'allowances_minor': allowancesMinor,
+      if (receiptId != null) 'receipt_id': receiptId,
+      if (revision != null) 'revision': revision,
+    });
+  }
+
+  DashainPlansCompanion copyWith({
+    Value<int>? year,
+    Value<int>? festivalDay,
+    Value<String>? currency,
+    Value<int>? salaryMinor,
+    Value<int>? allowancesMinor,
+    Value<int?>? receiptId,
+    Value<int>? revision,
+  }) {
+    return DashainPlansCompanion(
+      year: year ?? this.year,
+      festivalDay: festivalDay ?? this.festivalDay,
+      currency: currency ?? this.currency,
+      salaryMinor: salaryMinor ?? this.salaryMinor,
+      allowancesMinor: allowancesMinor ?? this.allowancesMinor,
+      receiptId: receiptId ?? this.receiptId,
+      revision: revision ?? this.revision,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (year.present) {
+      map['year'] = Variable<int>(year.value);
+    }
+    if (festivalDay.present) {
+      map['festival_day'] = Variable<int>(festivalDay.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (salaryMinor.present) {
+      map['salary_minor'] = Variable<int>(salaryMinor.value);
+    }
+    if (allowancesMinor.present) {
+      map['allowances_minor'] = Variable<int>(allowancesMinor.value);
+    }
+    if (receiptId.present) {
+      map['receipt_id'] = Variable<int>(receiptId.value);
+    }
+    if (revision.present) {
+      map['revision'] = Variable<int>(revision.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DashainPlansCompanion(')
+          ..write('year: $year, ')
+          ..write('festivalDay: $festivalDay, ')
+          ..write('currency: $currency, ')
+          ..write('salaryMinor: $salaryMinor, ')
+          ..write('allowancesMinor: $allowancesMinor, ')
+          ..write('receiptId: $receiptId, ')
+          ..write('revision: $revision')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AnnualTicketsTable extends AnnualTickets
+    with TableInfo<$AnnualTicketsTable, AnnualTicket> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AnnualTicketsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _yearMeta = const VerificationMeta('year');
+  @override
+  late final GeneratedColumn<int> year = GeneratedColumn<int>(
+    'year',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _policyVersionMeta = const VerificationMeta(
+    'policyVersion',
+  );
+  @override
+  late final GeneratedColumn<int> policyVersion = GeneratedColumn<int>(
+    'policy_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _receivedDayMeta = const VerificationMeta(
+    'receivedDay',
+  );
+  @override
+  late final GeneratedColumn<int> receivedDay = GeneratedColumn<int>(
+    'received_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _usedDayMeta = const VerificationMeta(
+    'usedDay',
+  );
+  @override
+  late final GeneratedColumn<int> usedDay = GeneratedColumn<int>(
+    'used_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _leaveIdMeta = const VerificationMeta(
+    'leaveId',
+  );
+  @override
+  late final GeneratedColumn<int> leaveId = GeneratedColumn<int>(
+    'leave_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES leave_entries (id)',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    year,
+    policyVersion,
+    receivedDay,
+    usedDay,
+    leaveId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'annual_tickets';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AnnualTicket> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('year')) {
+      context.handle(
+        _yearMeta,
+        year.isAcceptableOrUnknown(data['year']!, _yearMeta),
+      );
+    }
+    if (data.containsKey('policy_version')) {
+      context.handle(
+        _policyVersionMeta,
+        policyVersion.isAcceptableOrUnknown(
+          data['policy_version']!,
+          _policyVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_policyVersionMeta);
+    }
+    if (data.containsKey('received_day')) {
+      context.handle(
+        _receivedDayMeta,
+        receivedDay.isAcceptableOrUnknown(
+          data['received_day']!,
+          _receivedDayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('used_day')) {
+      context.handle(
+        _usedDayMeta,
+        usedDay.isAcceptableOrUnknown(data['used_day']!, _usedDayMeta),
+      );
+    }
+    if (data.containsKey('leave_id')) {
+      context.handle(
+        _leaveIdMeta,
+        leaveId.isAcceptableOrUnknown(data['leave_id']!, _leaveIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {year};
+  @override
+  AnnualTicket map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AnnualTicket(
+      year: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}year'],
+      )!,
+      policyVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}policy_version'],
+      )!,
+      receivedDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}received_day'],
+      ),
+      usedDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}used_day'],
+      ),
+      leaveId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}leave_id'],
+      ),
+    );
+  }
+
+  @override
+  $AnnualTicketsTable createAlias(String alias) {
+    return $AnnualTicketsTable(attachedDatabase, alias);
+  }
+}
+
+class AnnualTicket extends DataClass implements Insertable<AnnualTicket> {
+  final int year;
+  final int policyVersion;
+  final int? receivedDay;
+  final int? usedDay;
+  final int? leaveId;
+  const AnnualTicket({
+    required this.year,
+    required this.policyVersion,
+    this.receivedDay,
+    this.usedDay,
+    this.leaveId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['year'] = Variable<int>(year);
+    map['policy_version'] = Variable<int>(policyVersion);
+    if (!nullToAbsent || receivedDay != null) {
+      map['received_day'] = Variable<int>(receivedDay);
+    }
+    if (!nullToAbsent || usedDay != null) {
+      map['used_day'] = Variable<int>(usedDay);
+    }
+    if (!nullToAbsent || leaveId != null) {
+      map['leave_id'] = Variable<int>(leaveId);
+    }
+    return map;
+  }
+
+  AnnualTicketsCompanion toCompanion(bool nullToAbsent) {
+    return AnnualTicketsCompanion(
+      year: Value(year),
+      policyVersion: Value(policyVersion),
+      receivedDay: receivedDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receivedDay),
+      usedDay: usedDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(usedDay),
+      leaveId: leaveId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leaveId),
+    );
+  }
+
+  factory AnnualTicket.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AnnualTicket(
+      year: serializer.fromJson<int>(json['year']),
+      policyVersion: serializer.fromJson<int>(json['policyVersion']),
+      receivedDay: serializer.fromJson<int?>(json['receivedDay']),
+      usedDay: serializer.fromJson<int?>(json['usedDay']),
+      leaveId: serializer.fromJson<int?>(json['leaveId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'year': serializer.toJson<int>(year),
+      'policyVersion': serializer.toJson<int>(policyVersion),
+      'receivedDay': serializer.toJson<int?>(receivedDay),
+      'usedDay': serializer.toJson<int?>(usedDay),
+      'leaveId': serializer.toJson<int?>(leaveId),
+    };
+  }
+
+  AnnualTicket copyWith({
+    int? year,
+    int? policyVersion,
+    Value<int?> receivedDay = const Value.absent(),
+    Value<int?> usedDay = const Value.absent(),
+    Value<int?> leaveId = const Value.absent(),
+  }) => AnnualTicket(
+    year: year ?? this.year,
+    policyVersion: policyVersion ?? this.policyVersion,
+    receivedDay: receivedDay.present ? receivedDay.value : this.receivedDay,
+    usedDay: usedDay.present ? usedDay.value : this.usedDay,
+    leaveId: leaveId.present ? leaveId.value : this.leaveId,
+  );
+  AnnualTicket copyWithCompanion(AnnualTicketsCompanion data) {
+    return AnnualTicket(
+      year: data.year.present ? data.year.value : this.year,
+      policyVersion: data.policyVersion.present
+          ? data.policyVersion.value
+          : this.policyVersion,
+      receivedDay: data.receivedDay.present
+          ? data.receivedDay.value
+          : this.receivedDay,
+      usedDay: data.usedDay.present ? data.usedDay.value : this.usedDay,
+      leaveId: data.leaveId.present ? data.leaveId.value : this.leaveId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnnualTicket(')
+          ..write('year: $year, ')
+          ..write('policyVersion: $policyVersion, ')
+          ..write('receivedDay: $receivedDay, ')
+          ..write('usedDay: $usedDay, ')
+          ..write('leaveId: $leaveId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(year, policyVersion, receivedDay, usedDay, leaveId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AnnualTicket &&
+          other.year == this.year &&
+          other.policyVersion == this.policyVersion &&
+          other.receivedDay == this.receivedDay &&
+          other.usedDay == this.usedDay &&
+          other.leaveId == this.leaveId);
+}
+
+class AnnualTicketsCompanion extends UpdateCompanion<AnnualTicket> {
+  final Value<int> year;
+  final Value<int> policyVersion;
+  final Value<int?> receivedDay;
+  final Value<int?> usedDay;
+  final Value<int?> leaveId;
+  const AnnualTicketsCompanion({
+    this.year = const Value.absent(),
+    this.policyVersion = const Value.absent(),
+    this.receivedDay = const Value.absent(),
+    this.usedDay = const Value.absent(),
+    this.leaveId = const Value.absent(),
+  });
+  AnnualTicketsCompanion.insert({
+    this.year = const Value.absent(),
+    required int policyVersion,
+    this.receivedDay = const Value.absent(),
+    this.usedDay = const Value.absent(),
+    this.leaveId = const Value.absent(),
+  }) : policyVersion = Value(policyVersion);
+  static Insertable<AnnualTicket> custom({
+    Expression<int>? year,
+    Expression<int>? policyVersion,
+    Expression<int>? receivedDay,
+    Expression<int>? usedDay,
+    Expression<int>? leaveId,
+  }) {
+    return RawValuesInsertable({
+      if (year != null) 'year': year,
+      if (policyVersion != null) 'policy_version': policyVersion,
+      if (receivedDay != null) 'received_day': receivedDay,
+      if (usedDay != null) 'used_day': usedDay,
+      if (leaveId != null) 'leave_id': leaveId,
+    });
+  }
+
+  AnnualTicketsCompanion copyWith({
+    Value<int>? year,
+    Value<int>? policyVersion,
+    Value<int?>? receivedDay,
+    Value<int?>? usedDay,
+    Value<int?>? leaveId,
+  }) {
+    return AnnualTicketsCompanion(
+      year: year ?? this.year,
+      policyVersion: policyVersion ?? this.policyVersion,
+      receivedDay: receivedDay ?? this.receivedDay,
+      usedDay: usedDay ?? this.usedDay,
+      leaveId: leaveId ?? this.leaveId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (year.present) {
+      map['year'] = Variable<int>(year.value);
+    }
+    if (policyVersion.present) {
+      map['policy_version'] = Variable<int>(policyVersion.value);
+    }
+    if (receivedDay.present) {
+      map['received_day'] = Variable<int>(receivedDay.value);
+    }
+    if (usedDay.present) {
+      map['used_day'] = Variable<int>(usedDay.value);
+    }
+    if (leaveId.present) {
+      map['leave_id'] = Variable<int>(leaveId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AnnualTicketsCompanion(')
+          ..write('year: $year, ')
+          ..write('policyVersion: $policyVersion, ')
+          ..write('receivedDay: $receivedDay, ')
+          ..write('usedDay: $usedDay, ')
+          ..write('leaveId: $leaveId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TravelGoalsTable extends TravelGoals
+    with TableInfo<$TravelGoalsTable, TravelGoal> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TravelGoalsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _currencyMeta = const VerificationMeta(
+    'currency',
+  );
+  @override
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+    'currency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES currencies (code)',
+    ),
+  );
+  static const VerificationMeta _targetDayMeta = const VerificationMeta(
+    'targetDay',
+  );
+  @override
+  late final GeneratedColumn<int> targetDay = GeneratedColumn<int>(
+    'target_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tripMinorMeta = const VerificationMeta(
+    'tripMinor',
+  );
+  @override
+  late final GeneratedColumn<int> tripMinor = GeneratedColumn<int>(
+    'trip_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _airfareMinorMeta = const VerificationMeta(
+    'airfareMinor',
+  );
+  @override
+  late final GeneratedColumn<int> airfareMinor = GeneratedColumn<int>(
+    'airfare_minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    currency,
+    targetDay,
+    tripMinor,
+    airfareMinor,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'travel_goals';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TravelGoal> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('currency')) {
+      context.handle(
+        _currencyMeta,
+        currency.isAcceptableOrUnknown(data['currency']!, _currencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_currencyMeta);
+    }
+    if (data.containsKey('target_day')) {
+      context.handle(
+        _targetDayMeta,
+        targetDay.isAcceptableOrUnknown(data['target_day']!, _targetDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetDayMeta);
+    }
+    if (data.containsKey('trip_minor')) {
+      context.handle(
+        _tripMinorMeta,
+        tripMinor.isAcceptableOrUnknown(data['trip_minor']!, _tripMinorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tripMinorMeta);
+    }
+    if (data.containsKey('airfare_minor')) {
+      context.handle(
+        _airfareMinorMeta,
+        airfareMinor.isAcceptableOrUnknown(
+          data['airfare_minor']!,
+          _airfareMinorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_airfareMinorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TravelGoal map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TravelGoal(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      currency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}currency'],
+      )!,
+      targetDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_day'],
+      )!,
+      tripMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}trip_minor'],
+      )!,
+      airfareMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}airfare_minor'],
+      )!,
+    );
+  }
+
+  @override
+  $TravelGoalsTable createAlias(String alias) {
+    return $TravelGoalsTable(attachedDatabase, alias);
+  }
+}
+
+class TravelGoal extends DataClass implements Insertable<TravelGoal> {
+  final int id;
+  final String currency;
+  final int targetDay;
+  final int tripMinor;
+  final int airfareMinor;
+  const TravelGoal({
+    required this.id,
+    required this.currency,
+    required this.targetDay,
+    required this.tripMinor,
+    required this.airfareMinor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['currency'] = Variable<String>(currency);
+    map['target_day'] = Variable<int>(targetDay);
+    map['trip_minor'] = Variable<int>(tripMinor);
+    map['airfare_minor'] = Variable<int>(airfareMinor);
+    return map;
+  }
+
+  TravelGoalsCompanion toCompanion(bool nullToAbsent) {
+    return TravelGoalsCompanion(
+      id: Value(id),
+      currency: Value(currency),
+      targetDay: Value(targetDay),
+      tripMinor: Value(tripMinor),
+      airfareMinor: Value(airfareMinor),
+    );
+  }
+
+  factory TravelGoal.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TravelGoal(
+      id: serializer.fromJson<int>(json['id']),
+      currency: serializer.fromJson<String>(json['currency']),
+      targetDay: serializer.fromJson<int>(json['targetDay']),
+      tripMinor: serializer.fromJson<int>(json['tripMinor']),
+      airfareMinor: serializer.fromJson<int>(json['airfareMinor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'currency': serializer.toJson<String>(currency),
+      'targetDay': serializer.toJson<int>(targetDay),
+      'tripMinor': serializer.toJson<int>(tripMinor),
+      'airfareMinor': serializer.toJson<int>(airfareMinor),
+    };
+  }
+
+  TravelGoal copyWith({
+    int? id,
+    String? currency,
+    int? targetDay,
+    int? tripMinor,
+    int? airfareMinor,
+  }) => TravelGoal(
+    id: id ?? this.id,
+    currency: currency ?? this.currency,
+    targetDay: targetDay ?? this.targetDay,
+    tripMinor: tripMinor ?? this.tripMinor,
+    airfareMinor: airfareMinor ?? this.airfareMinor,
+  );
+  TravelGoal copyWithCompanion(TravelGoalsCompanion data) {
+    return TravelGoal(
+      id: data.id.present ? data.id.value : this.id,
+      currency: data.currency.present ? data.currency.value : this.currency,
+      targetDay: data.targetDay.present ? data.targetDay.value : this.targetDay,
+      tripMinor: data.tripMinor.present ? data.tripMinor.value : this.tripMinor,
+      airfareMinor: data.airfareMinor.present
+          ? data.airfareMinor.value
+          : this.airfareMinor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TravelGoal(')
+          ..write('id: $id, ')
+          ..write('currency: $currency, ')
+          ..write('targetDay: $targetDay, ')
+          ..write('tripMinor: $tripMinor, ')
+          ..write('airfareMinor: $airfareMinor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, currency, targetDay, tripMinor, airfareMinor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TravelGoal &&
+          other.id == this.id &&
+          other.currency == this.currency &&
+          other.targetDay == this.targetDay &&
+          other.tripMinor == this.tripMinor &&
+          other.airfareMinor == this.airfareMinor);
+}
+
+class TravelGoalsCompanion extends UpdateCompanion<TravelGoal> {
+  final Value<int> id;
+  final Value<String> currency;
+  final Value<int> targetDay;
+  final Value<int> tripMinor;
+  final Value<int> airfareMinor;
+  const TravelGoalsCompanion({
+    this.id = const Value.absent(),
+    this.currency = const Value.absent(),
+    this.targetDay = const Value.absent(),
+    this.tripMinor = const Value.absent(),
+    this.airfareMinor = const Value.absent(),
+  });
+  TravelGoalsCompanion.insert({
+    this.id = const Value.absent(),
+    required String currency,
+    required int targetDay,
+    required int tripMinor,
+    required int airfareMinor,
+  }) : currency = Value(currency),
+       targetDay = Value(targetDay),
+       tripMinor = Value(tripMinor),
+       airfareMinor = Value(airfareMinor);
+  static Insertable<TravelGoal> custom({
+    Expression<int>? id,
+    Expression<String>? currency,
+    Expression<int>? targetDay,
+    Expression<int>? tripMinor,
+    Expression<int>? airfareMinor,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (currency != null) 'currency': currency,
+      if (targetDay != null) 'target_day': targetDay,
+      if (tripMinor != null) 'trip_minor': tripMinor,
+      if (airfareMinor != null) 'airfare_minor': airfareMinor,
+    });
+  }
+
+  TravelGoalsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? currency,
+    Value<int>? targetDay,
+    Value<int>? tripMinor,
+    Value<int>? airfareMinor,
+  }) {
+    return TravelGoalsCompanion(
+      id: id ?? this.id,
+      currency: currency ?? this.currency,
+      targetDay: targetDay ?? this.targetDay,
+      tripMinor: tripMinor ?? this.tripMinor,
+      airfareMinor: airfareMinor ?? this.airfareMinor,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (currency.present) {
+      map['currency'] = Variable<String>(currency.value);
+    }
+    if (targetDay.present) {
+      map['target_day'] = Variable<int>(targetDay.value);
+    }
+    if (tripMinor.present) {
+      map['trip_minor'] = Variable<int>(tripMinor.value);
+    }
+    if (airfareMinor.present) {
+      map['airfare_minor'] = Variable<int>(airfareMinor.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TravelGoalsCompanion(')
+          ..write('id: $id, ')
+          ..write('currency: $currency, ')
+          ..write('targetDay: $targetDay, ')
+          ..write('tripMinor: $tripMinor, ')
+          ..write('airfareMinor: $airfareMinor')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TravelContributionsTable extends TravelContributions
+    with TableInfo<$TravelContributionsTable, TravelContribution> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TravelContributionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _operationIdMeta = const VerificationMeta(
+    'operationId',
+  );
+  @override
+  late final GeneratedColumn<String> operationId = GeneratedColumn<String>(
+    'operation_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _goalIdMeta = const VerificationMeta('goalId');
+  @override
+  late final GeneratedColumn<int> goalId = GeneratedColumn<int>(
+    'goal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES travel_goals (id)',
+    ),
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<int> accountId = GeneratedColumn<int>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES ledger_accounts (id)',
+    ),
+  );
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<int> day = GeneratedColumn<int>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _minorMeta = const VerificationMeta('minor');
+  @override
+  late final GeneratedColumn<int> minor = GeneratedColumn<int>(
+    'minor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    operationId,
+    goalId,
+    accountId,
+    day,
+    minor,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'travel_contributions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TravelContribution> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('operation_id')) {
+      context.handle(
+        _operationIdMeta,
+        operationId.isAcceptableOrUnknown(
+          data['operation_id']!,
+          _operationIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_operationIdMeta);
+    }
+    if (data.containsKey('goal_id')) {
+      context.handle(
+        _goalIdMeta,
+        goalId.isAcceptableOrUnknown(data['goal_id']!, _goalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_goalIdMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('minor')) {
+      context.handle(
+        _minorMeta,
+        minor.isAcceptableOrUnknown(data['minor']!, _minorMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_minorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {operationId};
+  @override
+  TravelContribution map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TravelContribution(
+      operationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}operation_id'],
+      )!,
+      goalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal_id'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}account_id'],
+      )!,
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}day'],
+      )!,
+      minor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}minor'],
+      )!,
+    );
+  }
+
+  @override
+  $TravelContributionsTable createAlias(String alias) {
+    return $TravelContributionsTable(attachedDatabase, alias);
+  }
+}
+
+class TravelContribution extends DataClass
+    implements Insertable<TravelContribution> {
+  final String operationId;
+  final int goalId;
+  final int accountId;
+  final int day;
+  final int minor;
+  const TravelContribution({
+    required this.operationId,
+    required this.goalId,
+    required this.accountId,
+    required this.day,
+    required this.minor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['operation_id'] = Variable<String>(operationId);
+    map['goal_id'] = Variable<int>(goalId);
+    map['account_id'] = Variable<int>(accountId);
+    map['day'] = Variable<int>(day);
+    map['minor'] = Variable<int>(minor);
+    return map;
+  }
+
+  TravelContributionsCompanion toCompanion(bool nullToAbsent) {
+    return TravelContributionsCompanion(
+      operationId: Value(operationId),
+      goalId: Value(goalId),
+      accountId: Value(accountId),
+      day: Value(day),
+      minor: Value(minor),
+    );
+  }
+
+  factory TravelContribution.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TravelContribution(
+      operationId: serializer.fromJson<String>(json['operationId']),
+      goalId: serializer.fromJson<int>(json['goalId']),
+      accountId: serializer.fromJson<int>(json['accountId']),
+      day: serializer.fromJson<int>(json['day']),
+      minor: serializer.fromJson<int>(json['minor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'operationId': serializer.toJson<String>(operationId),
+      'goalId': serializer.toJson<int>(goalId),
+      'accountId': serializer.toJson<int>(accountId),
+      'day': serializer.toJson<int>(day),
+      'minor': serializer.toJson<int>(minor),
+    };
+  }
+
+  TravelContribution copyWith({
+    String? operationId,
+    int? goalId,
+    int? accountId,
+    int? day,
+    int? minor,
+  }) => TravelContribution(
+    operationId: operationId ?? this.operationId,
+    goalId: goalId ?? this.goalId,
+    accountId: accountId ?? this.accountId,
+    day: day ?? this.day,
+    minor: minor ?? this.minor,
+  );
+  TravelContribution copyWithCompanion(TravelContributionsCompanion data) {
+    return TravelContribution(
+      operationId: data.operationId.present
+          ? data.operationId.value
+          : this.operationId,
+      goalId: data.goalId.present ? data.goalId.value : this.goalId,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      day: data.day.present ? data.day.value : this.day,
+      minor: data.minor.present ? data.minor.value : this.minor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TravelContribution(')
+          ..write('operationId: $operationId, ')
+          ..write('goalId: $goalId, ')
+          ..write('accountId: $accountId, ')
+          ..write('day: $day, ')
+          ..write('minor: $minor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(operationId, goalId, accountId, day, minor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TravelContribution &&
+          other.operationId == this.operationId &&
+          other.goalId == this.goalId &&
+          other.accountId == this.accountId &&
+          other.day == this.day &&
+          other.minor == this.minor);
+}
+
+class TravelContributionsCompanion extends UpdateCompanion<TravelContribution> {
+  final Value<String> operationId;
+  final Value<int> goalId;
+  final Value<int> accountId;
+  final Value<int> day;
+  final Value<int> minor;
+  final Value<int> rowid;
+  const TravelContributionsCompanion({
+    this.operationId = const Value.absent(),
+    this.goalId = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.day = const Value.absent(),
+    this.minor = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TravelContributionsCompanion.insert({
+    required String operationId,
+    required int goalId,
+    required int accountId,
+    required int day,
+    required int minor,
+    this.rowid = const Value.absent(),
+  }) : operationId = Value(operationId),
+       goalId = Value(goalId),
+       accountId = Value(accountId),
+       day = Value(day),
+       minor = Value(minor);
+  static Insertable<TravelContribution> custom({
+    Expression<String>? operationId,
+    Expression<int>? goalId,
+    Expression<int>? accountId,
+    Expression<int>? day,
+    Expression<int>? minor,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (operationId != null) 'operation_id': operationId,
+      if (goalId != null) 'goal_id': goalId,
+      if (accountId != null) 'account_id': accountId,
+      if (day != null) 'day': day,
+      if (minor != null) 'minor': minor,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TravelContributionsCompanion copyWith({
+    Value<String>? operationId,
+    Value<int>? goalId,
+    Value<int>? accountId,
+    Value<int>? day,
+    Value<int>? minor,
+    Value<int>? rowid,
+  }) {
+    return TravelContributionsCompanion(
+      operationId: operationId ?? this.operationId,
+      goalId: goalId ?? this.goalId,
+      accountId: accountId ?? this.accountId,
+      day: day ?? this.day,
+      minor: minor ?? this.minor,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (operationId.present) {
+      map['operation_id'] = Variable<String>(operationId.value);
+    }
+    if (goalId.present) {
+      map['goal_id'] = Variable<int>(goalId.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<int>(accountId.value);
+    }
+    if (day.present) {
+      map['day'] = Variable<int>(day.value);
+    }
+    if (minor.present) {
+      map['minor'] = Variable<int>(minor.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TravelContributionsCompanion(')
+          ..write('operationId: $operationId, ')
+          ..write('goalId: $goalId, ')
+          ..write('accountId: $accountId, ')
+          ..write('day: $day, ')
+          ..write('minor: $minor, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -6142,6 +7713,11 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   late final $LeaveRulesTable leaveRules = $LeaveRulesTable(this);
   late final $LeaveEntriesTable leaveEntries = $LeaveEntriesTable(this);
   late final $LeaveHolidaysTable leaveHolidays = $LeaveHolidaysTable(this);
+  late final $DashainPlansTable dashainPlans = $DashainPlansTable(this);
+  late final $AnnualTicketsTable annualTickets = $AnnualTicketsTable(this);
+  late final $TravelGoalsTable travelGoals = $TravelGoalsTable(this);
+  late final $TravelContributionsTable travelContributions =
+      $TravelContributionsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6166,6 +7742,10 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     leaveRules,
     leaveEntries,
     leaveHolidays,
+    dashainPlans,
+    annualTickets,
+    travelGoals,
+    travelContributions,
   ];
 }
 
@@ -6218,6 +7798,42 @@ final class $$CurrenciesTableReferences
         );
 
     final cache = $_typedResult.readTableOrNull(_remittancesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DashainPlansTable, List<DashainPlan>>
+  _dashainPlansRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.dashainPlans,
+    aliasName: 'currencies__code__dashain_plans__currency',
+  );
+
+  $$DashainPlansTableProcessedTableManager get dashainPlansRefs {
+    final manager = $$DashainPlansTableTableManager(
+      $_db,
+      $_db.dashainPlans,
+    ).filter((f) => f.currency.code.sqlEquals($_itemColumn<String>('code')!));
+
+    final cache = $_typedResult.readTableOrNull(_dashainPlansRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TravelGoalsTable, List<TravelGoal>>
+  _travelGoalsRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.travelGoals,
+    aliasName: 'currencies__code__travel_goals__currency',
+  );
+
+  $$TravelGoalsTableProcessedTableManager get travelGoalsRefs {
+    final manager = $$TravelGoalsTableTableManager(
+      $_db,
+      $_db.travelGoals,
+    ).filter((f) => f.currency.code.sqlEquals($_itemColumn<String>('code')!));
+
+    final cache = $_typedResult.readTableOrNull(_travelGoalsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -6284,6 +7900,56 @@ class $$CurrenciesTableFilterComposer
           }) => $$RemittancesTableFilterComposer(
             $db: $db,
             $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> dashainPlansRefs(
+    Expression<bool> Function($$DashainPlansTableFilterComposer f) f,
+  ) {
+    final $$DashainPlansTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.dashainPlans,
+      getReferencedColumn: (t) => t.currency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DashainPlansTableFilterComposer(
+            $db: $db,
+            $table: $db.dashainPlans,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> travelGoalsRefs(
+    Expression<bool> Function($$TravelGoalsTableFilterComposer f) f,
+  ) {
+    final $$TravelGoalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.travelGoals,
+      getReferencedColumn: (t) => t.currency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelGoalsTableFilterComposer(
+            $db: $db,
+            $table: $db.travelGoals,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6378,6 +8044,56 @@ class $$CurrenciesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> dashainPlansRefs<T extends Object>(
+    Expression<T> Function($$DashainPlansTableAnnotationComposer a) f,
+  ) {
+    final $$DashainPlansTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.dashainPlans,
+      getReferencedColumn: (t) => t.currency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DashainPlansTableAnnotationComposer(
+            $db: $db,
+            $table: $db.dashainPlans,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> travelGoalsRefs<T extends Object>(
+    Expression<T> Function($$TravelGoalsTableAnnotationComposer a) f,
+  ) {
+    final $$TravelGoalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.travelGoals,
+      getReferencedColumn: (t) => t.currency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelGoalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.travelGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$CurrenciesTableTableManager
@@ -6396,6 +8112,8 @@ class $$CurrenciesTableTableManager
           PrefetchHooks Function({
             bool ledgerAccountsRefs,
             bool remittancesRefs,
+            bool dashainPlansRefs,
+            bool travelGoalsRefs,
           })
         > {
   $$CurrenciesTableTableManager(_$LedgerDatabase db, $CurrenciesTable table)
@@ -6433,12 +8151,19 @@ class $$CurrenciesTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({ledgerAccountsRefs = false, remittancesRefs = false}) {
+              ({
+                ledgerAccountsRefs = false,
+                remittancesRefs = false,
+                dashainPlansRefs = false,
+                travelGoalsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (ledgerAccountsRefs) db.ledgerAccounts,
                     if (remittancesRefs) db.remittances,
+                    if (dashainPlansRefs) db.dashainPlans,
+                    if (travelGoalsRefs) db.travelGoals,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -6483,6 +8208,46 @@ class $$CurrenciesTableTableManager
                           referencedColumn: 'destination_currency',
                           typedResults: items,
                         ),
+                      if (dashainPlansRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          DashainPlan,
+                          $DashainPlansTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._dashainPlansRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).dashainPlansRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'currency',
+                          typedResults: items,
+                        ),
+                      if (travelGoalsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          TravelGoal,
+                          $TravelGoalsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._travelGoalsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).travelGoalsRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'currency',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -6503,7 +8268,12 @@ typedef $$CurrenciesTableProcessedTableManager =
       $$CurrenciesTableUpdateCompanionBuilder,
       (Currency, $$CurrenciesTableReferences),
       Currency,
-      PrefetchHooks Function({bool ledgerAccountsRefs, bool remittancesRefs})
+      PrefetchHooks Function({
+        bool ledgerAccountsRefs,
+        bool remittancesRefs,
+        bool dashainPlansRefs,
+        bool travelGoalsRefs,
+      })
     >;
 typedef $$LedgerAccountsTableCreateCompanionBuilder =
     LedgerAccountsCompanion Function({
@@ -6683,6 +8453,30 @@ final class $$LedgerAccountsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _incomingRemittancesTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $TravelContributionsTable,
+    List<TravelContribution>
+  >
+  _travelContributionsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.travelContributions,
+        aliasName: 'ledger_accounts__id__travel_contributions__account_id',
+      );
+
+  $$TravelContributionsTableProcessedTableManager get travelContributionsRefs {
+    final manager = $$TravelContributionsTableTableManager(
+      $_db,
+      $_db.travelContributions,
+    ).filter((f) => f.accountId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _travelContributionsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -6904,6 +8698,31 @@ class $$LedgerAccountsTableFilterComposer
           }) => $$RemittancesTableFilterComposer(
             $db: $db,
             $table: $db.remittances,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> travelContributionsRefs(
+    Expression<bool> Function($$TravelContributionsTableFilterComposer f) f,
+  ) {
+    final $$TravelContributionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.travelContributions,
+      getReferencedColumn: (t) => t.accountId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelContributionsTableFilterComposer(
+            $db: $db,
+            $table: $db.travelContributions,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7178,6 +8997,32 @@ class $$LedgerAccountsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> travelContributionsRefs<T extends Object>(
+    Expression<T> Function($$TravelContributionsTableAnnotationComposer a) f,
+  ) {
+    final $$TravelContributionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.travelContributions,
+          getReferencedColumn: (t) => t.accountId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TravelContributionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.travelContributions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$LedgerAccountsTableTableManager
@@ -7202,6 +9047,7 @@ class $$LedgerAccountsTableTableManager
             bool cashReconciliationsRefs,
             bool outgoingRemittances,
             bool incomingRemittances,
+            bool travelContributionsRefs,
           })
         > {
   $$LedgerAccountsTableTableManager(
@@ -7259,6 +9105,7 @@ class $$LedgerAccountsTableTableManager
                 cashReconciliationsRefs = false,
                 outgoingRemittances = false,
                 incomingRemittances = false,
+                travelContributionsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -7270,6 +9117,7 @@ class $$LedgerAccountsTableTableManager
                     if (cashReconciliationsRefs) db.cashReconciliations,
                     if (outgoingRemittances) db.remittances,
                     if (incomingRemittances) db.remittances,
+                    if (travelContributionsRefs) db.travelContributions,
                   ],
                   addJoins:
                       <
@@ -7443,6 +9291,26 @@ class $$LedgerAccountsTableTableManager
                           referencedColumn: 'destination_account_id',
                           typedResults: items,
                         ),
+                      if (travelContributionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          LedgerAccount,
+                          $LedgerAccountsTable,
+                          TravelContribution,
+                          $TravelContributionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$LedgerAccountsTableReferences
+                              ._travelContributionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$LedgerAccountsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).travelContributionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'account_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -7472,6 +9340,7 @@ typedef $$LedgerAccountsTableProcessedTableManager =
         bool cashReconciliationsRefs,
         bool outgoingRemittances,
         bool incomingRemittances,
+        bool travelContributionsRefs,
       })
     >;
 typedef $$JournalEntriesTableCreateCompanionBuilder =
@@ -7751,6 +9620,24 @@ final class $$JournalEntriesTableReferences
     final cache = $_typedResult.readTableOrNull(
       _remittanceFamilyPaymentsRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DashainPlansTable, List<DashainPlan>>
+  _dashainPlansRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.dashainPlans,
+    aliasName: 'journal_entries__id__dashain_plans__receipt_id',
+  );
+
+  $$DashainPlansTableProcessedTableManager get dashainPlansRefs {
+    final manager = $$DashainPlansTableTableManager(
+      $_db,
+      $_db.dashainPlans,
+    ).filter((f) => f.receiptId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_dashainPlansRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -8086,6 +9973,31 @@ class $$JournalEntriesTableFilterComposer
                     $removeJoinBuilderFromRootComposer,
               ),
         );
+    return f(composer);
+  }
+
+  Expression<bool> dashainPlansRefs(
+    Expression<bool> Function($$DashainPlansTableFilterComposer f) f,
+  ) {
+    final $$DashainPlansTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.dashainPlans,
+      getReferencedColumn: (t) => t.receiptId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DashainPlansTableFilterComposer(
+            $db: $db,
+            $table: $db.dashainPlans,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
     return f(composer);
   }
 }
@@ -8519,6 +10431,31 @@ class $$JournalEntriesTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> dashainPlansRefs<T extends Object>(
+    Expression<T> Function($$DashainPlansTableAnnotationComposer a) f,
+  ) {
+    final $$DashainPlansTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.dashainPlans,
+      getReferencedColumn: (t) => t.receiptId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DashainPlansTableAnnotationComposer(
+            $db: $db,
+            $table: $db.dashainPlans,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$JournalEntriesTableTableManager
@@ -8547,6 +10484,7 @@ class $$JournalEntriesTableTableManager
             bool remittanceEventsRefs,
             bool remittanceSourceProofs,
             bool remittanceFamilyPaymentsRefs,
+            bool dashainPlansRefs,
           })
         > {
   $$JournalEntriesTableTableManager(
@@ -8624,6 +10562,7 @@ class $$JournalEntriesTableTableManager
                 remittanceEventsRefs = false,
                 remittanceSourceProofs = false,
                 remittanceFamilyPaymentsRefs = false,
+                dashainPlansRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -8638,6 +10577,7 @@ class $$JournalEntriesTableTableManager
                     if (remittanceSourceProofs) db.remittanceEvents,
                     if (remittanceFamilyPaymentsRefs)
                       db.remittanceFamilyPayments,
+                    if (dashainPlansRefs) db.dashainPlans,
                   ],
                   addJoins:
                       <
@@ -8873,6 +10813,26 @@ class $$JournalEntriesTableTableManager
                           referencedColumn: 'entry_id',
                           typedResults: items,
                         ),
+                      if (dashainPlansRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          DashainPlan,
+                          $DashainPlansTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._dashainPlansRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).dashainPlansRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'receipt_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -8906,6 +10866,7 @@ typedef $$JournalEntriesTableProcessedTableManager =
         bool remittanceEventsRefs,
         bool remittanceSourceProofs,
         bool remittanceFamilyPaymentsRefs,
+        bool dashainPlansRefs,
       })
     >;
 typedef $$JournalPostingsTableCreateCompanionBuilder =
@@ -14012,6 +15973,29 @@ typedef $$LeaveEntriesTableUpdateCompanionBuilder =
       Value<MedicalReport> medicalReport,
     });
 
+final class $$LeaveEntriesTableReferences
+    extends BaseReferences<_$LedgerDatabase, $LeaveEntriesTable, LeaveEntry> {
+  $$LeaveEntriesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$AnnualTicketsTable, List<AnnualTicket>>
+  _annualTicketsRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.annualTickets,
+    aliasName: 'leave_entries__id__annual_tickets__leave_id',
+  );
+
+  $$AnnualTicketsTableProcessedTableManager get annualTicketsRefs {
+    final manager = $$AnnualTicketsTableTableManager(
+      $_db,
+      $_db.annualTickets,
+    ).filter((f) => f.leaveId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_annualTicketsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$LeaveEntriesTableFilterComposer
     extends Composer<_$LedgerDatabase, $LeaveEntriesTable> {
   $$LeaveEntriesTableFilterComposer({
@@ -14058,6 +16042,31 @@ class $$LeaveEntriesTableFilterComposer
     column: $table.medicalReport,
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
+
+  Expression<bool> annualTicketsRefs(
+    Expression<bool> Function($$AnnualTicketsTableFilterComposer f) f,
+  ) {
+    final $$AnnualTicketsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.annualTickets,
+      getReferencedColumn: (t) => t.leaveId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AnnualTicketsTableFilterComposer(
+            $db: $db,
+            $table: $db.annualTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$LeaveEntriesTableOrderingComposer
@@ -14137,6 +16146,31 @@ class $$LeaveEntriesTableAnnotationComposer
         column: $table.medicalReport,
         builder: (column) => column,
       );
+
+  Expression<T> annualTicketsRefs<T extends Object>(
+    Expression<T> Function($$AnnualTicketsTableAnnotationComposer a) f,
+  ) {
+    final $$AnnualTicketsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.annualTickets,
+      getReferencedColumn: (t) => t.leaveId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AnnualTicketsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.annualTickets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$LeaveEntriesTableTableManager
@@ -14150,12 +16184,9 @@ class $$LeaveEntriesTableTableManager
           $$LeaveEntriesTableAnnotationComposer,
           $$LeaveEntriesTableCreateCompanionBuilder,
           $$LeaveEntriesTableUpdateCompanionBuilder,
-          (
-            LeaveEntry,
-            BaseReferences<_$LedgerDatabase, $LeaveEntriesTable, LeaveEntry>,
-          ),
+          (LeaveEntry, $$LeaveEntriesTableReferences),
           LeaveEntry,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool annualTicketsRefs})
         > {
   $$LeaveEntriesTableTableManager(_$LedgerDatabase db, $LeaveEntriesTable table)
     : super(
@@ -14208,15 +16239,43 @@ class $$LeaveEntriesTableTableManager
               .map(
                 (e) => (
                   e.readTable<$LeaveEntriesTable, LeaveEntry>(table),
-                  BaseReferences<
-                    _$LedgerDatabase,
-                    $LeaveEntriesTable,
-                    LeaveEntry
-                  >(db, table, e),
+                  $$LeaveEntriesTableReferences(db, table, e),
                 ),
               )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({annualTicketsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (annualTicketsRefs) db.annualTickets,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (annualTicketsRefs)
+                    await $_getPrefetchedDataByColumns<
+                      LeaveEntry,
+                      $LeaveEntriesTable,
+                      AnnualTicket,
+                      $AnnualTicketsTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$LeaveEntriesTableReferences
+                          ._annualTicketsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$LeaveEntriesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).annualTicketsRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'leave_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -14231,12 +16290,9 @@ typedef $$LeaveEntriesTableProcessedTableManager =
       $$LeaveEntriesTableAnnotationComposer,
       $$LeaveEntriesTableCreateCompanionBuilder,
       $$LeaveEntriesTableUpdateCompanionBuilder,
-      (
-        LeaveEntry,
-        BaseReferences<_$LedgerDatabase, $LeaveEntriesTable, LeaveEntry>,
-      ),
+      (LeaveEntry, $$LeaveEntriesTableReferences),
       LeaveEntry,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool annualTicketsRefs})
     >;
 typedef $$LeaveHolidaysTableCreateCompanionBuilder =
     LeaveHolidaysCompanion Function({Value<int> day, required String name});
@@ -14372,6 +16428,1596 @@ typedef $$LeaveHolidaysTableProcessedTableManager =
       LeaveHoliday,
       PrefetchHooks Function()
     >;
+typedef $$DashainPlansTableCreateCompanionBuilder =
+    DashainPlansCompanion Function({
+      Value<int> year,
+      required int festivalDay,
+      required String currency,
+      required int salaryMinor,
+      required int allowancesMinor,
+      Value<int?> receiptId,
+      Value<int> revision,
+    });
+typedef $$DashainPlansTableUpdateCompanionBuilder =
+    DashainPlansCompanion Function({
+      Value<int> year,
+      Value<int> festivalDay,
+      Value<String> currency,
+      Value<int> salaryMinor,
+      Value<int> allowancesMinor,
+      Value<int?> receiptId,
+      Value<int> revision,
+    });
+
+final class $$DashainPlansTableReferences
+    extends BaseReferences<_$LedgerDatabase, $DashainPlansTable, DashainPlan> {
+  $$DashainPlansTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $CurrenciesTable _currencyTable(_$LedgerDatabase db) =>
+      db.currencies.createAlias('dashain_plans__currency__currencies__code');
+
+  $$CurrenciesTableProcessedTableManager get currency {
+    final $_column = $_itemColumn<String>('currency')!;
+
+    final manager = $$CurrenciesTableTableManager(
+      $_db,
+      $_db.currencies,
+    ).filter((f) => f.code.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_currencyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $JournalEntriesTable _receiptIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('dashain_plans__receipt_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager? get receiptId {
+    final $_column = $_itemColumn<int>('receipt_id');
+    if ($_column == null) return null;
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_receiptIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$DashainPlansTableFilterComposer
+    extends Composer<_$LedgerDatabase, $DashainPlansTable> {
+  $$DashainPlansTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get festivalDay => $composableBuilder(
+    column: $table.festivalDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get salaryMinor => $composableBuilder(
+    column: $table.salaryMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get allowancesMinor => $composableBuilder(
+    column: $table.allowancesMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurrenciesTableFilterComposer get currency {
+    final $$CurrenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableFilterComposer get receiptId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DashainPlansTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $DashainPlansTable> {
+  $$DashainPlansTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get festivalDay => $composableBuilder(
+    column: $table.festivalDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get salaryMinor => $composableBuilder(
+    column: $table.salaryMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get allowancesMinor => $composableBuilder(
+    column: $table.allowancesMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get revision => $composableBuilder(
+    column: $table.revision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurrenciesTableOrderingComposer get currency {
+    final $$CurrenciesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableOrderingComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableOrderingComposer get receiptId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DashainPlansTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $DashainPlansTable> {
+  $$DashainPlansTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
+
+  GeneratedColumn<int> get festivalDay => $composableBuilder(
+    column: $table.festivalDay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get salaryMinor => $composableBuilder(
+    column: $table.salaryMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get allowancesMinor => $composableBuilder(
+    column: $table.allowancesMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get revision =>
+      $composableBuilder(column: $table.revision, builder: (column) => column);
+
+  $$CurrenciesTableAnnotationComposer get currency {
+    final $$CurrenciesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableAnnotationComposer get receiptId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DashainPlansTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $DashainPlansTable,
+          DashainPlan,
+          $$DashainPlansTableFilterComposer,
+          $$DashainPlansTableOrderingComposer,
+          $$DashainPlansTableAnnotationComposer,
+          $$DashainPlansTableCreateCompanionBuilder,
+          $$DashainPlansTableUpdateCompanionBuilder,
+          (DashainPlan, $$DashainPlansTableReferences),
+          DashainPlan,
+          PrefetchHooks Function({bool currency, bool receiptId})
+        > {
+  $$DashainPlansTableTableManager(_$LedgerDatabase db, $DashainPlansTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DashainPlansTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DashainPlansTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DashainPlansTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> year = const Value.absent(),
+                Value<int> festivalDay = const Value.absent(),
+                Value<String> currency = const Value.absent(),
+                Value<int> salaryMinor = const Value.absent(),
+                Value<int> allowancesMinor = const Value.absent(),
+                Value<int?> receiptId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+              }) => DashainPlansCompanion(
+                year: year,
+                festivalDay: festivalDay,
+                currency: currency,
+                salaryMinor: salaryMinor,
+                allowancesMinor: allowancesMinor,
+                receiptId: receiptId,
+                revision: revision,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> year = const Value.absent(),
+                required int festivalDay,
+                required String currency,
+                required int salaryMinor,
+                required int allowancesMinor,
+                Value<int?> receiptId = const Value.absent(),
+                Value<int> revision = const Value.absent(),
+              }) => DashainPlansCompanion.insert(
+                year: year,
+                festivalDay: festivalDay,
+                currency: currency,
+                salaryMinor: salaryMinor,
+                allowancesMinor: allowancesMinor,
+                receiptId: receiptId,
+                revision: revision,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DashainPlansTable, DashainPlan>(table),
+                  $$DashainPlansTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({currency = false, receiptId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (currency) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.currency,
+                        referencedTable: $$DashainPlansTableReferences
+                            ._currencyTable(db),
+                        referencedColumn: $$DashainPlansTableReferences
+                            ._currencyTable(db)
+                            .code,
+                      ) as T;
+                    }
+                    if (receiptId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.receiptId,
+                        referencedTable: $$DashainPlansTableReferences
+                            ._receiptIdTable(db),
+                        referencedColumn: $$DashainPlansTableReferences
+                            ._receiptIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DashainPlansTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $DashainPlansTable,
+      DashainPlan,
+      $$DashainPlansTableFilterComposer,
+      $$DashainPlansTableOrderingComposer,
+      $$DashainPlansTableAnnotationComposer,
+      $$DashainPlansTableCreateCompanionBuilder,
+      $$DashainPlansTableUpdateCompanionBuilder,
+      (DashainPlan, $$DashainPlansTableReferences),
+      DashainPlan,
+      PrefetchHooks Function({bool currency, bool receiptId})
+    >;
+typedef $$AnnualTicketsTableCreateCompanionBuilder =
+    AnnualTicketsCompanion Function({
+      Value<int> year,
+      required int policyVersion,
+      Value<int?> receivedDay,
+      Value<int?> usedDay,
+      Value<int?> leaveId,
+    });
+typedef $$AnnualTicketsTableUpdateCompanionBuilder =
+    AnnualTicketsCompanion Function({
+      Value<int> year,
+      Value<int> policyVersion,
+      Value<int?> receivedDay,
+      Value<int?> usedDay,
+      Value<int?> leaveId,
+    });
+
+final class $$AnnualTicketsTableReferences
+    extends
+        BaseReferences<_$LedgerDatabase, $AnnualTicketsTable, AnnualTicket> {
+  $$AnnualTicketsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $LeaveEntriesTable _leaveIdTable(_$LedgerDatabase db) => db
+      .leaveEntries
+      .createAlias('annual_tickets__leave_id__leave_entries__id');
+
+  $$LeaveEntriesTableProcessedTableManager? get leaveId {
+    final $_column = $_itemColumn<int>('leave_id');
+    if ($_column == null) return null;
+    final manager = $$LeaveEntriesTableTableManager(
+      $_db,
+      $_db.leaveEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_leaveIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AnnualTicketsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $AnnualTicketsTable> {
+  $$AnnualTicketsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get policyVersion => $composableBuilder(
+    column: $table.policyVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get receivedDay => $composableBuilder(
+    column: $table.receivedDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get usedDay => $composableBuilder(
+    column: $table.usedDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$LeaveEntriesTableFilterComposer get leaveId {
+    final $$LeaveEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.leaveId,
+      referencedTable: $db.leaveEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LeaveEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.leaveEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AnnualTicketsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $AnnualTicketsTable> {
+  $$AnnualTicketsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get year => $composableBuilder(
+    column: $table.year,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get policyVersion => $composableBuilder(
+    column: $table.policyVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get receivedDay => $composableBuilder(
+    column: $table.receivedDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get usedDay => $composableBuilder(
+    column: $table.usedDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$LeaveEntriesTableOrderingComposer get leaveId {
+    final $$LeaveEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.leaveId,
+      referencedTable: $db.leaveEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LeaveEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.leaveEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AnnualTicketsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $AnnualTicketsTable> {
+  $$AnnualTicketsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get year =>
+      $composableBuilder(column: $table.year, builder: (column) => column);
+
+  GeneratedColumn<int> get policyVersion => $composableBuilder(
+    column: $table.policyVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get receivedDay => $composableBuilder(
+    column: $table.receivedDay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get usedDay =>
+      $composableBuilder(column: $table.usedDay, builder: (column) => column);
+
+  $$LeaveEntriesTableAnnotationComposer get leaveId {
+    final $$LeaveEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.leaveId,
+      referencedTable: $db.leaveEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LeaveEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.leaveEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AnnualTicketsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $AnnualTicketsTable,
+          AnnualTicket,
+          $$AnnualTicketsTableFilterComposer,
+          $$AnnualTicketsTableOrderingComposer,
+          $$AnnualTicketsTableAnnotationComposer,
+          $$AnnualTicketsTableCreateCompanionBuilder,
+          $$AnnualTicketsTableUpdateCompanionBuilder,
+          (AnnualTicket, $$AnnualTicketsTableReferences),
+          AnnualTicket,
+          PrefetchHooks Function({bool leaveId})
+        > {
+  $$AnnualTicketsTableTableManager(
+    _$LedgerDatabase db,
+    $AnnualTicketsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AnnualTicketsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AnnualTicketsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AnnualTicketsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> year = const Value.absent(),
+                Value<int> policyVersion = const Value.absent(),
+                Value<int?> receivedDay = const Value.absent(),
+                Value<int?> usedDay = const Value.absent(),
+                Value<int?> leaveId = const Value.absent(),
+              }) => AnnualTicketsCompanion(
+                year: year,
+                policyVersion: policyVersion,
+                receivedDay: receivedDay,
+                usedDay: usedDay,
+                leaveId: leaveId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> year = const Value.absent(),
+                required int policyVersion,
+                Value<int?> receivedDay = const Value.absent(),
+                Value<int?> usedDay = const Value.absent(),
+                Value<int?> leaveId = const Value.absent(),
+              }) => AnnualTicketsCompanion.insert(
+                year: year,
+                policyVersion: policyVersion,
+                receivedDay: receivedDay,
+                usedDay: usedDay,
+                leaveId: leaveId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AnnualTicketsTable, AnnualTicket>(table),
+                  $$AnnualTicketsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({leaveId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (leaveId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.leaveId,
+                        referencedTable: $$AnnualTicketsTableReferences
+                            ._leaveIdTable(db),
+                        referencedColumn: $$AnnualTicketsTableReferences
+                            ._leaveIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AnnualTicketsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $AnnualTicketsTable,
+      AnnualTicket,
+      $$AnnualTicketsTableFilterComposer,
+      $$AnnualTicketsTableOrderingComposer,
+      $$AnnualTicketsTableAnnotationComposer,
+      $$AnnualTicketsTableCreateCompanionBuilder,
+      $$AnnualTicketsTableUpdateCompanionBuilder,
+      (AnnualTicket, $$AnnualTicketsTableReferences),
+      AnnualTicket,
+      PrefetchHooks Function({bool leaveId})
+    >;
+typedef $$TravelGoalsTableCreateCompanionBuilder =
+    TravelGoalsCompanion Function({
+      Value<int> id,
+      required String currency,
+      required int targetDay,
+      required int tripMinor,
+      required int airfareMinor,
+    });
+typedef $$TravelGoalsTableUpdateCompanionBuilder =
+    TravelGoalsCompanion Function({
+      Value<int> id,
+      Value<String> currency,
+      Value<int> targetDay,
+      Value<int> tripMinor,
+      Value<int> airfareMinor,
+    });
+
+final class $$TravelGoalsTableReferences
+    extends BaseReferences<_$LedgerDatabase, $TravelGoalsTable, TravelGoal> {
+  $$TravelGoalsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $CurrenciesTable _currencyTable(_$LedgerDatabase db) =>
+      db.currencies.createAlias('travel_goals__currency__currencies__code');
+
+  $$CurrenciesTableProcessedTableManager get currency {
+    final $_column = $_itemColumn<String>('currency')!;
+
+    final manager = $$CurrenciesTableTableManager(
+      $_db,
+      $_db.currencies,
+    ).filter((f) => f.code.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_currencyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $TravelContributionsTable,
+    List<TravelContribution>
+  >
+  _travelContributionsRefsTable(_$LedgerDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.travelContributions,
+        aliasName: 'travel_goals__id__travel_contributions__goal_id',
+      );
+
+  $$TravelContributionsTableProcessedTableManager get travelContributionsRefs {
+    final manager = $$TravelContributionsTableTableManager(
+      $_db,
+      $_db.travelContributions,
+    ).filter((f) => f.goalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _travelContributionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$TravelGoalsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $TravelGoalsTable> {
+  $$TravelGoalsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get targetDay => $composableBuilder(
+    column: $table.targetDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get tripMinor => $composableBuilder(
+    column: $table.tripMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get airfareMinor => $composableBuilder(
+    column: $table.airfareMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurrenciesTableFilterComposer get currency {
+    final $$CurrenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> travelContributionsRefs(
+    Expression<bool> Function($$TravelContributionsTableFilterComposer f) f,
+  ) {
+    final $$TravelContributionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.travelContributions,
+      getReferencedColumn: (t) => t.goalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelContributionsTableFilterComposer(
+            $db: $db,
+            $table: $db.travelContributions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TravelGoalsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $TravelGoalsTable> {
+  $$TravelGoalsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get targetDay => $composableBuilder(
+    column: $table.targetDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get tripMinor => $composableBuilder(
+    column: $table.tripMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get airfareMinor => $composableBuilder(
+    column: $table.airfareMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurrenciesTableOrderingComposer get currency {
+    final $$CurrenciesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableOrderingComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TravelGoalsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $TravelGoalsTable> {
+  $$TravelGoalsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get targetDay =>
+      $composableBuilder(column: $table.targetDay, builder: (column) => column);
+
+  GeneratedColumn<int> get tripMinor =>
+      $composableBuilder(column: $table.tripMinor, builder: (column) => column);
+
+  GeneratedColumn<int> get airfareMinor => $composableBuilder(
+    column: $table.airfareMinor,
+    builder: (column) => column,
+  );
+
+  $$CurrenciesTableAnnotationComposer get currency {
+    final $$CurrenciesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.currency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> travelContributionsRefs<T extends Object>(
+    Expression<T> Function($$TravelContributionsTableAnnotationComposer a) f,
+  ) {
+    final $$TravelContributionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.travelContributions,
+          getReferencedColumn: (t) => t.goalId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TravelContributionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.travelContributions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$TravelGoalsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $TravelGoalsTable,
+          TravelGoal,
+          $$TravelGoalsTableFilterComposer,
+          $$TravelGoalsTableOrderingComposer,
+          $$TravelGoalsTableAnnotationComposer,
+          $$TravelGoalsTableCreateCompanionBuilder,
+          $$TravelGoalsTableUpdateCompanionBuilder,
+          (TravelGoal, $$TravelGoalsTableReferences),
+          TravelGoal,
+          PrefetchHooks Function({bool currency, bool travelContributionsRefs})
+        > {
+  $$TravelGoalsTableTableManager(_$LedgerDatabase db, $TravelGoalsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TravelGoalsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TravelGoalsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TravelGoalsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> currency = const Value.absent(),
+                Value<int> targetDay = const Value.absent(),
+                Value<int> tripMinor = const Value.absent(),
+                Value<int> airfareMinor = const Value.absent(),
+              }) => TravelGoalsCompanion(
+                id: id,
+                currency: currency,
+                targetDay: targetDay,
+                tripMinor: tripMinor,
+                airfareMinor: airfareMinor,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String currency,
+                required int targetDay,
+                required int tripMinor,
+                required int airfareMinor,
+              }) => TravelGoalsCompanion.insert(
+                id: id,
+                currency: currency,
+                targetDay: targetDay,
+                tripMinor: tripMinor,
+                airfareMinor: airfareMinor,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TravelGoalsTable, TravelGoal>(table),
+                  $$TravelGoalsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({currency = false, travelContributionsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (travelContributionsRefs) db.travelContributions,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (currency) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.currency,
+                            referencedTable: $$TravelGoalsTableReferences
+                                ._currencyTable(db),
+                            referencedColumn: $$TravelGoalsTableReferences
+                                ._currencyTable(db)
+                                .code,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (travelContributionsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          TravelGoal,
+                          $TravelGoalsTable,
+                          TravelContribution,
+                          $TravelContributionsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TravelGoalsTableReferences
+                              ._travelContributionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TravelGoalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).travelContributionsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'goal_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$TravelGoalsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $TravelGoalsTable,
+      TravelGoal,
+      $$TravelGoalsTableFilterComposer,
+      $$TravelGoalsTableOrderingComposer,
+      $$TravelGoalsTableAnnotationComposer,
+      $$TravelGoalsTableCreateCompanionBuilder,
+      $$TravelGoalsTableUpdateCompanionBuilder,
+      (TravelGoal, $$TravelGoalsTableReferences),
+      TravelGoal,
+      PrefetchHooks Function({bool currency, bool travelContributionsRefs})
+    >;
+typedef $$TravelContributionsTableCreateCompanionBuilder =
+    TravelContributionsCompanion Function({
+      required String operationId,
+      required int goalId,
+      required int accountId,
+      required int day,
+      required int minor,
+      Value<int> rowid,
+    });
+typedef $$TravelContributionsTableUpdateCompanionBuilder =
+    TravelContributionsCompanion Function({
+      Value<String> operationId,
+      Value<int> goalId,
+      Value<int> accountId,
+      Value<int> day,
+      Value<int> minor,
+      Value<int> rowid,
+    });
+
+final class $$TravelContributionsTableReferences
+    extends
+        BaseReferences<
+          _$LedgerDatabase,
+          $TravelContributionsTable,
+          TravelContribution
+        > {
+  $$TravelContributionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TravelGoalsTable _goalIdTable(_$LedgerDatabase db) => db.travelGoals
+      .createAlias('travel_contributions__goal_id__travel_goals__id');
+
+  $$TravelGoalsTableProcessedTableManager get goalId {
+    final $_column = $_itemColumn<int>('goal_id')!;
+
+    final manager = $$TravelGoalsTableTableManager(
+      $_db,
+      $_db.travelGoals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_goalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $LedgerAccountsTable _accountIdTable(_$LedgerDatabase db) => db
+      .ledgerAccounts
+      .createAlias('travel_contributions__account_id__ledger_accounts__id');
+
+  $$LedgerAccountsTableProcessedTableManager get accountId {
+    final $_column = $_itemColumn<int>('account_id')!;
+
+    final manager = $$LedgerAccountsTableTableManager(
+      $_db,
+      $_db.ledgerAccounts,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_accountIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TravelContributionsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $TravelContributionsTable> {
+  $$TravelContributionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get operationId => $composableBuilder(
+    column: $table.operationId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get minor => $composableBuilder(
+    column: $table.minor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TravelGoalsTableFilterComposer get goalId {
+    final $$TravelGoalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.goalId,
+      referencedTable: $db.travelGoals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelGoalsTableFilterComposer(
+            $db: $db,
+            $table: $db.travelGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableFilterComposer get accountId {
+    final $$LedgerAccountsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableFilterComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TravelContributionsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $TravelContributionsTable> {
+  $$TravelContributionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get operationId => $composableBuilder(
+    column: $table.operationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get minor => $composableBuilder(
+    column: $table.minor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TravelGoalsTableOrderingComposer get goalId {
+    final $$TravelGoalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.goalId,
+      referencedTable: $db.travelGoals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelGoalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.travelGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableOrderingComposer get accountId {
+    final $$LedgerAccountsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableOrderingComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TravelContributionsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $TravelContributionsTable> {
+  $$TravelContributionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get operationId => $composableBuilder(
+    column: $table.operationId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get minor =>
+      $composableBuilder(column: $table.minor, builder: (column) => column);
+
+  $$TravelGoalsTableAnnotationComposer get goalId {
+    final $$TravelGoalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.goalId,
+      referencedTable: $db.travelGoals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TravelGoalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.travelGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$LedgerAccountsTableAnnotationComposer get accountId {
+    final $$LedgerAccountsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.accountId,
+      referencedTable: $db.ledgerAccounts,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$LedgerAccountsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ledgerAccounts,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TravelContributionsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $TravelContributionsTable,
+          TravelContribution,
+          $$TravelContributionsTableFilterComposer,
+          $$TravelContributionsTableOrderingComposer,
+          $$TravelContributionsTableAnnotationComposer,
+          $$TravelContributionsTableCreateCompanionBuilder,
+          $$TravelContributionsTableUpdateCompanionBuilder,
+          (TravelContribution, $$TravelContributionsTableReferences),
+          TravelContribution,
+          PrefetchHooks Function({bool goalId, bool accountId})
+        > {
+  $$TravelContributionsTableTableManager(
+    _$LedgerDatabase db,
+    $TravelContributionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TravelContributionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TravelContributionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$TravelContributionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> operationId = const Value.absent(),
+                Value<int> goalId = const Value.absent(),
+                Value<int> accountId = const Value.absent(),
+                Value<int> day = const Value.absent(),
+                Value<int> minor = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TravelContributionsCompanion(
+                operationId: operationId,
+                goalId: goalId,
+                accountId: accountId,
+                day: day,
+                minor: minor,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String operationId,
+                required int goalId,
+                required int accountId,
+                required int day,
+                required int minor,
+                Value<int> rowid = const Value.absent(),
+              }) => TravelContributionsCompanion.insert(
+                operationId: operationId,
+                goalId: goalId,
+                accountId: accountId,
+                day: day,
+                minor: minor,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TravelContributionsTable, TravelContribution>(
+                    table,
+                  ),
+                  $$TravelContributionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({goalId = false, accountId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (goalId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.goalId,
+                        referencedTable: $$TravelContributionsTableReferences
+                            ._goalIdTable(db),
+                        referencedColumn: $$TravelContributionsTableReferences
+                            ._goalIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (accountId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.accountId,
+                        referencedTable: $$TravelContributionsTableReferences
+                            ._accountIdTable(db),
+                        referencedColumn: $$TravelContributionsTableReferences
+                            ._accountIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TravelContributionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $TravelContributionsTable,
+      TravelContribution,
+      $$TravelContributionsTableFilterComposer,
+      $$TravelContributionsTableOrderingComposer,
+      $$TravelContributionsTableAnnotationComposer,
+      $$TravelContributionsTableCreateCompanionBuilder,
+      $$TravelContributionsTableUpdateCompanionBuilder,
+      (TravelContribution, $$TravelContributionsTableReferences),
+      TravelContribution,
+      PrefetchHooks Function({bool goalId, bool accountId})
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -14417,4 +18063,12 @@ class $LedgerDatabaseManager {
       $$LeaveEntriesTableTableManager(_db, _db.leaveEntries);
   $$LeaveHolidaysTableTableManager get leaveHolidays =>
       $$LeaveHolidaysTableTableManager(_db, _db.leaveHolidays);
+  $$DashainPlansTableTableManager get dashainPlans =>
+      $$DashainPlansTableTableManager(_db, _db.dashainPlans);
+  $$AnnualTicketsTableTableManager get annualTickets =>
+      $$AnnualTicketsTableTableManager(_db, _db.annualTickets);
+  $$TravelGoalsTableTableManager get travelGoals =>
+      $$TravelGoalsTableTableManager(_db, _db.travelGoals);
+  $$TravelContributionsTableTableManager get travelContributions =>
+      $$TravelContributionsTableTableManager(_db, _db.travelContributions);
 }

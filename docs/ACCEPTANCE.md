@@ -14,6 +14,12 @@ All values are fictional fixtures. Scenarios below describe product acceptance. 
 10. Gold item can lack cost and have holder separate from owner; Thndr manual valuation does not create bank cash.
 11. Offline entry persists across app restart (M1 and M2). In M3, an encrypted backup imports to a clean installation with matching totals, including all supported source schema versions.
 12. No real financial data, beneficiary details or keys in repository or test samples; verify no unintended financial-data network traffic.
+## T-014 entitlements
+
+- Verify independent annual Dashain forecasts and actual receipts. Retry a confirmation after restarting. Correct and reverse it without producing duplicate income. Verify the reconciled-period gate and an atomic rollback on invalid correction.
+- Verify ticket expiry, one record per year, separate receipt and usage dates, and optional leave linkage. Ticket operations have no cash impact.
+- Verify the travel target, optional personal airfare, account earmarks, edited contributions and adjusted monthly amount. Moving funds between accounts creates no expense and cannot count both balances as savings. Reopen a schema 6 fixture and verify the prior finance and leave data remain available.
+
 ## Financial failure and recovery scenarios
 
 - Record a bank debit, restart before destination evidence is available and reopen a single pending transfer. Completing it with actual receipt records the destination once and prevents purpose allocations beyond the net receipt. Retry after interruption and check the balances and per-currency posting sums.

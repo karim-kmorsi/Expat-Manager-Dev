@@ -15,6 +15,10 @@ Use one Android-first Flutter app with Arabic-first RTL screens, Dart use cases 
 
 Store civil dates as day numbers and derive balances from the leave register. Attribute a period to the year of its start date. Use the rule version effective on January 1 of that year. Future balance settings can start on January 1 of a future year, preserving earlier versions and avoiding partial-year entitlement assumptions. Update leave entries within a transaction after checking the balance, duplicate active entries and overlapping approved or used periods. Partial cancellation retains the used prefix and records the cancelled remainder in the same transaction. Calculate returns from the current user-maintained holiday calendar and weekly rest days. Schema 6 adds only the leave tables for installations on schema 5 and uses the existing encrypted migration recovery copy.
 
+## T-014 entitlements
+
+Schema 7 adds the yearly Dashain plan and ticket records, and the travel goal and earmarks, using the encrypted migration path. Update the active yearly bonus receipt and its balanced journal postings in one transaction. Revision-scoped operation IDs prevent duplicate posting. Corrections preserve links to the original receipt and obey the existing reconciled-period gate. Store a ticket policy version with each annual record. Travel contributions refer to personal accounts and do not write to the journal.
+
 ## Financial model
 
 - A user account has one currency and a type such as bank, cash or a separate real savings account. A card is a payment method for its account. Use integer minor units with fixed precision per currency once used. Report totals per currency. Any converted display value requires a known, dated rate.
