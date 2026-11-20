@@ -12,7 +12,8 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-internal class LedgerVault(private val directory: File) {
+internal class LedgerVault(private val directory: File, private val keyAlias: String = defaultAlias) {
+    private val aad = keyAlias.toByteArray(Charsets.UTF_8)
     private val database = File(directory, "ledger.sqlite")
     private val wrappedKey = AtomicFile(File(directory, "ledger-key.v1"))
 
@@ -33,11 +34,11 @@ internal class LedgerVault(private val directory: File) {
     }
 
     private fun createKey(store: KeyStore): ByteArray {
-        val wrapper = store.getKey(alias, null) as? SecretKey ?: KeyGenerator
+        val wrapper = store.getKey(keyAlias, null) as? SecretKey ?: KeyGenerator
             .getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
             .apply {
                 init(KeyGenParameterSpec.Builder(
-                    alias, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                    keyAlias, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                     .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                     .setKeySize(256)
@@ -68,7 +69,7 @@ internal class LedgerVault(private val directory: File) {
 
     private fun unwrap(store: KeyStore, envelope: ByteArray): ByteArray {
         check(envelope.size == ivLength + keyLength + tagLength)
-        val wrapper = store.getKey(alias, null) as? SecretKey ?: error("Keystore key unavailable")
+        val wrapper = store.getKey(keyAlias, null) as? SecretKey ?: error("Keystore key unavailable")
         val cipher = Cipher.getInstance(transformation)
         cipher.init(Cipher.DECRYPT_MODE, wrapper, GCMParameterSpec(128, envelope, 0, ivLength))
         cipher.updateAAD(aad)
@@ -77,8 +78,7 @@ internal class LedgerVault(private val directory: File) {
 
     private companion object {
         val lock = Any()
-        const val alias = "expat-manager.ledger-key.v1"
-        val aad = alias.toByteArray(Charsets.UTF_8)
+        const val defaultAlias = "expat-manager.ledger-key.v1"
         const val transformation = "AES/GCM/NoPadding"
         const val keyLength = 32
         const val ivLength = 12

@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:material_ui/material_ui.dart';
 
 import '../data/database.dart';
+import '../data/ledger_backup.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'backup_screen.dart';
 import 'digits.dart';
 import 'entitlement_screen.dart';
 import 'expense_screen.dart';
@@ -23,9 +25,10 @@ typedef _Overview = ({
 });
 
 class FinanceHome extends StatefulWidget {
-  const FinanceHome({required this.ledger, super.key});
+  const FinanceHome({required this.ledger, this.openBackup, super.key});
 
   final Ledger ledger;
+  final Future<LedgerBackup> Function()? openBackup;
 
   @override
   State<FinanceHome> createState() => _FinanceHomeState();
@@ -96,6 +99,26 @@ class _FinanceHomeState extends State<FinanceHome> {
     appBar: AppBar(
       title: const Text('Expat Manager'),
       actions: [
+        if (widget.openBackup case final openBackup?)
+          IconButton(
+            tooltip: 'النسخ الاحتياطي',
+            icon: const Icon(Icons.backup_outlined),
+            onPressed: _busy
+                ? null
+                : () async {
+                    final restored = await Navigator.of(context).push<bool>(
+                      MaterialPageRoute(
+                        builder: (_) => BackupScreen(openBackup: openBackup),
+                      ),
+                    );
+                    if (restored == true && mounted) {
+                      setState(() {
+                        _tab = 0;
+                        _overview = _load();
+                      });
+                    }
+                  },
+          ),
         IconButton(
           tooltip: 'الاستحقاقات والادخار',
           icon: const Icon(Icons.card_giftcard_outlined),

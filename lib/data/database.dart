@@ -105,7 +105,11 @@ class LedgerDatabase extends _$LedgerDatabase {
   static const _currentSchemaVersion = 9;
 
   /// Takes ownership of a writable copy of the key.
-  static Future<LedgerDatabase> open(File file, Uint8List key) async {
+  static Future<LedgerDatabase> open(
+    File file,
+    Uint8List key, {
+    bool auxiliary = false,
+  }) async {
     sqlite.Database? raw;
     LedgerDatabase? database;
     try {
@@ -116,6 +120,9 @@ class LedgerDatabase extends _$LedgerDatabase {
       unlockDatabase(raw, hexKey);
       final version =
           raw.select('PRAGMA user_version').single.values.single as int;
+      if (version < 0 || version > _currentSchemaVersion) {
+        throw const StorageLocked();
+      }
       if (version > 0 && version < _currentSchemaVersion) {
         protectLedgerMigration(raw, file, hexKey, version);
       }
@@ -123,7 +130,15 @@ class LedgerDatabase extends _$LedgerDatabase {
       raw.execute('PRAGMA synchronous = FULL');
       raw.execute('PRAGMA temp_store = MEMORY');
       raw.execute('PRAGMA foreign_keys = ON');
-      database = LedgerDatabase._(NativeDatabase.opened(raw));
+      // Backup staging and verification intentionally use independent executors.
+      final previousWarning =
+          driftRuntimeOptions.dontWarnAboutMultipleDatabases;
+      if (auxiliary) driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+      try {
+        database = LedgerDatabase._(NativeDatabase.opened(raw));
+      } finally {
+        driftRuntimeOptions.dontWarnAboutMultipleDatabases = previousWarning;
+      }
       await database.customSelect('SELECT 1').get();
       return database;
     } catch (_) {

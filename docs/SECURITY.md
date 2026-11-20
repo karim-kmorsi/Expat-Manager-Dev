@@ -8,6 +8,12 @@
 - Replace the live contents inside a single SQLite transaction on the active database connection. Include a restore marker in that transaction and use durable settings such as WAL with `synchronous=FULL`. Reopen and validate before retiring the rollback snapshot. A failed check, cancellation, corrupt input or interruption before commit preserves the old contents. After a successful commit and restart, expect the complete new state. SQLite transactional guarantees cover the writes inside the database and depend on underlying storage honoring durability operations. File renames or copying database files and sidecars have separate failure modes.
 - Validate each supported migration on a fixture from the earlier schema. Preserve a verified encrypted recovery copy before migration. For a newer unsupported format or a lost local key, preserve existing files and offer the appropriate supported restore path.
 
+## T-017 portable format
+
+- The `.expbackup` format v1 stores a logical SQLite snapshot and its sequence counters as one authenticated final record. It uses a fresh salt with Argon2id (2 iterations, 64 MiB) and XChaCha20-Poly1305 secretstream. The authenticated prefix specifies the format version. The file is limited to 16 MiB. Android's document picker handles local import and export. The app holds no general storage permission.
+- Import recognizes ledger schemas 1 through 9. Staging uses a fresh random encryption key and runs the app's migrations. Confirmed replacement uses the active SQLite transaction and a private encrypted rollback copy, then validates a separate reopen. SQLite stores the restore marker with the replacement. A pending copy is retained when verification fails. A validated reopen retires the corresponding copy.
+- A locked vault can recover from a separately saved encrypted backup into a new private vault with a different Keystore key. The app activates that vault after verification and opens it on the next launch. It preserves the old encrypted files.
+
 ## Privacy and release evidence
 
 - Use fictional data only in tests and documentation. Keep real balances, account IDs, beneficiary identities, medical details, locations, credentials, signing keys, local databases, backups and private exports out of Git and logs.

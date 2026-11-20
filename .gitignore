@@ -18,6 +18,7 @@ ledger-key.*
 *.sqlite3-*
 *.db-*
 *.backup
+*.expbackup
 *.bak
 private/
 backups/
