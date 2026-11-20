@@ -62,10 +62,10 @@ class _GoldPriceFields {
   String amount;
   String? currency;
 
-  List<Widget> fields(String label, StateSetter update) => [
+  List<Widget> fields(String label, String knownLabel, StateSetter update) => [
     SwitchListTile(
       contentPadding: EdgeInsets.zero,
-      title: Text('$label معروف'),
+      title: Text(knownLabel),
       value: known,
       onChanged: (value) => update(() => known = value),
     ),
@@ -136,7 +136,7 @@ Future<bool> _editPiece(
           (value) => update(() => purchaseDay = value),
           last: _goldToday(),
         ),
-      ...price.fields('تكلفة الشراء', update),
+      ...price.fields('تكلفة الشراء', 'تكلفة الشراء معروفة', update),
       _goldText('ملاحظات (اختياري)', notes, 500, (value) => notes = value),
     ]),
     () async {
@@ -202,7 +202,7 @@ Future<bool> _editSale(
         first: item.piece.purchaseDay,
         last: _goldToday(),
       ),
-      ...price.fields('ثمن البيع', update),
+      ...price.fields('ثمن البيع', 'ثمن البيع معروف', update),
     ]),
     () => ledger.saveGoldSale(
       pieceId: item.piece.id,
