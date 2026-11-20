@@ -3,6 +3,8 @@ import 'package:material_ui/material_ui.dart';
 import '../data/database.dart';
 import '../leave/leave_book.dart';
 import '../leave/model.dart';
+import 'date_picker.dart';
+import 'digits.dart';
 
 part 'leave_forms.dart';
 
@@ -254,6 +256,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
           initialValue: '$value',
           decoration: InputDecoration(labelText: label),
           keyboardType: TextInputType.number,
+          inputFormatters: numberInputFormatters,
+          textDirection: TextDirection.ltr,
           onChanged: (text) => change(_number(text)),
         );
     final saved = await showDialog<bool>(
@@ -387,14 +391,14 @@ class _LeaveScreenState extends State<LeaveScreen> {
               const ListTile(title: Text('لا توجد عطلات مسجّلة لهذه السنة.')),
             for (final holiday in holidays)
               ListTile(
-                title: Text(holiday.name),
+                title: Text(latinDigits(holiday.name)),
                 subtitle: Text(_date(context, holiday.day)),
                 onTap: () => _editHoliday(holiday: holiday),
                 trailing: IconButton(
                   tooltip: 'حذف العطلة',
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () => _confirm(
-                    'حذف ${holiday.name}؟',
+                    'حذف ${latinDigits(holiday.name)}؟',
                     () => widget.book.deleteHoliday(holiday.day),
                   ),
                 ),
@@ -442,7 +446,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     return ListTile(
       title: Text(
         '${_kind(entry.kind)} · ${_status(entry.status)}'
-        '${entry.occasion.isEmpty ? '' : ' · ${entry.occasion}'}',
+        '${entry.occasion.isEmpty ? '' : ' · ${latinDigits(entry.occasion)}'}',
       ),
       subtitle: Text(
         '$start – $end · ${period.days} يوم'

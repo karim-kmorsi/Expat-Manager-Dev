@@ -6,6 +6,7 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'digits.dart';
 import 'expense_screen.dart';
 import 'leave_screen.dart';
 import 'remittance_screen.dart';
@@ -205,7 +206,7 @@ class _FinanceHomeState extends State<FinanceHome> {
           ),
         for (final view in data.accounts)
           ListTile(
-            title: Text(view.account.name),
+            title: Text(latinDigits(view.account.name)),
             subtitle: Text(
               view.balance.openingKnown
                   ? 'الرصيد المحسوب'
@@ -245,7 +246,9 @@ class _FinanceHomeState extends State<FinanceHome> {
             JournalKind.remittanceRefund => 'استرداد حوالة',
             JournalKind.remittanceSettlement => 'تسوية حوالة',
           }),
-          subtitle: entry.reason == null ? null : Text(entry.reason!),
+          subtitle: entry.reason == null
+              ? null
+              : Text(latinDigits(entry.reason!)),
           trailing: Text(
             MaterialLocalizations.of(context).formatShortDate(
               DateTime.fromMicrosecondsSinceEpoch(entry.effectiveMicros),
@@ -422,6 +425,8 @@ class _AmountDialogState extends State<_AmountDialog> {
       key: _form,
       child: TextFormField(
         controller: _amount,
+        inputFormatters: amountInputFormatters,
+        textDirection: TextDirection.ltr,
         keyboardType: const TextInputType.numberWithOptions(
           decimal: true,
           signed: true,
@@ -519,6 +524,8 @@ class _TransferDialogState extends State<_TransferDialog> {
             ),
             TextFormField(
               controller: _amount,
+              inputFormatters: amountInputFormatters,
+              textDirection: TextDirection.ltr,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
@@ -559,7 +566,7 @@ class _TransferDialogState extends State<_TransferDialog> {
     for (final account in accounts)
       DropdownMenuItem(
         value: account,
-        child: Text('${account.name} · ${account.currency}'),
+        child: Text('${latinDigits(account.name)} · ${account.currency}'),
       ),
   ];
 }

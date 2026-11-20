@@ -4,6 +4,8 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'date_picker.dart';
+import 'digits.dart';
 
 class SalaryScreen extends StatefulWidget {
   const SalaryScreen({
@@ -88,7 +90,7 @@ class _SalaryScreenState extends State<SalaryScreen> {
             const ListTile(title: Text('لا توجد رواتب مسجّلة.')),
           for (final salary in salaries)
             ListTile(
-              title: Text(salary.account),
+              title: Text(latinDigits(salary.account)),
               subtitle: Text(
                 '${_date(context, salary.receivedOn)} · ${salary.reversed
                     ? 'قيد الراتب معكوس'
@@ -226,7 +228,7 @@ class _PlanPageState extends State<_PlanPage> {
             children: [
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(salary.account),
+                title: Text(latinDigits(salary.account)),
                 subtitle: Text(_date(context, salary.receivedOn)),
                 trailing: _money(salary.minor, salary.scale, salary.currency),
                 onTap: () => _openMovement(salary.id),
@@ -278,7 +280,10 @@ class _PlanPageState extends State<_PlanPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(item.label, style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              latinDigits(item.label),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             Text(
               _status(
                 salaryProgress(item.planned, item.executed, item.confirmed),
@@ -306,7 +311,7 @@ class _PlanPageState extends State<_PlanPage> {
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text('حذف البند؟'),
-                                content: Text(item.label),
+                                content: Text(latinDigits(item.label)),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
@@ -346,7 +351,9 @@ class _PlanPageState extends State<_PlanPage> {
                       ? 'منفّذ'
                       : 'مؤكّد'}',
                 ),
-                subtitle: link.evidence == null ? null : Text(link.evidence!),
+                subtitle: link.evidence == null
+                    ? null
+                    : Text(latinDigits(link.evidence!)),
                 trailing: _money(link.minor, salary.scale, salary.currency),
                 onTap: () => _openMovement(link.entryId),
               ),
@@ -463,7 +470,7 @@ class _MovementPage extends StatelessWidget {
                   AccountKind.income => 'الدخل',
                   AccountKind.expense => 'المصروف',
                   AccountKind.opening => 'الرصيد الافتتاحي',
-                  _ => line.account,
+                  _ => latinDigits(line.account),
                 }),
                 trailing: _money(line.minor, line.scale, line.currency),
               ),
@@ -520,7 +527,9 @@ class _ReceiptDialogState extends State<_ReceiptDialog> {
             for (final account in widget.accounts)
               DropdownMenuItem(
                 value: account,
-                child: Text('${account.name} · ${account.currency}'),
+                child: Text(
+                  '${latinDigits(account.name)} · ${account.currency}',
+                ),
               ),
           ],
           onChanged: (value) => setState(() => _account = value!),
@@ -535,7 +544,7 @@ class _ReceiptDialogState extends State<_ReceiptDialog> {
         ),
         TextButton(
           onPressed: () async {
-            final day = await showDatePicker(
+            final day = await showAppDatePicker(
               context: context,
               initialDate: _dateValue,
               firstDate: DateTime(1900),
@@ -704,6 +713,8 @@ Widget _amountField(
   String label,
 ) => TextFormField(
   controller: controller,
+  inputFormatters: amountInputFormatters,
+  textDirection: TextDirection.ltr,
   keyboardType: const TextInputType.numberWithOptions(decimal: true),
   decoration: InputDecoration(labelText: label),
   validator: (value) => (parseMinor(value ?? '', scale) ?? 0) > 0

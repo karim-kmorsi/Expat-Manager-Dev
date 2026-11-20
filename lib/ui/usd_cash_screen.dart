@@ -4,6 +4,7 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'digits.dart';
 import 'expense_screen.dart';
 
 class UsdCashScreen extends StatefulWidget {
@@ -222,7 +223,7 @@ class _UsdCashScreenState extends State<UsdCashScreen> {
               ),
               for (final account in data.cashAccounts)
                 ListTile(
-                  title: Text(account.name),
+                  title: Text(latinDigits(account.name)),
                   onTap: _busy
                       ? null
                       : () => _save(
@@ -330,7 +331,7 @@ class _UsdCashScreenState extends State<UsdCashScreen> {
             Text('تصحيح للقيد ${movement.correctionOf}'),
           if (movement.countedMinor != null)
             _amountRow('الرصيد المعدود', BigInt.from(movement.countedMinor!)),
-          if (movement.note != null) Text(movement.note!),
+          if (movement.note != null) Text(latinDigits(movement.note!)),
         ],
       ),
       trailing: _usd(BigInt.from(movement.minor)),
@@ -395,7 +396,7 @@ class _CashDialogState extends State<_CashDialog> {
                   for (final bank in banks)
                     DropdownMenuItem(
                       value: bank.id,
-                      child: Text('سحب من البنك · ${bank.name}'),
+                      child: Text('سحب من البنك · ${latinDigits(bank.name)}'),
                     ),
                   const DropdownMenuItem(
                     value: 0,
@@ -407,6 +408,8 @@ class _CashDialogState extends State<_CashDialog> {
               ),
             TextFormField(
               controller: _amount,
+              inputFormatters: amountInputFormatters,
+              textDirection: TextDirection.ltr,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),

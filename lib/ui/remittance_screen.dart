@@ -6,6 +6,8 @@ import '../data/database.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'date_picker.dart';
+import 'digits.dart';
 
 class RemittanceScreen extends StatefulWidget {
   const RemittanceScreen({required this.ledger, super.key});
@@ -79,7 +81,9 @@ class _RemittanceScreenState extends State<RemittanceScreen> {
             children: [
               for (final item in items)
                 ListTile(
-                  title: Text('${item.source.name} ← ${item.destinationName}'),
+                  title: Text(
+                    '${latinDigits(item.source.name)} ← ${latinDigits(item.destinationName)}',
+                  ),
                   subtitle: Text(_status(item.status)),
                   trailing: Text(
                     _money(
@@ -183,7 +187,9 @@ class _PlanDialogState extends State<_PlanDialog> {
                 if (account.kind == AccountKind.bank)
                   DropdownMenuItem(
                     value: account,
-                    child: Text('${account.name} · ${account.currency}'),
+                    child: Text(
+                      '${latinDigits(account.name)} · ${account.currency}',
+                    ),
                   ),
             ],
             (account) => setState(() {
@@ -206,7 +212,9 @@ class _PlanDialogState extends State<_PlanDialog> {
                         account.kind == AccountKind.savings))
                   DropdownMenuItem(
                     value: account,
-                    child: Text('${account.name} · ${account.currency}'),
+                    child: Text(
+                      '${latinDigits(account.name)} · ${account.currency}',
+                    ),
                   ),
             ], (account) => setState(() => _destinationAccount = account))
           else ...[
@@ -382,7 +390,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
               child: Text(
                 '#${item.id} · ${_date(item.input.date)} · '
                 '${_money(item.input.minor, item.scale, item.currency)} '
-                '${item.input.note ?? ''}',
+                '${latinDigits(item.input.note ?? '')}',
               ),
             ),
         ],
@@ -456,7 +464,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          '${view.source.name} ← ${view.destinationName}',
+          '${latinDigits(view.source.name)} ← ${latinDigits(view.destinationName)}',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         Text(_destinationType(view.record.destination)),
@@ -538,9 +546,9 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
             ),
             subtitle: Text(
               '${_date(DateTime.fromMicrosecondsSinceEpoch(row.movement.entry.effectiveMicros))}'
-              ' · ${row.event.evidence}'
+              ' · ${latinDigits(row.event.evidence)}'
               '${row.movement.entry.correctionOf == null ? '' : ' · تصحيح #${row.movement.entry.correctionOf}'}'
-              '${row.reversal == null ? '' : '\nعكس #${row.reversal!.id} · ${row.reversal!.reason}'}',
+              '${row.reversal == null ? '' : '\nعكس #${row.reversal!.id} · ${latinDigits(row.reversal!.reason ?? '')}'}',
             ),
             trailing: Text(
               row.received > 0
@@ -598,7 +606,7 @@ class _RemittanceDetailState extends State<_RemittanceDetail> {
         for (final purpose in view.purposes) ...[
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text(purpose.label),
+            title: Text(latinDigits(purpose.label)),
             subtitle: purpose.family
                 ? Text(
                     'مدفوع فعليًا: ${destination((view.familyPayments[purpose.operationKey] ?? []).where((item) => !item.reversed).fold(0, (sum, item) => sum + item.input.minor))}',
@@ -693,7 +701,7 @@ class _EventDialogState extends State<_EventDialog> {
 
   Future<void> _pickDay() async {
     final today = DateUtils.dateOnly(DateTime.now());
-    final picked = await showDatePicker(
+    final picked = await showAppDatePicker(
       context: context,
       initialDate: _day,
       firstDate: DateTime(1900),
@@ -880,6 +888,8 @@ class _PurposeDialogState extends State<_PurposeDialog> {
 Widget _amountField(TextEditingController controller, String label) =>
     TextField(
       controller: controller,
+      inputFormatters: amountInputFormatters,
+      textDirection: TextDirection.ltr,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(labelText: label),
     );

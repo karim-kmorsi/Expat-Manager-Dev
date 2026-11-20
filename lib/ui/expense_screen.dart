@@ -3,6 +3,8 @@ import 'package:material_ui/material_ui.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'date_picker.dart';
+import 'digits.dart';
 
 typedef _ExpenseOverview = ({
   List<ExpenseAccount> accounts,
@@ -126,7 +128,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(account.account.name),
+            Text(latinDigits(account.account.name)),
             Text(
               account.balanceKnown ? 'الرصيد المسجّل' : 'صافي الحركات المسجّلة',
             ),
@@ -216,7 +218,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       title: Text(
         '${_category(input.category)} · ${_period(input.period)}${item.reversed ? ' · معكوس' : ''}',
       ),
-      subtitle: Text(details.join('\n')),
+      subtitle: Text(latinDigits(details.join('\n'))),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -369,7 +371,7 @@ class _ExpenseDialogState extends State<_ExpenseDialog> {
               const Text('يغطي الإجمالي جميع مصروفات حساب الدفع خلال الفترة.'),
             TextButton(
               onPressed: () async {
-                final picked = await showDatePicker(
+                final picked = await showAppDatePicker(
                   context: context,
                   initialDate: _date,
                   firstDate: DateTime(1900),
@@ -503,7 +505,7 @@ Widget _accountInput(
       DropdownMenuItem(
         value: row,
         child: Text(
-          '${row.account.name} · ${row.account.currency} · ${row.account.kind == AccountKind.cash ? 'نقد' : 'بنك'}',
+          '${latinDigits(row.account.name)} · ${row.account.currency} · ${row.account.kind == AccountKind.cash ? 'نقد' : 'بنك'}',
         ),
       ),
   ],
@@ -517,6 +519,8 @@ Widget _moneyInput(
   String label = 'المبلغ',
 }) => TextFormField(
   controller: controller,
+  inputFormatters: amountInputFormatters,
+  textDirection: TextDirection.ltr,
   keyboardType: TextInputType.numberWithOptions(
     decimal: true,
     signed: !positive,
@@ -551,7 +555,7 @@ String _coverage(BuildContext context, DateTime date, ExpensePeriod period) {
 String _period(ExpensePeriod period) => switch (period) {
   ExpensePeriod.individual => 'فردي',
   ExpensePeriod.day => 'إجمالي يوم',
-  ExpensePeriod.week => 'إجمالي ٧ أيام',
+  ExpensePeriod.week => 'إجمالي 7 أيام',
 };
 
 String _category(ExpenseCategory? category) => switch (category) {

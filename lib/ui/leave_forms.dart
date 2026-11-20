@@ -1,13 +1,6 @@
 part of 'leave_screen.dart';
 
-int? _number(String? text) {
-  var normalized = text?.trim() ?? '';
-  for (var i = 0; i < 10; i++) {
-    normalized = normalized.replaceAll('٠١٢٣٤٥٦٧٨٩'[i], '$i');
-    normalized = normalized.replaceAll('۰۱۲۳۴۵۶۷۸۹'[i], '$i');
-  }
-  return int.tryParse(normalized);
-}
+int? _number(String text) => int.tryParse(latinDigits(text.trim()));
 
 DropdownButtonFormField<T> _select<T>(
   String label,
@@ -37,7 +30,7 @@ Widget _dayButton(
   int? maximum,
 }) => OutlinedButton(
   onPressed: () async {
-    final picked = await showDatePicker(
+    final picked = await showAppDatePicker(
       context: context,
       initialDate: dateOfLeaveDay(day),
       firstDate: minimum == null ? firstLeaveDate : dateOfLeaveDay(minimum),
@@ -226,6 +219,8 @@ class _LeavePlannerState extends State<_LeavePlanner> {
           initialValue: '1',
           decoration: const InputDecoration(labelText: 'عدد الأيام التقويمية'),
           keyboardType: TextInputType.number,
+          inputFormatters: numberInputFormatters,
+          textDirection: TextDirection.ltr,
           onChanged: (value) => _edit(() => _days = _number(value)),
         ),
         if (_mode == LeavePlanningMode.occasion)

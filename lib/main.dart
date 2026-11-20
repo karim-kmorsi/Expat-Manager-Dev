@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'data/android_storage.dart';
 import 'finance/ledger.dart';
 import 'ui/finance_home.dart';
+import 'ui/localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,10 @@ class ExpatManager extends StatelessWidget {
     title: 'Expat Manager',
     locale: const Locale('ar'),
     supportedLocales: const [Locale('ar')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    localizationsDelegates: const [
+      LatinArabicLocalizationsDelegate(),
+      ...GlobalMaterialLocalizations.delegates,
+    ],
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff1a6653)),
     ),

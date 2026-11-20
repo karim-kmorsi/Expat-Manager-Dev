@@ -1,17 +1,8 @@
 import '../finance/model.dart';
+import 'digits.dart';
 
 int? parseMinor(String input, int scale) {
-  const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
-  const easternDigits = '۰۱۲۳۴۵۶۷۸۹';
-  final normalized = input
-      .trim()
-      .replaceAllMapped(RegExp('[٠-٩۰-۹]'), (match) {
-        final digit = match[0]!;
-        final index = arabicDigits.indexOf(digit);
-        return (index < 0 ? easternDigits.indexOf(digit) : index).toString();
-      })
-      .replaceAll('٫', '.')
-      .replaceAll('−', '-');
+  final normalized = latinAmount(input.trim());
   final match = RegExp(r'^(-?)([0-9]+)(?:\.([0-9]+))?$').firstMatch(normalized);
   if (match == null || normalized.length > 32) return null;
   final fraction = match[3] ?? '';
