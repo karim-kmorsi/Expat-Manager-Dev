@@ -11,6 +11,8 @@ import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import 'support/financial_interruption_worker.dart' as worker;
 
+import 'support/legacy_schema.dart';
+
 void main() {
   if (!Platform.isLinux) return;
   late Directory directory;
@@ -273,6 +275,7 @@ void main() {
         CREATE UNIQUE INDEX system_account_by_currency ON ledger_accounts (currency, kind)
         WHERE kind IN ('opening', 'income', 'expense', 'cashAdjustment')
       """);
+        dropLeaveSchema(old);
         old.execute('PRAGMA user_version = 4');
         old.execute("""
         CREATE TRIGGER t011_fail_migration BEFORE INSERT ON ledger_accounts
@@ -338,7 +341,7 @@ void main() {
             .data
             .values
             .single,
-        5,
+        db.schemaVersion,
       );
       expect((await snapshot())['journal_postings'], postings);
       expect((await ledger.balance(ids['bank']!)).minor, 100000);

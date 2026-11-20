@@ -7,6 +7,7 @@ import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
 import 'expense_screen.dart';
+import 'leave_screen.dart';
 import 'remittance_screen.dart';
 import 'salary_screen.dart';
 import 'usd_cash_screen.dart';
@@ -92,6 +93,15 @@ class _FinanceHomeState extends State<FinanceHome> {
     appBar: AppBar(
       title: const Text('Expat Manager'),
       actions: [
+        IconButton(
+          tooltip: 'الإجازات',
+          icon: const Icon(Icons.event_available_outlined),
+          onPressed: () => Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (_) => LeaveScreen(book: ledger.personalLeave),
+            ),
+          ),
+        ),
         TextButton.icon(
           onPressed: () async {
             await Navigator.of(context).push<void>(

@@ -8,6 +8,8 @@ import 'package:expat_manager/finance/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
+import 'support/legacy_schema.dart';
+
 void main() {
   final first = DateTime(2026, 2, 2, 10);
   late Directory folder;
@@ -461,6 +463,7 @@ void main() {
         raw.execute(
           "DELETE FROM ledger_accounts WHERE kind = 'cashAdjustment' AND currency <> 'USD'",
         );
+        dropLeaveSchema(raw);
         raw.execute('PRAGMA user_version = 3');
       } finally {
         raw.close();

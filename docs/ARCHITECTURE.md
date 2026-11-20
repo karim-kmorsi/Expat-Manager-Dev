@@ -11,6 +11,10 @@ Use one Android-first Flutter app with Arabic-first RTL screens, Dart use cases 
 | Savings and assets | Travel goal and earmarks, gold item and custody history, Thndr valuation snapshots and cash flows. Link actual cash movements to their ledger entries |
 | Core | Database migrations, local encryption, backup, restore, settings and validation |
 
+## T-013 leave accounting
+
+Store civil dates as day numbers and derive balances from the leave register. Attribute a period to the year of its start date. Use the rule version effective on January 1 of that year. Future balance settings can start on January 1 of a future year, preserving earlier versions and avoiding partial-year entitlement assumptions. Update leave entries within a transaction after checking the balance, duplicate active entries and overlapping approved or used periods. Partial cancellation retains the used prefix and records the cancelled remainder in the same transaction. Calculate returns from the current user-maintained holiday calendar and weekly rest days. Schema 6 adds only the leave tables for installations on schema 5 and uses the existing encrypted migration recovery copy.
+
 ## Financial model
 
 - A user account has one currency and a type such as bank, cash or a separate real savings account. A card is a payment method for its account. Use integer minor units with fixed precision per currency once used. Report totals per currency. Any converted display value requires a known, dated rate.

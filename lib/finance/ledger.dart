@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../data/database.dart';
+import '../leave/leave_book.dart';
 import 'model.dart';
 
 part 'salary.dart';
@@ -11,6 +12,7 @@ part 'remittances.dart';
 class Ledger {
   Ledger(this._db);
   final LedgerDatabase _db;
+  late final personalLeave = LeaveBook(_db);
 
   Future<List<Currency>> currencies() => (_db.select(
     _db.currencies,

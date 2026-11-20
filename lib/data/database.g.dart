@@ -5135,6 +5135,980 @@ class RemittanceFamilyPaymentsCompanion
   }
 }
 
+class $LeaveRulesTable extends LeaveRules
+    with TableInfo<$LeaveRulesTable, LeaveRule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LeaveRulesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _effectiveDayMeta = const VerificationMeta(
+    'effectiveDay',
+  );
+  @override
+  late final GeneratedColumn<int> effectiveDay = GeneratedColumn<int>(
+    'effective_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _annualDaysMeta = const VerificationMeta(
+    'annualDays',
+  );
+  @override
+  late final GeneratedColumn<int> annualDays = GeneratedColumn<int>(
+    'annual_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _casualDaysMeta = const VerificationMeta(
+    'casualDays',
+  );
+  @override
+  late final GeneratedColumn<int> casualDays = GeneratedColumn<int>(
+    'casual_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sickDaysMeta = const VerificationMeta(
+    'sickDays',
+  );
+  @override
+  late final GeneratedColumn<int> sickDays = GeneratedColumn<int>(
+    'sick_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    effectiveDay,
+    annualDays,
+    casualDays,
+    sickDays,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'leave_rules';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LeaveRule> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('effective_day')) {
+      context.handle(
+        _effectiveDayMeta,
+        effectiveDay.isAcceptableOrUnknown(
+          data['effective_day']!,
+          _effectiveDayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('annual_days')) {
+      context.handle(
+        _annualDaysMeta,
+        annualDays.isAcceptableOrUnknown(data['annual_days']!, _annualDaysMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_annualDaysMeta);
+    }
+    if (data.containsKey('casual_days')) {
+      context.handle(
+        _casualDaysMeta,
+        casualDays.isAcceptableOrUnknown(data['casual_days']!, _casualDaysMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_casualDaysMeta);
+    }
+    if (data.containsKey('sick_days')) {
+      context.handle(
+        _sickDaysMeta,
+        sickDays.isAcceptableOrUnknown(data['sick_days']!, _sickDaysMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sickDaysMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {effectiveDay};
+  @override
+  LeaveRule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LeaveRule(
+      effectiveDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}effective_day'],
+      )!,
+      annualDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}annual_days'],
+      )!,
+      casualDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}casual_days'],
+      )!,
+      sickDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sick_days'],
+      )!,
+    );
+  }
+
+  @override
+  $LeaveRulesTable createAlias(String alias) {
+    return $LeaveRulesTable(attachedDatabase, alias);
+  }
+}
+
+class LeaveRule extends DataClass implements Insertable<LeaveRule> {
+  final int effectiveDay;
+  final int annualDays;
+  final int casualDays;
+  final int sickDays;
+  const LeaveRule({
+    required this.effectiveDay,
+    required this.annualDays,
+    required this.casualDays,
+    required this.sickDays,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['effective_day'] = Variable<int>(effectiveDay);
+    map['annual_days'] = Variable<int>(annualDays);
+    map['casual_days'] = Variable<int>(casualDays);
+    map['sick_days'] = Variable<int>(sickDays);
+    return map;
+  }
+
+  LeaveRulesCompanion toCompanion(bool nullToAbsent) {
+    return LeaveRulesCompanion(
+      effectiveDay: Value(effectiveDay),
+      annualDays: Value(annualDays),
+      casualDays: Value(casualDays),
+      sickDays: Value(sickDays),
+    );
+  }
+
+  factory LeaveRule.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LeaveRule(
+      effectiveDay: serializer.fromJson<int>(json['effectiveDay']),
+      annualDays: serializer.fromJson<int>(json['annualDays']),
+      casualDays: serializer.fromJson<int>(json['casualDays']),
+      sickDays: serializer.fromJson<int>(json['sickDays']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'effectiveDay': serializer.toJson<int>(effectiveDay),
+      'annualDays': serializer.toJson<int>(annualDays),
+      'casualDays': serializer.toJson<int>(casualDays),
+      'sickDays': serializer.toJson<int>(sickDays),
+    };
+  }
+
+  LeaveRule copyWith({
+    int? effectiveDay,
+    int? annualDays,
+    int? casualDays,
+    int? sickDays,
+  }) => LeaveRule(
+    effectiveDay: effectiveDay ?? this.effectiveDay,
+    annualDays: annualDays ?? this.annualDays,
+    casualDays: casualDays ?? this.casualDays,
+    sickDays: sickDays ?? this.sickDays,
+  );
+  LeaveRule copyWithCompanion(LeaveRulesCompanion data) {
+    return LeaveRule(
+      effectiveDay: data.effectiveDay.present
+          ? data.effectiveDay.value
+          : this.effectiveDay,
+      annualDays: data.annualDays.present
+          ? data.annualDays.value
+          : this.annualDays,
+      casualDays: data.casualDays.present
+          ? data.casualDays.value
+          : this.casualDays,
+      sickDays: data.sickDays.present ? data.sickDays.value : this.sickDays,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LeaveRule(')
+          ..write('effectiveDay: $effectiveDay, ')
+          ..write('annualDays: $annualDays, ')
+          ..write('casualDays: $casualDays, ')
+          ..write('sickDays: $sickDays')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(effectiveDay, annualDays, casualDays, sickDays);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LeaveRule &&
+          other.effectiveDay == this.effectiveDay &&
+          other.annualDays == this.annualDays &&
+          other.casualDays == this.casualDays &&
+          other.sickDays == this.sickDays);
+}
+
+class LeaveRulesCompanion extends UpdateCompanion<LeaveRule> {
+  final Value<int> effectiveDay;
+  final Value<int> annualDays;
+  final Value<int> casualDays;
+  final Value<int> sickDays;
+  const LeaveRulesCompanion({
+    this.effectiveDay = const Value.absent(),
+    this.annualDays = const Value.absent(),
+    this.casualDays = const Value.absent(),
+    this.sickDays = const Value.absent(),
+  });
+  LeaveRulesCompanion.insert({
+    this.effectiveDay = const Value.absent(),
+    required int annualDays,
+    required int casualDays,
+    required int sickDays,
+  }) : annualDays = Value(annualDays),
+       casualDays = Value(casualDays),
+       sickDays = Value(sickDays);
+  static Insertable<LeaveRule> custom({
+    Expression<int>? effectiveDay,
+    Expression<int>? annualDays,
+    Expression<int>? casualDays,
+    Expression<int>? sickDays,
+  }) {
+    return RawValuesInsertable({
+      if (effectiveDay != null) 'effective_day': effectiveDay,
+      if (annualDays != null) 'annual_days': annualDays,
+      if (casualDays != null) 'casual_days': casualDays,
+      if (sickDays != null) 'sick_days': sickDays,
+    });
+  }
+
+  LeaveRulesCompanion copyWith({
+    Value<int>? effectiveDay,
+    Value<int>? annualDays,
+    Value<int>? casualDays,
+    Value<int>? sickDays,
+  }) {
+    return LeaveRulesCompanion(
+      effectiveDay: effectiveDay ?? this.effectiveDay,
+      annualDays: annualDays ?? this.annualDays,
+      casualDays: casualDays ?? this.casualDays,
+      sickDays: sickDays ?? this.sickDays,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (effectiveDay.present) {
+      map['effective_day'] = Variable<int>(effectiveDay.value);
+    }
+    if (annualDays.present) {
+      map['annual_days'] = Variable<int>(annualDays.value);
+    }
+    if (casualDays.present) {
+      map['casual_days'] = Variable<int>(casualDays.value);
+    }
+    if (sickDays.present) {
+      map['sick_days'] = Variable<int>(sickDays.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LeaveRulesCompanion(')
+          ..write('effectiveDay: $effectiveDay, ')
+          ..write('annualDays: $annualDays, ')
+          ..write('casualDays: $casualDays, ')
+          ..write('sickDays: $sickDays')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LeaveEntriesTable extends LeaveEntries
+    with TableInfo<$LeaveEntriesTable, LeaveEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LeaveEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<LeaveKind, String> kind =
+      GeneratedColumn<String>(
+        'kind',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<LeaveKind>($LeaveEntriesTable.$converterkind);
+  @override
+  late final GeneratedColumnWithTypeConverter<LeaveStatus, String> status =
+      GeneratedColumn<String>(
+        'status',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<LeaveStatus>($LeaveEntriesTable.$converterstatus);
+  static const VerificationMeta _startDayMeta = const VerificationMeta(
+    'startDay',
+  );
+  @override
+  late final GeneratedColumn<int> startDay = GeneratedColumn<int>(
+    'start_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endDayMeta = const VerificationMeta('endDay');
+  @override
+  late final GeneratedColumn<int> endDay = GeneratedColumn<int>(
+    'end_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _occasionMeta = const VerificationMeta(
+    'occasion',
+  );
+  @override
+  late final GeneratedColumn<String> occasion = GeneratedColumn<String>(
+    'occasion',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 120),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<MedicalReport, String>
+  medicalReport = GeneratedColumn<String>(
+    'medical_report',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<MedicalReport>($LeaveEntriesTable.$convertermedicalReport);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    kind,
+    status,
+    startDay,
+    endDay,
+    occasion,
+    medicalReport,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'leave_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LeaveEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('start_day')) {
+      context.handle(
+        _startDayMeta,
+        startDay.isAcceptableOrUnknown(data['start_day']!, _startDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startDayMeta);
+    }
+    if (data.containsKey('end_day')) {
+      context.handle(
+        _endDayMeta,
+        endDay.isAcceptableOrUnknown(data['end_day']!, _endDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endDayMeta);
+    }
+    if (data.containsKey('occasion')) {
+      context.handle(
+        _occasionMeta,
+        occasion.isAcceptableOrUnknown(data['occasion']!, _occasionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_occasionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LeaveEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LeaveEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      kind: $LeaveEntriesTable.$converterkind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}kind'],
+        )!,
+      ),
+      status: $LeaveEntriesTable.$converterstatus.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}status'],
+        )!,
+      ),
+      startDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}start_day'],
+      )!,
+      endDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}end_day'],
+      )!,
+      occasion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}occasion'],
+      )!,
+      medicalReport: $LeaveEntriesTable.$convertermedicalReport.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}medical_report'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $LeaveEntriesTable createAlias(String alias) {
+    return $LeaveEntriesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<LeaveKind, String, String> $converterkind =
+      const EnumNameConverter<LeaveKind>(LeaveKind.values);
+  static JsonTypeConverter2<LeaveStatus, String, String> $converterstatus =
+      const EnumNameConverter<LeaveStatus>(LeaveStatus.values);
+  static JsonTypeConverter2<MedicalReport, String, String>
+  $convertermedicalReport = const EnumNameConverter<MedicalReport>(
+    MedicalReport.values,
+  );
+}
+
+class LeaveEntry extends DataClass implements Insertable<LeaveEntry> {
+  final int id;
+  final LeaveKind kind;
+  final LeaveStatus status;
+  final int startDay;
+  final int endDay;
+  final String occasion;
+  final MedicalReport medicalReport;
+  const LeaveEntry({
+    required this.id,
+    required this.kind,
+    required this.status,
+    required this.startDay,
+    required this.endDay,
+    required this.occasion,
+    required this.medicalReport,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['kind'] = Variable<String>(
+        $LeaveEntriesTable.$converterkind.toSql(kind),
+      );
+    }
+    {
+      map['status'] = Variable<String>(
+        $LeaveEntriesTable.$converterstatus.toSql(status),
+      );
+    }
+    map['start_day'] = Variable<int>(startDay);
+    map['end_day'] = Variable<int>(endDay);
+    map['occasion'] = Variable<String>(occasion);
+    {
+      map['medical_report'] = Variable<String>(
+        $LeaveEntriesTable.$convertermedicalReport.toSql(medicalReport),
+      );
+    }
+    return map;
+  }
+
+  LeaveEntriesCompanion toCompanion(bool nullToAbsent) {
+    return LeaveEntriesCompanion(
+      id: Value(id),
+      kind: Value(kind),
+      status: Value(status),
+      startDay: Value(startDay),
+      endDay: Value(endDay),
+      occasion: Value(occasion),
+      medicalReport: Value(medicalReport),
+    );
+  }
+
+  factory LeaveEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LeaveEntry(
+      id: serializer.fromJson<int>(json['id']),
+      kind: $LeaveEntriesTable.$converterkind.fromJson(
+        serializer.fromJson<String>(json['kind']),
+      ),
+      status: $LeaveEntriesTable.$converterstatus.fromJson(
+        serializer.fromJson<String>(json['status']),
+      ),
+      startDay: serializer.fromJson<int>(json['startDay']),
+      endDay: serializer.fromJson<int>(json['endDay']),
+      occasion: serializer.fromJson<String>(json['occasion']),
+      medicalReport: $LeaveEntriesTable.$convertermedicalReport.fromJson(
+        serializer.fromJson<String>(json['medicalReport']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'kind': serializer.toJson<String>(
+        $LeaveEntriesTable.$converterkind.toJson(kind),
+      ),
+      'status': serializer.toJson<String>(
+        $LeaveEntriesTable.$converterstatus.toJson(status),
+      ),
+      'startDay': serializer.toJson<int>(startDay),
+      'endDay': serializer.toJson<int>(endDay),
+      'occasion': serializer.toJson<String>(occasion),
+      'medicalReport': serializer.toJson<String>(
+        $LeaveEntriesTable.$convertermedicalReport.toJson(medicalReport),
+      ),
+    };
+  }
+
+  LeaveEntry copyWith({
+    int? id,
+    LeaveKind? kind,
+    LeaveStatus? status,
+    int? startDay,
+    int? endDay,
+    String? occasion,
+    MedicalReport? medicalReport,
+  }) => LeaveEntry(
+    id: id ?? this.id,
+    kind: kind ?? this.kind,
+    status: status ?? this.status,
+    startDay: startDay ?? this.startDay,
+    endDay: endDay ?? this.endDay,
+    occasion: occasion ?? this.occasion,
+    medicalReport: medicalReport ?? this.medicalReport,
+  );
+  LeaveEntry copyWithCompanion(LeaveEntriesCompanion data) {
+    return LeaveEntry(
+      id: data.id.present ? data.id.value : this.id,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      status: data.status.present ? data.status.value : this.status,
+      startDay: data.startDay.present ? data.startDay.value : this.startDay,
+      endDay: data.endDay.present ? data.endDay.value : this.endDay,
+      occasion: data.occasion.present ? data.occasion.value : this.occasion,
+      medicalReport: data.medicalReport.present
+          ? data.medicalReport.value
+          : this.medicalReport,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LeaveEntry(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('status: $status, ')
+          ..write('startDay: $startDay, ')
+          ..write('endDay: $endDay, ')
+          ..write('occasion: $occasion, ')
+          ..write('medicalReport: $medicalReport')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, kind, status, startDay, endDay, occasion, medicalReport);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LeaveEntry &&
+          other.id == this.id &&
+          other.kind == this.kind &&
+          other.status == this.status &&
+          other.startDay == this.startDay &&
+          other.endDay == this.endDay &&
+          other.occasion == this.occasion &&
+          other.medicalReport == this.medicalReport);
+}
+
+class LeaveEntriesCompanion extends UpdateCompanion<LeaveEntry> {
+  final Value<int> id;
+  final Value<LeaveKind> kind;
+  final Value<LeaveStatus> status;
+  final Value<int> startDay;
+  final Value<int> endDay;
+  final Value<String> occasion;
+  final Value<MedicalReport> medicalReport;
+  const LeaveEntriesCompanion({
+    this.id = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.status = const Value.absent(),
+    this.startDay = const Value.absent(),
+    this.endDay = const Value.absent(),
+    this.occasion = const Value.absent(),
+    this.medicalReport = const Value.absent(),
+  });
+  LeaveEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required LeaveKind kind,
+    required LeaveStatus status,
+    required int startDay,
+    required int endDay,
+    required String occasion,
+    required MedicalReport medicalReport,
+  }) : kind = Value(kind),
+       status = Value(status),
+       startDay = Value(startDay),
+       endDay = Value(endDay),
+       occasion = Value(occasion),
+       medicalReport = Value(medicalReport);
+  static Insertable<LeaveEntry> custom({
+    Expression<int>? id,
+    Expression<String>? kind,
+    Expression<String>? status,
+    Expression<int>? startDay,
+    Expression<int>? endDay,
+    Expression<String>? occasion,
+    Expression<String>? medicalReport,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (kind != null) 'kind': kind,
+      if (status != null) 'status': status,
+      if (startDay != null) 'start_day': startDay,
+      if (endDay != null) 'end_day': endDay,
+      if (occasion != null) 'occasion': occasion,
+      if (medicalReport != null) 'medical_report': medicalReport,
+    });
+  }
+
+  LeaveEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<LeaveKind>? kind,
+    Value<LeaveStatus>? status,
+    Value<int>? startDay,
+    Value<int>? endDay,
+    Value<String>? occasion,
+    Value<MedicalReport>? medicalReport,
+  }) {
+    return LeaveEntriesCompanion(
+      id: id ?? this.id,
+      kind: kind ?? this.kind,
+      status: status ?? this.status,
+      startDay: startDay ?? this.startDay,
+      endDay: endDay ?? this.endDay,
+      occasion: occasion ?? this.occasion,
+      medicalReport: medicalReport ?? this.medicalReport,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(
+        $LeaveEntriesTable.$converterkind.toSql(kind.value),
+      );
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(
+        $LeaveEntriesTable.$converterstatus.toSql(status.value),
+      );
+    }
+    if (startDay.present) {
+      map['start_day'] = Variable<int>(startDay.value);
+    }
+    if (endDay.present) {
+      map['end_day'] = Variable<int>(endDay.value);
+    }
+    if (occasion.present) {
+      map['occasion'] = Variable<String>(occasion.value);
+    }
+    if (medicalReport.present) {
+      map['medical_report'] = Variable<String>(
+        $LeaveEntriesTable.$convertermedicalReport.toSql(medicalReport.value),
+      );
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LeaveEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('status: $status, ')
+          ..write('startDay: $startDay, ')
+          ..write('endDay: $endDay, ')
+          ..write('occasion: $occasion, ')
+          ..write('medicalReport: $medicalReport')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LeaveHolidaysTable extends LeaveHolidays
+    with TableInfo<$LeaveHolidaysTable, LeaveHoliday> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LeaveHolidaysTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<int> day = GeneratedColumn<int>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [day, name];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'leave_holidays';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LeaveHoliday> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {day};
+  @override
+  LeaveHoliday map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LeaveHoliday(
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}day'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+    );
+  }
+
+  @override
+  $LeaveHolidaysTable createAlias(String alias) {
+    return $LeaveHolidaysTable(attachedDatabase, alias);
+  }
+}
+
+class LeaveHoliday extends DataClass implements Insertable<LeaveHoliday> {
+  final int day;
+  final String name;
+  const LeaveHoliday({required this.day, required this.name});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['day'] = Variable<int>(day);
+    map['name'] = Variable<String>(name);
+    return map;
+  }
+
+  LeaveHolidaysCompanion toCompanion(bool nullToAbsent) {
+    return LeaveHolidaysCompanion(day: Value(day), name: Value(name));
+  }
+
+  factory LeaveHoliday.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LeaveHoliday(
+      day: serializer.fromJson<int>(json['day']),
+      name: serializer.fromJson<String>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'day': serializer.toJson<int>(day),
+      'name': serializer.toJson<String>(name),
+    };
+  }
+
+  LeaveHoliday copyWith({int? day, String? name}) =>
+      LeaveHoliday(day: day ?? this.day, name: name ?? this.name);
+  LeaveHoliday copyWithCompanion(LeaveHolidaysCompanion data) {
+    return LeaveHoliday(
+      day: data.day.present ? data.day.value : this.day,
+      name: data.name.present ? data.name.value : this.name,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LeaveHoliday(')
+          ..write('day: $day, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(day, name);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LeaveHoliday &&
+          other.day == this.day &&
+          other.name == this.name);
+}
+
+class LeaveHolidaysCompanion extends UpdateCompanion<LeaveHoliday> {
+  final Value<int> day;
+  final Value<String> name;
+  const LeaveHolidaysCompanion({
+    this.day = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  LeaveHolidaysCompanion.insert({
+    this.day = const Value.absent(),
+    required String name,
+  }) : name = Value(name);
+  static Insertable<LeaveHoliday> custom({
+    Expression<int>? day,
+    Expression<String>? name,
+  }) {
+    return RawValuesInsertable({
+      if (day != null) 'day': day,
+      if (name != null) 'name': name,
+    });
+  }
+
+  LeaveHolidaysCompanion copyWith({Value<int>? day, Value<String>? name}) {
+    return LeaveHolidaysCompanion(
+      day: day ?? this.day,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (day.present) {
+      map['day'] = Variable<int>(day.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LeaveHolidaysCompanion(')
+          ..write('day: $day, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -5165,6 +6139,9 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
       $RemittancePurposesTable(this);
   late final $RemittanceFamilyPaymentsTable remittanceFamilyPayments =
       $RemittanceFamilyPaymentsTable(this);
+  late final $LeaveRulesTable leaveRules = $LeaveRulesTable(this);
+  late final $LeaveEntriesTable leaveEntries = $LeaveEntriesTable(this);
+  late final $LeaveHolidaysTable leaveHolidays = $LeaveHolidaysTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5186,6 +6163,9 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     remittanceEvents,
     remittancePurposes,
     remittanceFamilyPayments,
+    leaveRules,
+    leaveEntries,
+    leaveHolidays,
   ];
 }
 
@@ -12823,6 +13803,575 @@ typedef $$RemittanceFamilyPaymentsTableProcessedTableManager =
       RemittanceFamilyPayment,
       PrefetchHooks Function({bool entryId, bool purposeKey})
     >;
+typedef $$LeaveRulesTableCreateCompanionBuilder = LeaveRulesCompanion Function({
+  Value<int> effectiveDay,
+  required int annualDays,
+  required int casualDays,
+  required int sickDays,
+});
+typedef $$LeaveRulesTableUpdateCompanionBuilder = LeaveRulesCompanion Function({
+  Value<int> effectiveDay,
+  Value<int> annualDays,
+  Value<int> casualDays,
+  Value<int> sickDays,
+});
+
+class $$LeaveRulesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $LeaveRulesTable> {
+  $$LeaveRulesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get effectiveDay => $composableBuilder(
+    column: $table.effectiveDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get annualDays => $composableBuilder(
+    column: $table.annualDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get casualDays => $composableBuilder(
+    column: $table.casualDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sickDays => $composableBuilder(
+    column: $table.sickDays,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LeaveRulesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $LeaveRulesTable> {
+  $$LeaveRulesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get effectiveDay => $composableBuilder(
+    column: $table.effectiveDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get annualDays => $composableBuilder(
+    column: $table.annualDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get casualDays => $composableBuilder(
+    column: $table.casualDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sickDays => $composableBuilder(
+    column: $table.sickDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LeaveRulesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $LeaveRulesTable> {
+  $$LeaveRulesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get effectiveDay => $composableBuilder(
+    column: $table.effectiveDay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get annualDays => $composableBuilder(
+    column: $table.annualDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get casualDays => $composableBuilder(
+    column: $table.casualDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sickDays =>
+      $composableBuilder(column: $table.sickDays, builder: (column) => column);
+}
+
+class $$LeaveRulesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $LeaveRulesTable,
+          LeaveRule,
+          $$LeaveRulesTableFilterComposer,
+          $$LeaveRulesTableOrderingComposer,
+          $$LeaveRulesTableAnnotationComposer,
+          $$LeaveRulesTableCreateCompanionBuilder,
+          $$LeaveRulesTableUpdateCompanionBuilder,
+          (
+            LeaveRule,
+            BaseReferences<_$LedgerDatabase, $LeaveRulesTable, LeaveRule>,
+          ),
+          LeaveRule,
+          PrefetchHooks Function()
+        > {
+  $$LeaveRulesTableTableManager(_$LedgerDatabase db, $LeaveRulesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LeaveRulesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LeaveRulesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LeaveRulesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> effectiveDay = const Value.absent(),
+                Value<int> annualDays = const Value.absent(),
+                Value<int> casualDays = const Value.absent(),
+                Value<int> sickDays = const Value.absent(),
+              }) => LeaveRulesCompanion(
+                effectiveDay: effectiveDay,
+                annualDays: annualDays,
+                casualDays: casualDays,
+                sickDays: sickDays,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> effectiveDay = const Value.absent(),
+                required int annualDays,
+                required int casualDays,
+                required int sickDays,
+              }) => LeaveRulesCompanion.insert(
+                effectiveDay: effectiveDay,
+                annualDays: annualDays,
+                casualDays: casualDays,
+                sickDays: sickDays,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LeaveRulesTable, LeaveRule>(table),
+                  BaseReferences<_$LedgerDatabase, $LeaveRulesTable, LeaveRule>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LeaveRulesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $LeaveRulesTable,
+      LeaveRule,
+      $$LeaveRulesTableFilterComposer,
+      $$LeaveRulesTableOrderingComposer,
+      $$LeaveRulesTableAnnotationComposer,
+      $$LeaveRulesTableCreateCompanionBuilder,
+      $$LeaveRulesTableUpdateCompanionBuilder,
+      (
+        LeaveRule,
+        BaseReferences<_$LedgerDatabase, $LeaveRulesTable, LeaveRule>,
+      ),
+      LeaveRule,
+      PrefetchHooks Function()
+    >;
+typedef $$LeaveEntriesTableCreateCompanionBuilder =
+    LeaveEntriesCompanion Function({
+      Value<int> id,
+      required LeaveKind kind,
+      required LeaveStatus status,
+      required int startDay,
+      required int endDay,
+      required String occasion,
+      required MedicalReport medicalReport,
+    });
+typedef $$LeaveEntriesTableUpdateCompanionBuilder =
+    LeaveEntriesCompanion Function({
+      Value<int> id,
+      Value<LeaveKind> kind,
+      Value<LeaveStatus> status,
+      Value<int> startDay,
+      Value<int> endDay,
+      Value<String> occasion,
+      Value<MedicalReport> medicalReport,
+    });
+
+class $$LeaveEntriesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $LeaveEntriesTable> {
+  $$LeaveEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<LeaveKind, LeaveKind, String> get kind =>
+      $composableBuilder(
+        column: $table.kind,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<LeaveStatus, LeaveStatus, String> get status =>
+      $composableBuilder(
+        column: $table.status,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get startDay => $composableBuilder(
+    column: $table.startDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get endDay => $composableBuilder(
+    column: $table.endDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get occasion => $composableBuilder(
+    column: $table.occasion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<MedicalReport, MedicalReport, String>
+  get medicalReport => $composableBuilder(
+    column: $table.medicalReport,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+}
+
+class $$LeaveEntriesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $LeaveEntriesTable> {
+  $$LeaveEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get startDay => $composableBuilder(
+    column: $table.startDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get endDay => $composableBuilder(
+    column: $table.endDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get occasion => $composableBuilder(
+    column: $table.occasion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get medicalReport => $composableBuilder(
+    column: $table.medicalReport,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LeaveEntriesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $LeaveEntriesTable> {
+  $$LeaveEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<LeaveKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<LeaveStatus, String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get startDay =>
+      $composableBuilder(column: $table.startDay, builder: (column) => column);
+
+  GeneratedColumn<int> get endDay =>
+      $composableBuilder(column: $table.endDay, builder: (column) => column);
+
+  GeneratedColumn<String> get occasion =>
+      $composableBuilder(column: $table.occasion, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MedicalReport, String> get medicalReport =>
+      $composableBuilder(
+        column: $table.medicalReport,
+        builder: (column) => column,
+      );
+}
+
+class $$LeaveEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $LeaveEntriesTable,
+          LeaveEntry,
+          $$LeaveEntriesTableFilterComposer,
+          $$LeaveEntriesTableOrderingComposer,
+          $$LeaveEntriesTableAnnotationComposer,
+          $$LeaveEntriesTableCreateCompanionBuilder,
+          $$LeaveEntriesTableUpdateCompanionBuilder,
+          (
+            LeaveEntry,
+            BaseReferences<_$LedgerDatabase, $LeaveEntriesTable, LeaveEntry>,
+          ),
+          LeaveEntry,
+          PrefetchHooks Function()
+        > {
+  $$LeaveEntriesTableTableManager(_$LedgerDatabase db, $LeaveEntriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LeaveEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LeaveEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LeaveEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<LeaveKind> kind = const Value.absent(),
+                Value<LeaveStatus> status = const Value.absent(),
+                Value<int> startDay = const Value.absent(),
+                Value<int> endDay = const Value.absent(),
+                Value<String> occasion = const Value.absent(),
+                Value<MedicalReport> medicalReport = const Value.absent(),
+              }) => LeaveEntriesCompanion(
+                id: id,
+                kind: kind,
+                status: status,
+                startDay: startDay,
+                endDay: endDay,
+                occasion: occasion,
+                medicalReport: medicalReport,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required LeaveKind kind,
+                required LeaveStatus status,
+                required int startDay,
+                required int endDay,
+                required String occasion,
+                required MedicalReport medicalReport,
+              }) => LeaveEntriesCompanion.insert(
+                id: id,
+                kind: kind,
+                status: status,
+                startDay: startDay,
+                endDay: endDay,
+                occasion: occasion,
+                medicalReport: medicalReport,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LeaveEntriesTable, LeaveEntry>(table),
+                  BaseReferences<
+                    _$LedgerDatabase,
+                    $LeaveEntriesTable,
+                    LeaveEntry
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LeaveEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $LeaveEntriesTable,
+      LeaveEntry,
+      $$LeaveEntriesTableFilterComposer,
+      $$LeaveEntriesTableOrderingComposer,
+      $$LeaveEntriesTableAnnotationComposer,
+      $$LeaveEntriesTableCreateCompanionBuilder,
+      $$LeaveEntriesTableUpdateCompanionBuilder,
+      (
+        LeaveEntry,
+        BaseReferences<_$LedgerDatabase, $LeaveEntriesTable, LeaveEntry>,
+      ),
+      LeaveEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$LeaveHolidaysTableCreateCompanionBuilder =
+    LeaveHolidaysCompanion Function({Value<int> day, required String name});
+typedef $$LeaveHolidaysTableUpdateCompanionBuilder =
+    LeaveHolidaysCompanion Function({Value<int> day, Value<String> name});
+
+class $$LeaveHolidaysTableFilterComposer
+    extends Composer<_$LedgerDatabase, $LeaveHolidaysTable> {
+  $$LeaveHolidaysTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LeaveHolidaysTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $LeaveHolidaysTable> {
+  $$LeaveHolidaysTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LeaveHolidaysTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $LeaveHolidaysTable> {
+  $$LeaveHolidaysTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+}
+
+class $$LeaveHolidaysTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $LeaveHolidaysTable,
+          LeaveHoliday,
+          $$LeaveHolidaysTableFilterComposer,
+          $$LeaveHolidaysTableOrderingComposer,
+          $$LeaveHolidaysTableAnnotationComposer,
+          $$LeaveHolidaysTableCreateCompanionBuilder,
+          $$LeaveHolidaysTableUpdateCompanionBuilder,
+          (
+            LeaveHoliday,
+            BaseReferences<_$LedgerDatabase, $LeaveHolidaysTable, LeaveHoliday>,
+          ),
+          LeaveHoliday,
+          PrefetchHooks Function()
+        > {
+  $$LeaveHolidaysTableTableManager(
+    _$LedgerDatabase db,
+    $LeaveHolidaysTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LeaveHolidaysTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LeaveHolidaysTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LeaveHolidaysTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> day = const Value.absent(),
+            Value<String> name = const Value.absent(),
+          }) => LeaveHolidaysCompanion(day: day, name: name),
+          createCompanionCallback: ({
+            Value<int> day = const Value.absent(),
+            required String name,
+          }) => LeaveHolidaysCompanion.insert(day: day, name: name),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LeaveHolidaysTable, LeaveHoliday>(table),
+                  BaseReferences<
+                    _$LedgerDatabase,
+                    $LeaveHolidaysTable,
+                    LeaveHoliday
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LeaveHolidaysTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $LeaveHolidaysTable,
+      LeaveHoliday,
+      $$LeaveHolidaysTableFilterComposer,
+      $$LeaveHolidaysTableOrderingComposer,
+      $$LeaveHolidaysTableAnnotationComposer,
+      $$LeaveHolidaysTableCreateCompanionBuilder,
+      $$LeaveHolidaysTableUpdateCompanionBuilder,
+      (
+        LeaveHoliday,
+        BaseReferences<_$LedgerDatabase, $LeaveHolidaysTable, LeaveHoliday>,
+      ),
+      LeaveHoliday,
+      PrefetchHooks Function()
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -12862,4 +14411,10 @@ class $LedgerDatabaseManager {
         _db,
         _db.remittanceFamilyPayments,
       );
+  $$LeaveRulesTableTableManager get leaveRules =>
+      $$LeaveRulesTableTableManager(_db, _db.leaveRules);
+  $$LeaveEntriesTableTableManager get leaveEntries =>
+      $$LeaveEntriesTableTableManager(_db, _db.leaveEntries);
+  $$LeaveHolidaysTableTableManager get leaveHolidays =>
+      $$LeaveHolidaysTableTableManager(_db, _db.leaveHolidays);
 }

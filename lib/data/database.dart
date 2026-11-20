@@ -6,6 +6,7 @@ import 'package:sodium/sodium.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
 import '../finance/model.dart';
+import '../leave/model.dart';
 import 'schema_recovery.dart';
 
 part 'database.g.dart';
@@ -13,6 +14,7 @@ part 'salary_tables.dart';
 part 'cash_tables.dart';
 part 'expense_tables.dart';
 part 'remittance_tables.dart';
+part 'leave_tables.dart';
 
 class Currencies extends Table {
   TextColumn get code => text()();
@@ -79,10 +81,15 @@ class StorageLocked implements Exception {
     RemittanceEvents,
     RemittancePurposes,
     RemittanceFamilyPayments,
+    LeaveRules,
+    LeaveEntries,
+    LeaveHolidays,
   ],
 )
 class LedgerDatabase extends _$LedgerDatabase {
   LedgerDatabase._(super.executor);
+
+  static const _currentSchemaVersion = 6;
 
   /// Takes ownership of a writable copy of the key.
   static Future<LedgerDatabase> open(File file, Uint8List key) async {
@@ -96,7 +103,7 @@ class LedgerDatabase extends _$LedgerDatabase {
       unlockDatabase(raw, hexKey);
       final version =
           raw.select('PRAGMA user_version').single.values.single as int;
-      if (version > 0 && version < 5) {
+      if (version > 0 && version < _currentSchemaVersion) {
         protectLedgerMigration(raw, file, hexKey, version);
       }
       raw.execute('PRAGMA journal_mode = WAL');
@@ -120,46 +127,21 @@ class LedgerDatabase extends _$LedgerDatabase {
   }
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => _currentSchemaVersion;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) => transaction(() async {
-      if (from < 1 || from > 4 || to != 5) {
+      if (from < 1 ||
+          from >= _currentSchemaVersion ||
+          to != _currentSchemaVersion) {
         throw StateError('Unsupported ledger schema');
       }
-      if (from == 1) {
-        for (final table in <TableInfo<Table, dynamic>>[
-          salaryReceipts,
-          salaryPlans,
-          salaryAllocations,
-          salaryExecutions,
-          movementConfirmations,
-        ]) {
-          await migrator.createTable(table);
-        }
-        await _salaryIndexes();
-      }
-      if (from < 3) {
-        await migrator.createTable(cashSettings);
-        await migrator.createTable(cashReconciliations);
-        await _seedCash();
-      } else if (from == 3) {
-        // Bank statements may show a negative observed balance. Cash remains
-        // non-negative in the confirmed adjustment use case.
-        await migrator.alterTable(TableMigration(cashReconciliations));
-      }
-      if (from < 4) {
-        await migrator.createTable(expenseDetails);
-        await _seedAdjustmentAccounts();
-      }
-      await migrator.createTable(remittances);
-      await migrator.createTable(remittanceEvents);
-      await migrator.createTable(remittancePurposes);
-      await migrator.createTable(remittanceFamilyPayments);
-      await customStatement('DROP INDEX system_account_by_currency');
-      await _systemAccountIndex();
-      await _setupRemittances();
+      if (from < 5) await _upgradeFinance(migrator, from);
+      await migrator.createTable(leaveRules);
+      await migrator.createTable(leaveEntries);
+      await migrator.createTable(leaveHolidays);
+      await _seedLeaveRules();
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
     onCreate: (migrator) => transaction(() async {
@@ -191,10 +173,57 @@ class LedgerDatabase extends _$LedgerDatabase {
       await _seedCash();
       await _seedAdjustmentAccounts();
       await _setupRemittances();
+      await _seedLeaveRules();
       // Persist the version with the schema and seed rows on first open.
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
   );
+
+  Future<void> _upgradeFinance(Migrator migrator, int from) async {
+    if (from == 1) {
+      for (final table in <TableInfo<Table, dynamic>>[
+        salaryReceipts,
+        salaryPlans,
+        salaryAllocations,
+        salaryExecutions,
+        movementConfirmations,
+      ]) {
+        await migrator.createTable(table);
+      }
+      await _salaryIndexes();
+    }
+    if (from < 3) {
+      await migrator.createTable(cashSettings);
+      await migrator.createTable(cashReconciliations);
+      await _seedCash();
+    } else if (from == 3) {
+      // Bank statements may show a negative observed balance. Cash remains
+      // non-negative in the confirmed adjustment use case.
+      await migrator.alterTable(TableMigration(cashReconciliations));
+    }
+    if (from < 4) {
+      await migrator.createTable(expenseDetails);
+      await _seedAdjustmentAccounts();
+    }
+    await migrator.createTable(remittances);
+    await migrator.createTable(remittanceEvents);
+    await migrator.createTable(remittancePurposes);
+    await migrator.createTable(remittanceFamilyPayments);
+    await customStatement('DROP INDEX system_account_by_currency');
+    await _systemAccountIndex();
+    await _setupRemittances();
+  }
+
+  Future<void> _seedLeaveRules() async {
+    await into(leaveRules).insert(
+      LeaveRule(
+        effectiveDay: leaveDay(firstLeaveDate),
+        annualDays: 30,
+        casualDays: 13,
+        sickDays: 15,
+      ),
+    );
+  }
 
   Future<void> _systemAccountIndex() => customStatement(
     "CREATE UNIQUE INDEX system_account_by_currency ON ledger_accounts (currency, kind) "

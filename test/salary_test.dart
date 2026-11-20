@@ -8,6 +8,8 @@ import 'package:expat_manager/finance/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
+import 'support/legacy_schema.dart';
+
 void main() {
   final date = DateTime.utc(2026, 1, 2);
   late Directory directory;
@@ -399,6 +401,7 @@ void main() {
         "DELETE FROM ledger_accounts WHERE kind IN ('remittanceTransit', 'remittanceExchange')",
       );
       old.execute("DELETE FROM ledger_accounts WHERE kind = 'cashAdjustment'");
+      dropLeaveSchema(old);
       old.execute('PRAGMA user_version = 1');
     } finally {
       old.close();

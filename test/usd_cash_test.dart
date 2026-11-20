@@ -8,6 +8,8 @@ import 'package:expat_manager/finance/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
+import 'support/legacy_schema.dart';
+
 void main() {
   final january = DateTime.utc(2026, 1, 5);
   final february = DateTime.utc(2026, 2, 1);
@@ -327,6 +329,7 @@ void main() {
       raw.execute(
         "INSERT INTO ledger_accounts (name, currency, kind) VALUES ('Other older wallet', 'USD', 'cash')",
       );
+      dropLeaveSchema(raw);
       raw.execute('PRAGMA user_version = 2');
     } finally {
       raw.close();

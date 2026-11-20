@@ -8,6 +8,8 @@ import 'package:expat_manager/finance/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
+import 'support/legacy_schema.dart';
+
 void main() {
   final sent = DateTime(2026, 11, 1);
   final later = DateTime(2026, 11, 3);
@@ -642,6 +644,7 @@ void main() {
         raw.execute(
           "DELETE FROM ledger_accounts WHERE kind IN ('remittanceTransit', 'remittanceExchange')",
         );
+        dropLeaveSchema(raw);
         raw.execute('PRAGMA user_version = 4');
       } finally {
         raw.close();

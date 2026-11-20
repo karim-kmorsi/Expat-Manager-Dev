@@ -9,19 +9,19 @@ The user is the authority for leave and entitlement rules. The app serves person
 
 ### Approved settings
 
-- Annual leave is 30 paid calendar days per January–December year, with no carryover in the current setting. Fridays and Saturdays count when they fall within the approved annual leave period.
-- Casual leave is 13 days per year.
-- Sick leave is 15 days per year. Record the presence or status of the medical report without storing sensitive medical documents.
-- Weekly rest days are Friday and Saturday.
+- Annual leave is 30 paid calendar days per January–December year, with no carryover in the current setting. The approved period includes both the start and end date.
+- Casual leave is 13 calendar days per year.
+- Sick leave is 15 calendar days per year. Record the presence or status of the medical report without storing sensitive medical documents.
+- Weekly rest days are Friday and Saturday. Rest days and official holidays inside the leave period count for all types. Holidays after the period do not reduce the balance. Return to work is the first workday after the end date.
+- When leave spans two years, charge every day to the start year, subject to sufficient balance. The new year is not charged for that entry.
 - The employee has one round-trip flight entitlement per year, funded by the employer under the current personal setting.
 - Planning uses the remaining leave balance, holidays and weekly rest days. It supports a specific date, a future period or a particular occasion.
 
 ### Details awaiting user decisions
 
-- Which holiday dates apply and how holidays affect deductions for each leave type. How weekly rest days affect casual and sick leave deductions remains open.
-- Inclusivity of start and end dates, return-to-work timing, and the treatment of leave that spans two entitlement years.
-- Counting units, carryover and renewal dates for casual and sick leave, and any prorating rules.
-- How to handle edits and cancellations, including when to debit, release or restore a balance.
+- The user maintains the list of applicable official holidays.
+- Carryover, renewal dates and prorating for casual and sick leave remain open. The app shows provisional balances for those types using the start calendar year, with no inferred carryover.
+- Formal approval procedures remain open. For personal tracking, requested entries have no balance impact. Approved entries reserve days and used entries count as used once. Cancellation releases only unused days. When cancelling the remainder of a partly used approved period, record the last day actually used and keep the used part charged to the original start year. Used periods allow edits to descriptive details only.
 - When a medical report is required, and whether any pay or other conditions apply to casual or sick leave.
 - The dates of the travel entitlement cycle, booking and usage conditions, and treatment of an unused trip.
 
