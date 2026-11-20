@@ -57,6 +57,26 @@ void main() {
     },
   );
 
+  testWidgets('saved dark appearance keeps RTL and legible surface colors', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ExpatManager(
+        ledger: Completer<Ledger>().future,
+        initialAppearance: Future.value(ThemeMode.dark),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final context = tester.element(find.byType(CircularProgressIndicator));
+    final theme = Theme.of(context);
+    expect(theme.brightness, Brightness.dark);
+    expect(Directionality.of(context), TextDirection.rtl);
+    final foreground = theme.colorScheme.onSurface.computeLuminance();
+    final background = theme.scaffoldBackgroundColor.computeLuminance();
+    expect((foreground + .05) / (background + .05), greaterThan(4.5));
+  });
+
   testWidgets(
     'calendar shows Latin days and manual entry normalizes pasted dates',
     (tester) async {

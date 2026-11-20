@@ -215,7 +215,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       await tester.pumpWidget(ExpatManager(ledger: Future.value(ledger)));
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('الاستحقاقات والادخار'));
+      await tester.tap(find.text('الاستحقاقات والادخار'));
       await tester.pumpAndSettle();
       expect(
         Directionality.of(tester.element(find.text('مكافأة الدساي'))),

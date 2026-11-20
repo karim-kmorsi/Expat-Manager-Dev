@@ -7,6 +7,7 @@ import '../data/ledger_backup.dart';
 import '../finance/ledger.dart';
 import '../finance/model.dart';
 import 'amount.dart';
+import 'app_theme.dart';
 import 'backup_screen.dart';
 import 'digits.dart';
 import 'entitlement_screen.dart';
@@ -25,10 +26,18 @@ typedef _Overview = ({
 });
 
 class FinanceHome extends StatefulWidget {
-  const FinanceHome({required this.ledger, this.openBackup, super.key});
+  const FinanceHome({
+    required this.ledger,
+    this.openBackup,
+    this.appearance = ThemeMode.system,
+    this.onAppearance,
+    super.key,
+  });
 
   final Ledger ledger;
   final Future<LedgerBackup> Function()? openBackup;
+  final ThemeMode appearance;
+  final Future<void> Function(ThemeMode)? onAppearance;
 
   @override
   State<FinanceHome> createState() => _FinanceHomeState();
@@ -94,64 +103,78 @@ class _FinanceHomeState extends State<FinanceHome> {
     }
   }
 
+  Future<void> _openSection(Widget screen) async {
+    await Navigator.of(context)
+        .push<void>(MaterialPageRoute(builder: (_) => screen));
+    if (mounted) _refresh();
+  }
+
+  Future<void> _openBackup() async {
+    final openBackup = widget.openBackup;
+    if (openBackup == null) return;
+    final restored = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => BackupScreen(openBackup: openBackup)),
+    );
+    if (restored == true && mounted) {
+      setState(() {
+        _tab = 0;
+        _overview = _load();
+      });
+    }
+  }
+
+  Future<void> _changeAppearance(ThemeMode mode) async {
+    try {
+      await widget.onAppearance?.call(mode);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تعذّر حفظ تفضيل المظهر.')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Expat Manager'),
+      title: Text(
+        [
+          'Expat Manager',
+          'سجل القيود',
+          'توزيع الراتب',
+          'محفظة الدولار',
+          'سجل المصروفات',
+        ][_tab],
+      ),
       actions: [
-        if (widget.openBackup case final openBackup?)
+        if (widget.openBackup != null)
           IconButton(
             tooltip: 'النسخ الاحتياطي',
             icon: const Icon(Icons.backup_outlined),
-            onPressed: _busy
-                ? null
-                : () async {
-                    final restored = await Navigator.of(context).push<bool>(
-                      MaterialPageRoute(
-                        builder: (_) => BackupScreen(openBackup: openBackup),
-                      ),
-                    );
-                    if (restored == true && mounted) {
-                      setState(() {
-                        _tab = 0;
-                        _overview = _load();
-                      });
-                    }
-                  },
+            onPressed: _busy ? null : _openBackup,
           ),
-        IconButton(
-          tooltip: 'الاستحقاقات والادخار',
-          icon: const Icon(Icons.card_giftcard_outlined),
-          onPressed: () async {
-            await Navigator.of(context).push<void>(
-              MaterialPageRoute(
-                builder: (_) => EntitlementScreen(ledger: ledger),
+        if (widget.onAppearance != null)
+          PopupMenuButton<ThemeMode>(
+            tooltip: 'المظهر',
+            icon: const Icon(Icons.contrast_outlined),
+            initialValue: widget.appearance,
+            onSelected: _changeAppearance,
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                value: ThemeMode.system,
+                child: Text('مظهر الجهاز'),
               ),
-            );
-            if (mounted) _refresh();
-          },
-        ),
-        IconButton(
-          tooltip: 'الإجازات',
-          icon: const Icon(Icons.event_available_outlined),
-          onPressed: () => Navigator.of(context).push<void>(
-            MaterialPageRoute(
-              builder: (_) => LeaveScreen(book: ledger.personalLeave),
-            ),
+              PopupMenuItem(
+                value: ThemeMode.light,
+                child: Text('المظهر الفاتح'),
+              ),
+              PopupMenuItem(
+                value: ThemeMode.dark,
+                child: Text('المظهر الداكن'),
+              ),
+            ],
           ),
-        ),
-        TextButton.icon(
-          onPressed: () async {
-            await Navigator.of(context).push<void>(
-              MaterialPageRoute(
-                builder: (_) => RemittanceScreen(ledger: ledger),
-              ),
-            );
-            if (mounted) _refresh();
-          },
-          icon: const Icon(Icons.language),
-          label: const Text('الحوالات'),
-        ),
       ],
     ),
     bottomNavigationBar: NavigationBar(
@@ -190,87 +213,167 @@ class _FinanceHomeState extends State<FinanceHome> {
           ? UsdCashScreen(ledger: ledger, newOperationId: _operationId)
           : _tab == 2
           ? SalaryScreen(ledger: ledger, newOperationId: _operationId)
-          : FutureBuilder(
-              future: _overview,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: TextButton(
-                      onPressed: _refresh,
-                      child: const Text('تعذّر تحميل البيانات. أعد المحاولة'),
-                    ),
-                  );
-                }
-                final data = snapshot.data;
-                if (data == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return _tab == 0
-                    ? _accountList(data)
-                    : _journalList(data.entries);
-              },
-            ),
+          : _tab == 0
+          ? _dashboard()
+          : _withOverview((data) => _journalList(data.entries)),
     ),
   );
 
-  Widget _accountList(_Overview data) {
+  Widget _withOverview(Widget Function(_Overview) build) => FutureBuilder(
+    future: _overview,
+    builder: (context, snapshot) {
+      if (snapshot.hasError) {
+        return Center(
+          child: TextButton(
+            onPressed: _refresh,
+            child: const Text('تعذّر تحميل البيانات. أعد المحاولة'),
+          ),
+        );
+      }
+      final data = snapshot.data;
+      return data == null
+          ? const Center(child: CircularProgressIndicator())
+          : build(data);
+    },
+  );
+
+  Widget _dashboard() {
+    final theme = Theme.of(context);
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      children: [
+        Text('نظرة عامة', style: theme.textTheme.headlineSmall),
+        const SizedBox(height: 12),
+        LayoutBuilder(
+          builder: (context, layout) {
+            final largeText = MediaQuery.textScalerOf(context).scale(16) >= 24;
+            final width = layout.maxWidth < 300 || largeText
+                ? layout.maxWidth
+                : (layout.maxWidth - 10) / 2;
+            return Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                _shortcut(
+                  width,
+                  'الحوالات',
+                  Icons.currency_exchange,
+                  () => _openSection(RemittanceScreen(ledger: ledger)),
+                ),
+                _shortcut(
+                  width,
+                  'الإجازات',
+                  Icons.event_available_outlined,
+                  () => _openSection(LeaveScreen(book: ledger.personalLeave)),
+                ),
+                _shortcut(
+                  width,
+                  'الاستحقاقات والادخار',
+                  Icons.card_giftcard_outlined,
+                  () => _openSection(EntitlementScreen(ledger: ledger)),
+                ),
+                _shortcut(
+                  width,
+                  'الذهب الفعلي',
+                  Icons.diamond_outlined,
+                  () => _openSection(GoldScreen(ledger: ledger)),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 20),
+        Text('أرصدتك', style: theme.textTheme.titleLarge),
+        const SizedBox(height: 8),
+        _withOverview(_accountContent),
+      ],
+    );
+  }
+
+  Widget _accountContent(_Overview data) {
     final scale = {
       for (final currency in data.currencies) currency.code: currency.scale,
     };
-    return ListView(
-      padding: const EdgeInsets.all(16),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Wrap(
-          spacing: 12,
+          spacing: 8,
           runSpacing: 8,
           children: [
-            FilledButton(
+            FilledButton.icon(
               onPressed: _busy ? null : () => _addAccount(data.currencies),
-              child: const Text('إضافة حساب'),
+              icon: const Icon(Icons.add),
+              label: const Text('إضافة حساب'),
             ),
             OutlinedButton.icon(
-              onPressed: () async {
-                await Navigator.of(context).push<void>(
-                  MaterialPageRoute(builder: (_) => GoldScreen(ledger: ledger)),
-                );
-                if (mounted) _refresh();
-              },
-              icon: const Icon(Icons.diamond_outlined),
-              label: const Text('الذهب الفعلي'),
-            ),
-            OutlinedButton(
               onPressed: _busy || !_hasTransferPair(data.accounts)
                   ? null
                   : () => _transfer(data, scale),
-              child: const Text('تحويل داخلي'),
+              icon: const Icon(Icons.swap_horiz),
+              label: const Text('تحويل داخلي'),
             ),
           ],
         ),
+        const SizedBox(height: 12),
         if (data.accounts.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Text('أضف حسابًا للبدء.'),
-          ),
+          const Card(child: ListTile(title: Text('أضف حسابًا للبدء.'))),
         for (final view in data.accounts)
-          ListTile(
-            title: Text(latinDigits(view.account.name)),
-            subtitle: Text(
-              view.balance.openingKnown
-                  ? 'الرصيد المحسوب'
-                  : 'صافي الحركات المسجلة · لم يُسجّل رصيد افتتاحي',
+          Card(
+            child: ListTile(
+              title: Text(latinDigits(view.account.name)),
+              leading: Icon(switch (view.account.kind) {
+                AccountKind.bank => Icons.account_balance_outlined,
+                AccountKind.cash => Icons.wallet_outlined,
+                _ => Icons.savings_outlined,
+              }),
+              subtitle: Text(
+                view.balance.openingKnown
+                    ? 'الرصيد المحسوب'
+                    : 'صافي الحركات المسجلة · لم يُسجّل رصيد افتتاحي',
+              ),
+              trailing: AmountLabel(
+                '${formatMinor(view.balance.minor, scale[view.account.currency]!)} ${view.account.currency}',
+              ),
+              onTap: _busy || view.balance.openingKnown
+                  ? null
+                  : () => _setOpening(
+                      view.account,
+                      scale[view.account.currency]!,
+                    ),
             ),
-            trailing: Text(
-              '${formatMinor(view.balance.minor, scale[view.account.currency]!)} ${view.account.currency}',
-              textDirection: TextDirection.ltr,
-            ),
-            onTap: _busy || view.balance.openingKnown
-                ? null
-                : () =>
-                      _setOpening(view.account, scale[view.account.currency]!),
           ),
       ],
     );
   }
+
+  Widget _shortcut(
+    double width,
+    String label,
+    IconData icon,
+    VoidCallback open,
+  ) => SizedBox(
+    width: width,
+    child: Card(
+      margin: EdgeInsets.zero,
+      child: InkWell(
+        onTap: _busy ? null : open,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 60),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
+            child: Row(
+              children: [
+                Icon(icon, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(child: Text(label)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 
   Widget _journalList(List<JournalEntry> entries) {
     final managedIncomeIds = {
@@ -399,6 +502,7 @@ class _AccountDialogState extends State<_AccountDialog> {
     content: Form(
       key: _form,
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -561,6 +665,7 @@ class _TransferDialogState extends State<_TransferDialog> {
     content: Form(
       key: _form,
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

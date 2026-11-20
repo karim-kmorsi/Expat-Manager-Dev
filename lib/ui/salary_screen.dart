@@ -5,6 +5,7 @@ import '../finance/ledger.dart';
 import '../finance/model.dart';
 import '../finance/transfer_quote.dart';
 import 'amount.dart';
+import 'app_theme.dart';
 import 'date_picker.dart';
 import 'digits.dart';
 import 'remittance_screen.dart';
@@ -482,10 +483,8 @@ Widget _totals(SalaryDeposit salary, List<(String, int)> rows) => Column(
   ],
 );
 
-Widget _money(int minor, int scale, String currency) => Text(
-  '${formatMinor(minor, scale)} $currency',
-  textDirection: TextDirection.ltr,
-);
+Widget _money(int minor, int scale, String currency) =>
+    AmountLabel('${formatMinor(minor, scale)} $currency');
 
 String _status(SalaryProgress progress) => switch (progress) {
   SalaryProgress.planned => 'مخطط',
@@ -881,6 +880,7 @@ Widget _dialog(
   content: Form(
     key: form,
     child: SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(mainAxisSize: MainAxisSize.min, children: fields),
     ),
   ),

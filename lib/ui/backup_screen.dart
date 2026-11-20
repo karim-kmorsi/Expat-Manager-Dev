@@ -210,6 +210,7 @@ class _PasswordDialogState extends State<_PasswordDialog> {
     content: Form(
       key: _form,
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

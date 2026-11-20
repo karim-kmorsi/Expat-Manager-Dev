@@ -1,10 +1,12 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'data/android_storage.dart';
+import 'data/android_appearance.dart';
 import 'data/ledger_backup.dart';
 import 'finance/ledger.dart';
 import 'ui/finance_home.dart';
 import 'ui/backup_screen.dart';
+import 'ui/app_theme.dart';
 import 'ui/localizations.dart';
 
 void main() {
@@ -14,15 +16,49 @@ void main() {
     ExpatManager(
       ledger: database.then(Ledger.new),
       openBackup: () async => androidLedgerBackup(await database),
+      initialAppearance: loadAppearance(),
+      persistAppearance: saveAppearance,
     ),
   );
 }
 
-class ExpatManager extends StatelessWidget {
-  const ExpatManager({required this.ledger, this.openBackup, super.key});
+class ExpatManager extends StatefulWidget {
+  const ExpatManager({
+    required this.ledger,
+    this.openBackup,
+    this.initialAppearance,
+    this.persistAppearance,
+    super.key,
+  });
 
   final Future<Ledger> ledger;
   final Future<LedgerBackup> Function()? openBackup;
+  final Future<ThemeMode>? initialAppearance;
+  final Future<void> Function(ThemeMode)? persistAppearance;
+
+  @override
+  State<ExpatManager> createState() => _ExpatManagerState();
+}
+
+class _ExpatManagerState extends State<ExpatManager> {
+  ThemeMode _appearance = ThemeMode.system;
+  bool _changedAppearance = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.initialAppearance?.then((mode) {
+      if (mounted && !_changedAppearance) setState(() => _appearance = mode);
+    });
+  }
+
+  Future<void> _setAppearance(ThemeMode mode) async {
+    setState(() {
+      _changedAppearance = true;
+      _appearance = mode;
+    });
+    await widget.persistAppearance?.call(mode);
+  }
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -33,11 +69,11 @@ class ExpatManager extends StatelessWidget {
       LatinArabicLocalizationsDelegate(),
       ...GlobalMaterialLocalizations.delegates,
     ],
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff1a6653)),
-    ),
+    theme: expatTheme(Brightness.light),
+    darkTheme: expatTheme(Brightness.dark),
+    themeMode: _appearance,
     home: FutureBuilder(
-      future: ledger,
+      future: widget.ledger,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Scaffold(
@@ -51,7 +87,7 @@ class ExpatManager extends StatelessWidget {
                       const Text(
                         'تعذّر فتح البيانات المشفّرة. يمكنك إعادة فتح التطبيق أو الاستعادة من نسخة محفوظة.',
                       ),
-                      if (openBackup != null)
+                      if (widget.openBackup != null)
                         OutlinedButton(
                           onPressed: () => Navigator.push<void>(
                             context,
@@ -69,7 +105,12 @@ class ExpatManager extends StatelessWidget {
           );
         }
         return snapshot.hasData
-            ? FinanceHome(ledger: snapshot.data!, openBackup: openBackup)
+            ? FinanceHome(
+                ledger: snapshot.data!,
+                openBackup: widget.openBackup,
+                appearance: _appearance,
+                onAppearance: _setAppearance,
+              )
             : const Scaffold(body: Center(child: CircularProgressIndicator()));
       },
     ),

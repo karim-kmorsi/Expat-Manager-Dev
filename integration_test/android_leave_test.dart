@@ -40,7 +40,7 @@ void main() {
     Future<void> openLeave() async {
       await tester.pumpWidget(ExpatManager(ledger: Future.value(ledger)));
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('الإجازات'));
+      await tester.tap(find.text('الإجازات'));
       await tester.pumpAndSettle();
       final heading = find.text('السجل');
       expect(heading, findsOneWidget);

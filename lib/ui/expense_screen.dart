@@ -349,6 +349,7 @@ class _ExpenseDialogState extends State<_ExpenseDialog> {
     content: Form(
       key: _form,
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

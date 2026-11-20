@@ -190,6 +190,8 @@ class _SalaryTransferDialogState extends State<SalaryTransferDialog> {
 
   void _refresh(String _) => setState(() {});
 
+  void _releaseKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+
   String _money(String currency, int minor) =>
       '${formatMinor(minor, widget.scales[currency]!)} $currency';
 
@@ -280,6 +282,7 @@ class _SalaryTransferDialogState extends State<SalaryTransferDialog> {
         if (route.previous)
           const Text('آخر سعر مدخل للتخطيط. السعر تقديري وقد يتغير.'),
         ExpansionTile(
+          onExpansionChanged: (_) => _releaseKeyboard(),
           tilePadding: EdgeInsets.zero,
           title: Text('الرسوم والهامش · $currency'),
           subtitle: terms == null
@@ -295,6 +298,7 @@ class _SalaryTransferDialogState extends State<SalaryTransferDialog> {
           ],
         ),
         ExpansionTile(
+          onExpansionChanged: (_) => _releaseKeyboard(),
           tilePadding: EdgeInsets.zero,
           title: Text('التحويل من USD إلى $currency'),
           children: [
@@ -328,6 +332,7 @@ class _SalaryTransferDialogState extends State<SalaryTransferDialog> {
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

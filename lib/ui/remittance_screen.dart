@@ -177,6 +177,7 @@ class _PlanDialogState extends State<_PlanDialog> {
   Widget build(BuildContext context) => AlertDialog(
     title: const Text('تخطيط حوالة'),
     content: SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -778,6 +779,7 @@ class _EventDialogState extends State<_EventDialog> {
             : _eventLabel(widget.kind),
       ),
       content: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -873,6 +875,7 @@ class _PurposeDialogState extends State<_PurposeDialog> {
   Widget build(BuildContext context) => AlertDialog(
     title: const Text('إضافة غرض'),
     content: SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

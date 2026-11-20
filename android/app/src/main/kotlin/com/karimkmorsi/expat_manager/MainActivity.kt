@@ -24,6 +24,23 @@ class MainActivity : FlutterActivity() {
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         MethodChannel(messenger, "com.karimkmorsi.expat_manager/backup")
             .setMethodCallHandler(backupDocuments::handle)
+        MethodChannel(messenger, "com.karimkmorsi.expat_manager/appearance")
+            .setMethodCallHandler { call, result ->
+                val prefs = getSharedPreferences("appearance", MODE_PRIVATE)
+                when (call.method) {
+                    "read" -> result.success(prefs.getString("theme", "system"))
+                    "write" -> {
+                        val value = call.arguments as? String
+                        if (value in setOf("system", "light", "dark")) {
+                            prefs.edit().putString("theme", value).apply()
+                            result.success(null)
+                        } else {
+                            result.error("APPEARANCE", "Invalid theme", null)
+                        }
+                    }
+                    else -> result.notImplemented()
+                }
+            }
         MethodChannel(
             messenger, "com.karimkmorsi.expat_manager/storage",
             io.flutter.plugin.common.StandardMethodCodec.INSTANCE,

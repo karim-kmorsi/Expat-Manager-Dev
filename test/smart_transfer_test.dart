@@ -400,6 +400,13 @@ void main() {
       await tester.enterText(rate, '٤٠');
       await tester.pumpAndSettle();
       expect(find.text('إجمالي المطلوب: 25.00 USD'), findsOneWidget);
+      await tester.showKeyboard(rate);
+      expect(tester.testTextInput.isVisible, isTrue);
+      final calculator = find.text('التحويل من USD إلى EGP');
+      await tester.ensureVisible(calculator);
+      await tester.tap(calculator);
+      await tester.pumpAndSettle();
+      expect(tester.testTextInput.isVisible, isFalse);
       await tester.tap(find.text('حفظ التوزيع'));
       await tester.pumpAndSettle();
       expect(result!.calculate(scales).debit, 2500);

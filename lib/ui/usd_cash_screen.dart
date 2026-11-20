@@ -384,6 +384,7 @@ class _CashDialogState extends State<_CashDialog> {
     content: Form(
       key: _form,
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
