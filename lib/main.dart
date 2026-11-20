@@ -1,16 +1,25 @@
+import 'package:flutter/foundation.dart'
+    show LicenseEntryWithLineBreaks, LicenseRegistry;
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:material_ui/material_ui.dart';
 
-import 'data/android_storage.dart';
 import 'data/android_appearance.dart';
+import 'data/android_storage.dart';
 import 'data/ledger_backup.dart';
 import 'finance/ledger.dart';
-import 'ui/finance_home.dart';
-import 'ui/backup_screen.dart';
 import 'ui/app_theme.dart';
+import 'ui/backup_screen.dart';
+import 'ui/finance_home.dart';
 import 'ui/localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(
+      const ['SQLite3MultipleCiphers'],
+      await rootBundle.loadString('assets/licenses/SQLite3MultipleCiphers.txt'),
+    );
+  });
   final database = openAndroidLedger();
   runApp(
     ExpatManager(

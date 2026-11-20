@@ -29,6 +29,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/licenses/SQLite3MultipleCiphers.txt
 
 hooks:
   user_defines:

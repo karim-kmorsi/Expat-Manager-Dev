@@ -148,6 +148,14 @@ class _FinanceHomeState extends State<FinanceHome> {
         ][_tab],
       ),
       actions: [
+        IconButton(
+          tooltip: 'تراخيص المكتبات',
+          icon: const Icon(Icons.info_outline),
+          onPressed: () => showLicensePage(
+            context: context,
+            applicationName: 'Expat Manager',
+          ),
+        ),
         if (widget.openBackup != null)
           IconButton(
             tooltip: 'النسخ الاحتياطي',
