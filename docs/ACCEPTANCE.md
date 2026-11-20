@@ -20,6 +20,11 @@ All values are fictional fixtures. Scenarios below describe product acceptance. 
 - Verify ticket expiry, one record per year, separate receipt and usage dates, and optional leave linkage. Ticket operations have no cash impact.
 - Verify the travel target, optional personal airfare, account earmarks, edited contributions and adjusted monthly amount. Moving funds between accounts creates no expense and cannot count both balances as savings. Reopen a schema 6 fixture and verify the prior finance and leave data remain available.
 
+## T-015 physical gold
+
+- Add complete and incomplete records, edit weight and karat, transfer custody and inspect the history. Aggregate held weight by karat and keep sold pieces visible outside the weight total.
+- Record a sale with unknown proceeds, confirm the actual receipt once and retry after reopening. Correct or reverse it without duplicate income or rewriting the original. Verify the reconciled-period gate and preserve earlier data when migrating schema 7.
+
 ## Financial failure and recovery scenarios
 
 - Record a bank debit, restart before destination evidence is available and reopen a single pending transfer. Completing it with actual receipt records the destination once and prevents purpose allocations beyond the net receipt. Retry after interruption and check the balances and per-currency posting sums.

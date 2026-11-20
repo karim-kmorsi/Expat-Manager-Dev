@@ -9,6 +9,7 @@ import 'amount.dart';
 import 'digits.dart';
 import 'entitlement_screen.dart';
 import 'expense_screen.dart';
+import 'gold_screen.dart';
 import 'leave_screen.dart';
 import 'remittance_screen.dart';
 import 'salary_screen.dart';
@@ -204,6 +205,16 @@ class _FinanceHomeState extends State<FinanceHome> {
               onPressed: _busy ? null : () => _addAccount(data.currencies),
               child: const Text('إضافة حساب'),
             ),
+            OutlinedButton.icon(
+              onPressed: () async {
+                await Navigator.of(context).push<void>(
+                  MaterialPageRoute(builder: (_) => GoldScreen(ledger: ledger)),
+                );
+                if (mounted) _refresh();
+              },
+              icon: const Icon(Icons.diamond_outlined),
+              label: const Text('الذهب الفعلي'),
+            ),
             OutlinedButton(
               onPressed: _busy || !_hasTransferPair(data.accounts)
                   ? null
@@ -239,9 +250,9 @@ class _FinanceHomeState extends State<FinanceHome> {
   }
 
   Widget _journalList(List<JournalEntry> entries) {
-    final bonusIds = {
+    final managedIncomeIds = {
       for (final entry in entries)
-        if (entry.kind == JournalKind.dashainBonus) entry.id,
+        if (entry.kind.isManagedIncome) entry.id,
     };
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -256,6 +267,7 @@ class _FinanceHomeState extends State<FinanceHome> {
               JournalKind.reversal => 'عكس قيد',
               JournalKind.salary => 'إيداع راتب',
               JournalKind.dashainBonus => 'مكافأة الدساي',
+              JournalKind.goldSaleIncome => 'استلام ثمن بيع ذهب',
               JournalKind.cashIncome => 'دخل نقدي خارجي',
               JournalKind.cashExpense => 'مصروف نقدي',
               JournalKind.expense => 'مصروف',
@@ -273,8 +285,8 @@ class _FinanceHomeState extends State<FinanceHome> {
                 DateTime.fromMicrosecondsSinceEpoch(
                   entry.effectiveMicros,
                   isUtc:
-                      bonusIds.contains(entry.id) ||
-                      bonusIds.contains(entry.reversalOf),
+                      managedIncomeIds.contains(entry.id) ||
+                      managedIncomeIds.contains(entry.reversalOf),
                 ),
               ),
             ),

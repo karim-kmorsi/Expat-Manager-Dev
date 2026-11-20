@@ -22,6 +22,7 @@ enum JournalKind {
   reversal,
   salary,
   dashainBonus,
+  goldSaleIncome,
   cashIncome,
   cashExpense,
   expense,
@@ -30,6 +31,8 @@ enum JournalKind {
   remittanceReceipt,
   remittanceRefund,
   remittanceSettlement;
+
+  bool get isManagedIncome => this == dashainBonus || this == goldSaleIncome;
 
   bool get isRemittance => switch (this) {
     remittanceDebit ||
@@ -100,4 +103,20 @@ int checkedMinor(BigInt value) {
     throw const LedgerException(LedgerIssue.overflow);
   }
   return value.toInt();
+}
+
+/// Actual income received into a personal account on a civil date.
+typedef IncomeReceipt = ({int accountId, int minor, int day});
+
+enum GoldKind { bar, coin, jewelry, other }
+
+enum GoldEventKind {
+  added,
+  edited,
+  moved,
+  sold,
+  saleEdited,
+  received,
+  receiptCorrected,
+  receiptReversed,
 }

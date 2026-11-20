@@ -2,7 +2,7 @@ part of 'ledger.dart';
 
 enum TicketStatus { upcoming, due, received, used, expired }
 
-typedef DashainReceipt = ({int accountId, int minor, int day});
+typedef DashainReceipt = IncomeReceipt;
 typedef DashainView = ({
   DashainPlan plan,
   DashainReceipt? receipt,
@@ -65,20 +65,6 @@ extension PersonalEntitlements on Ledger {
     _db.dashainPlans,
   )..where((row) => row.year.equals(year))).getSingleOrNull();
 
-  Future<DashainReceipt> _dashainReceipt(int id) async {
-    final entry = await (_db.select(
-      _db.journalEntries,
-    )..where((row) => row.id.equals(id))).getSingle();
-    final credit = (await _postingsFor(id)).singleWhere((row) => row.minor > 0);
-    return (
-      accountId: credit.accountId,
-      minor: credit.minor,
-      day: leaveDay(
-        DateTime.fromMicrosecondsSinceEpoch(entry.effectiveMicros, isUtc: true),
-      ),
-    );
-  }
-
   Future<DashainView?> dashain(int year) => _db.transaction(() async {
     final plan = await _dashain(year);
     if (plan == null) return null;
@@ -86,7 +72,7 @@ extension PersonalEntitlements on Ledger {
       plan: plan,
       receipt: plan.receiptId == null
           ? null
-          : await _dashainReceipt(plan.receiptId!),
+          : await _readIncomeReceipt(plan.receiptId!),
       expectedMinor: checkedMinor(
         BigInt.from(plan.salaryMinor) + BigInt.from(plan.allowancesMinor),
       ),
@@ -142,7 +128,7 @@ extension PersonalEntitlements on Ledger {
     final plan = await _dashain(year);
     if (plan == null) throw const LedgerException(LedgerIssue.invalidInput);
     final activeId = plan.receiptId;
-    final active = activeId == null ? null : await _dashainReceipt(activeId);
+    final active = activeId == null ? null : await _readIncomeReceipt(activeId);
     if (plan.revision == expectedRevision + 1 && active == receipt) return;
     if (plan.revision != expectedRevision) {
       throw const LedgerException(LedgerIssue.duplicateConflict);
@@ -153,39 +139,17 @@ extension PersonalEntitlements on Ledger {
     String? explanation;
     if (activeId != null) {
       explanation = _reason(reason ?? '');
-      // Reverse on the original receipt day. The existing reconciliation
-      // gate still applies to that date and to the proposed replacement.
-      final original = await (_db.select(
-        _db.journalEntries,
-      )..where((row) => row.id.equals(activeId))).getSingle();
-      await _reverse(
-        '$prefix:reverse',
-        original,
-        dateOfLeaveDay(active!.day),
-        explanation,
-      );
+      await _reverseManagedIncome('$prefix:reverse', activeId, explanation);
     }
-    int? replacement;
-    if (receipt != null) {
-      _requireEntitlement(
-        receipt.minor > 0 &&
-            _supportedDay(receipt.day) &&
-            receipt.day <= leaveDay(DateTime.now()),
-      );
-      final account = await _personalAccount(receipt.accountId);
-      final offset = await _offset(account.currency, AccountKind.income);
-      replacement = await _persist(
-        '$prefix:receipt',
-        JournalKind.dashainBonus,
-        dateOfLeaveDay(receipt.day),
-        [
-          (accountId: account.id, minor: receipt.minor),
-          (accountId: offset.id, minor: -receipt.minor),
-        ],
-        correctionOf: activeId,
-        reason: explanation,
-      );
-    }
+    final replacement = receipt == null
+        ? null
+        : await _postManagedIncome(
+            '$prefix:receipt',
+            JournalKind.dashainBonus,
+            receipt,
+            correctionOf: activeId,
+            reason: explanation,
+          );
     await (_db.update(
       _db.dashainPlans,
     )..where((row) => row.year.equals(year))).write(

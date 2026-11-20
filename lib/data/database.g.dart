@@ -7680,6 +7680,1584 @@ class TravelContributionsCompanion extends UpdateCompanion<TravelContribution> {
   }
 }
 
+class $GoldPiecesTable extends GoldPieces
+    with TableInfo<$GoldPiecesTable, GoldPiece> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GoldPiecesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _creationKeyMeta = const VerificationMeta(
+    'creationKey',
+  );
+  @override
+  late final GeneratedColumn<String> creationKey = GeneratedColumn<String>(
+    'creation_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<GoldKind, String> kind =
+      GeneratedColumn<String>(
+        'kind',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<GoldKind>($GoldPiecesTable.$converterkind);
+  static const VerificationMeta _weightMgMeta = const VerificationMeta(
+    'weightMg',
+  );
+  @override
+  late final GeneratedColumn<int> weightMg = GeneratedColumn<int>(
+    'weight_mg',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _karatHundredthsMeta = const VerificationMeta(
+    'karatHundredths',
+  );
+  @override
+  late final GeneratedColumn<int> karatHundredths = GeneratedColumn<int>(
+    'karat_hundredths',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _purchaseDayMeta = const VerificationMeta(
+    'purchaseDay',
+  );
+  @override
+  late final GeneratedColumn<int> purchaseDay = GeneratedColumn<int>(
+    'purchase_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _purchaseMinorMeta = const VerificationMeta(
+    'purchaseMinor',
+  );
+  @override
+  late final GeneratedColumn<int> purchaseMinor = GeneratedColumn<int>(
+    'purchase_minor',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _purchaseCurrencyMeta = const VerificationMeta(
+    'purchaseCurrency',
+  );
+  @override
+  late final GeneratedColumn<String> purchaseCurrency = GeneratedColumn<String>(
+    'purchase_currency',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES currencies (code)',
+    ),
+  );
+  static const VerificationMeta _ownerMeta = const VerificationMeta('owner');
+  @override
+  late final GeneratedColumn<String> owner = GeneratedColumn<String>(
+    'owner',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _custodianMeta = const VerificationMeta(
+    'custodian',
+  );
+  @override
+  late final GeneratedColumn<String> custodian = GeneratedColumn<String>(
+    'custodian',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    creationKey,
+    label,
+    kind,
+    weightMg,
+    karatHundredths,
+    purchaseDay,
+    purchaseMinor,
+    purchaseCurrency,
+    owner,
+    custodian,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'gold_pieces';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GoldPiece> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('creation_key')) {
+      context.handle(
+        _creationKeyMeta,
+        creationKey.isAcceptableOrUnknown(
+          data['creation_key']!,
+          _creationKeyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_creationKeyMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('weight_mg')) {
+      context.handle(
+        _weightMgMeta,
+        weightMg.isAcceptableOrUnknown(data['weight_mg']!, _weightMgMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weightMgMeta);
+    }
+    if (data.containsKey('karat_hundredths')) {
+      context.handle(
+        _karatHundredthsMeta,
+        karatHundredths.isAcceptableOrUnknown(
+          data['karat_hundredths']!,
+          _karatHundredthsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_karatHundredthsMeta);
+    }
+    if (data.containsKey('purchase_day')) {
+      context.handle(
+        _purchaseDayMeta,
+        purchaseDay.isAcceptableOrUnknown(
+          data['purchase_day']!,
+          _purchaseDayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purchase_minor')) {
+      context.handle(
+        _purchaseMinorMeta,
+        purchaseMinor.isAcceptableOrUnknown(
+          data['purchase_minor']!,
+          _purchaseMinorMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purchase_currency')) {
+      context.handle(
+        _purchaseCurrencyMeta,
+        purchaseCurrency.isAcceptableOrUnknown(
+          data['purchase_currency']!,
+          _purchaseCurrencyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('owner')) {
+      context.handle(
+        _ownerMeta,
+        owner.isAcceptableOrUnknown(data['owner']!, _ownerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ownerMeta);
+    }
+    if (data.containsKey('custodian')) {
+      context.handle(
+        _custodianMeta,
+        custodian.isAcceptableOrUnknown(data['custodian']!, _custodianMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_custodianMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GoldPiece map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GoldPiece(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      creationKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creation_key'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      kind: $GoldPiecesTable.$converterkind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}kind'],
+        )!,
+      ),
+      weightMg: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weight_mg'],
+      )!,
+      karatHundredths: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}karat_hundredths'],
+      )!,
+      purchaseDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}purchase_day'],
+      ),
+      purchaseMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}purchase_minor'],
+      ),
+      purchaseCurrency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purchase_currency'],
+      ),
+      owner: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner'],
+      )!,
+      custodian: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}custodian'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $GoldPiecesTable createAlias(String alias) {
+    return $GoldPiecesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<GoldKind, String, String> $converterkind =
+      const EnumNameConverter<GoldKind>(GoldKind.values);
+}
+
+class GoldPiece extends DataClass implements Insertable<GoldPiece> {
+  final int id;
+  final String creationKey;
+  final String label;
+  final GoldKind kind;
+  final int weightMg;
+  final int karatHundredths;
+  final int? purchaseDay;
+  final int? purchaseMinor;
+  final String? purchaseCurrency;
+  final String owner;
+  final String custodian;
+  final String? notes;
+  const GoldPiece({
+    required this.id,
+    required this.creationKey,
+    required this.label,
+    required this.kind,
+    required this.weightMg,
+    required this.karatHundredths,
+    this.purchaseDay,
+    this.purchaseMinor,
+    this.purchaseCurrency,
+    required this.owner,
+    required this.custodian,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['creation_key'] = Variable<String>(creationKey);
+    map['label'] = Variable<String>(label);
+    {
+      map['kind'] = Variable<String>(
+        $GoldPiecesTable.$converterkind.toSql(kind),
+      );
+    }
+    map['weight_mg'] = Variable<int>(weightMg);
+    map['karat_hundredths'] = Variable<int>(karatHundredths);
+    if (!nullToAbsent || purchaseDay != null) {
+      map['purchase_day'] = Variable<int>(purchaseDay);
+    }
+    if (!nullToAbsent || purchaseMinor != null) {
+      map['purchase_minor'] = Variable<int>(purchaseMinor);
+    }
+    if (!nullToAbsent || purchaseCurrency != null) {
+      map['purchase_currency'] = Variable<String>(purchaseCurrency);
+    }
+    map['owner'] = Variable<String>(owner);
+    map['custodian'] = Variable<String>(custodian);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  GoldPiecesCompanion toCompanion(bool nullToAbsent) {
+    return GoldPiecesCompanion(
+      id: Value(id),
+      creationKey: Value(creationKey),
+      label: Value(label),
+      kind: Value(kind),
+      weightMg: Value(weightMg),
+      karatHundredths: Value(karatHundredths),
+      purchaseDay: purchaseDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchaseDay),
+      purchaseMinor: purchaseMinor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchaseMinor),
+      purchaseCurrency: purchaseCurrency == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchaseCurrency),
+      owner: Value(owner),
+      custodian: Value(custodian),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory GoldPiece.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GoldPiece(
+      id: serializer.fromJson<int>(json['id']),
+      creationKey: serializer.fromJson<String>(json['creationKey']),
+      label: serializer.fromJson<String>(json['label']),
+      kind: $GoldPiecesTable.$converterkind.fromJson(
+        serializer.fromJson<String>(json['kind']),
+      ),
+      weightMg: serializer.fromJson<int>(json['weightMg']),
+      karatHundredths: serializer.fromJson<int>(json['karatHundredths']),
+      purchaseDay: serializer.fromJson<int?>(json['purchaseDay']),
+      purchaseMinor: serializer.fromJson<int?>(json['purchaseMinor']),
+      purchaseCurrency: serializer.fromJson<String?>(json['purchaseCurrency']),
+      owner: serializer.fromJson<String>(json['owner']),
+      custodian: serializer.fromJson<String>(json['custodian']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'creationKey': serializer.toJson<String>(creationKey),
+      'label': serializer.toJson<String>(label),
+      'kind': serializer.toJson<String>(
+        $GoldPiecesTable.$converterkind.toJson(kind),
+      ),
+      'weightMg': serializer.toJson<int>(weightMg),
+      'karatHundredths': serializer.toJson<int>(karatHundredths),
+      'purchaseDay': serializer.toJson<int?>(purchaseDay),
+      'purchaseMinor': serializer.toJson<int?>(purchaseMinor),
+      'purchaseCurrency': serializer.toJson<String?>(purchaseCurrency),
+      'owner': serializer.toJson<String>(owner),
+      'custodian': serializer.toJson<String>(custodian),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  GoldPiece copyWith({
+    int? id,
+    String? creationKey,
+    String? label,
+    GoldKind? kind,
+    int? weightMg,
+    int? karatHundredths,
+    Value<int?> purchaseDay = const Value.absent(),
+    Value<int?> purchaseMinor = const Value.absent(),
+    Value<String?> purchaseCurrency = const Value.absent(),
+    String? owner,
+    String? custodian,
+    Value<String?> notes = const Value.absent(),
+  }) => GoldPiece(
+    id: id ?? this.id,
+    creationKey: creationKey ?? this.creationKey,
+    label: label ?? this.label,
+    kind: kind ?? this.kind,
+    weightMg: weightMg ?? this.weightMg,
+    karatHundredths: karatHundredths ?? this.karatHundredths,
+    purchaseDay: purchaseDay.present ? purchaseDay.value : this.purchaseDay,
+    purchaseMinor: purchaseMinor.present
+        ? purchaseMinor.value
+        : this.purchaseMinor,
+    purchaseCurrency: purchaseCurrency.present
+        ? purchaseCurrency.value
+        : this.purchaseCurrency,
+    owner: owner ?? this.owner,
+    custodian: custodian ?? this.custodian,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  GoldPiece copyWithCompanion(GoldPiecesCompanion data) {
+    return GoldPiece(
+      id: data.id.present ? data.id.value : this.id,
+      creationKey: data.creationKey.present
+          ? data.creationKey.value
+          : this.creationKey,
+      label: data.label.present ? data.label.value : this.label,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      weightMg: data.weightMg.present ? data.weightMg.value : this.weightMg,
+      karatHundredths: data.karatHundredths.present
+          ? data.karatHundredths.value
+          : this.karatHundredths,
+      purchaseDay: data.purchaseDay.present
+          ? data.purchaseDay.value
+          : this.purchaseDay,
+      purchaseMinor: data.purchaseMinor.present
+          ? data.purchaseMinor.value
+          : this.purchaseMinor,
+      purchaseCurrency: data.purchaseCurrency.present
+          ? data.purchaseCurrency.value
+          : this.purchaseCurrency,
+      owner: data.owner.present ? data.owner.value : this.owner,
+      custodian: data.custodian.present ? data.custodian.value : this.custodian,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoldPiece(')
+          ..write('id: $id, ')
+          ..write('creationKey: $creationKey, ')
+          ..write('label: $label, ')
+          ..write('kind: $kind, ')
+          ..write('weightMg: $weightMg, ')
+          ..write('karatHundredths: $karatHundredths, ')
+          ..write('purchaseDay: $purchaseDay, ')
+          ..write('purchaseMinor: $purchaseMinor, ')
+          ..write('purchaseCurrency: $purchaseCurrency, ')
+          ..write('owner: $owner, ')
+          ..write('custodian: $custodian, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    creationKey,
+    label,
+    kind,
+    weightMg,
+    karatHundredths,
+    purchaseDay,
+    purchaseMinor,
+    purchaseCurrency,
+    owner,
+    custodian,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GoldPiece &&
+          other.id == this.id &&
+          other.creationKey == this.creationKey &&
+          other.label == this.label &&
+          other.kind == this.kind &&
+          other.weightMg == this.weightMg &&
+          other.karatHundredths == this.karatHundredths &&
+          other.purchaseDay == this.purchaseDay &&
+          other.purchaseMinor == this.purchaseMinor &&
+          other.purchaseCurrency == this.purchaseCurrency &&
+          other.owner == this.owner &&
+          other.custodian == this.custodian &&
+          other.notes == this.notes);
+}
+
+class GoldPiecesCompanion extends UpdateCompanion<GoldPiece> {
+  final Value<int> id;
+  final Value<String> creationKey;
+  final Value<String> label;
+  final Value<GoldKind> kind;
+  final Value<int> weightMg;
+  final Value<int> karatHundredths;
+  final Value<int?> purchaseDay;
+  final Value<int?> purchaseMinor;
+  final Value<String?> purchaseCurrency;
+  final Value<String> owner;
+  final Value<String> custodian;
+  final Value<String?> notes;
+  const GoldPiecesCompanion({
+    this.id = const Value.absent(),
+    this.creationKey = const Value.absent(),
+    this.label = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.weightMg = const Value.absent(),
+    this.karatHundredths = const Value.absent(),
+    this.purchaseDay = const Value.absent(),
+    this.purchaseMinor = const Value.absent(),
+    this.purchaseCurrency = const Value.absent(),
+    this.owner = const Value.absent(),
+    this.custodian = const Value.absent(),
+    this.notes = const Value.absent(),
+  });
+  GoldPiecesCompanion.insert({
+    this.id = const Value.absent(),
+    required String creationKey,
+    required String label,
+    required GoldKind kind,
+    required int weightMg,
+    required int karatHundredths,
+    this.purchaseDay = const Value.absent(),
+    this.purchaseMinor = const Value.absent(),
+    this.purchaseCurrency = const Value.absent(),
+    required String owner,
+    required String custodian,
+    this.notes = const Value.absent(),
+  }) : creationKey = Value(creationKey),
+       label = Value(label),
+       kind = Value(kind),
+       weightMg = Value(weightMg),
+       karatHundredths = Value(karatHundredths),
+       owner = Value(owner),
+       custodian = Value(custodian);
+  static Insertable<GoldPiece> custom({
+    Expression<int>? id,
+    Expression<String>? creationKey,
+    Expression<String>? label,
+    Expression<String>? kind,
+    Expression<int>? weightMg,
+    Expression<int>? karatHundredths,
+    Expression<int>? purchaseDay,
+    Expression<int>? purchaseMinor,
+    Expression<String>? purchaseCurrency,
+    Expression<String>? owner,
+    Expression<String>? custodian,
+    Expression<String>? notes,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (creationKey != null) 'creation_key': creationKey,
+      if (label != null) 'label': label,
+      if (kind != null) 'kind': kind,
+      if (weightMg != null) 'weight_mg': weightMg,
+      if (karatHundredths != null) 'karat_hundredths': karatHundredths,
+      if (purchaseDay != null) 'purchase_day': purchaseDay,
+      if (purchaseMinor != null) 'purchase_minor': purchaseMinor,
+      if (purchaseCurrency != null) 'purchase_currency': purchaseCurrency,
+      if (owner != null) 'owner': owner,
+      if (custodian != null) 'custodian': custodian,
+      if (notes != null) 'notes': notes,
+    });
+  }
+
+  GoldPiecesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? creationKey,
+    Value<String>? label,
+    Value<GoldKind>? kind,
+    Value<int>? weightMg,
+    Value<int>? karatHundredths,
+    Value<int?>? purchaseDay,
+    Value<int?>? purchaseMinor,
+    Value<String?>? purchaseCurrency,
+    Value<String>? owner,
+    Value<String>? custodian,
+    Value<String?>? notes,
+  }) {
+    return GoldPiecesCompanion(
+      id: id ?? this.id,
+      creationKey: creationKey ?? this.creationKey,
+      label: label ?? this.label,
+      kind: kind ?? this.kind,
+      weightMg: weightMg ?? this.weightMg,
+      karatHundredths: karatHundredths ?? this.karatHundredths,
+      purchaseDay: purchaseDay ?? this.purchaseDay,
+      purchaseMinor: purchaseMinor ?? this.purchaseMinor,
+      purchaseCurrency: purchaseCurrency ?? this.purchaseCurrency,
+      owner: owner ?? this.owner,
+      custodian: custodian ?? this.custodian,
+      notes: notes ?? this.notes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (creationKey.present) {
+      map['creation_key'] = Variable<String>(creationKey.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(
+        $GoldPiecesTable.$converterkind.toSql(kind.value),
+      );
+    }
+    if (weightMg.present) {
+      map['weight_mg'] = Variable<int>(weightMg.value);
+    }
+    if (karatHundredths.present) {
+      map['karat_hundredths'] = Variable<int>(karatHundredths.value);
+    }
+    if (purchaseDay.present) {
+      map['purchase_day'] = Variable<int>(purchaseDay.value);
+    }
+    if (purchaseMinor.present) {
+      map['purchase_minor'] = Variable<int>(purchaseMinor.value);
+    }
+    if (purchaseCurrency.present) {
+      map['purchase_currency'] = Variable<String>(purchaseCurrency.value);
+    }
+    if (owner.present) {
+      map['owner'] = Variable<String>(owner.value);
+    }
+    if (custodian.present) {
+      map['custodian'] = Variable<String>(custodian.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoldPiecesCompanion(')
+          ..write('id: $id, ')
+          ..write('creationKey: $creationKey, ')
+          ..write('label: $label, ')
+          ..write('kind: $kind, ')
+          ..write('weightMg: $weightMg, ')
+          ..write('karatHundredths: $karatHundredths, ')
+          ..write('purchaseDay: $purchaseDay, ')
+          ..write('purchaseMinor: $purchaseMinor, ')
+          ..write('purchaseCurrency: $purchaseCurrency, ')
+          ..write('owner: $owner, ')
+          ..write('custodian: $custodian, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $GoldSalesTable extends GoldSales
+    with TableInfo<$GoldSalesTable, GoldSale> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GoldSalesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _pieceIdMeta = const VerificationMeta(
+    'pieceId',
+  );
+  @override
+  late final GeneratedColumn<int> pieceId = GeneratedColumn<int>(
+    'piece_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES gold_pieces (id)',
+    ),
+  );
+  static const VerificationMeta _saleDayMeta = const VerificationMeta(
+    'saleDay',
+  );
+  @override
+  late final GeneratedColumn<int> saleDay = GeneratedColumn<int>(
+    'sale_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priceMinorMeta = const VerificationMeta(
+    'priceMinor',
+  );
+  @override
+  late final GeneratedColumn<int> priceMinor = GeneratedColumn<int>(
+    'price_minor',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _priceCurrencyMeta = const VerificationMeta(
+    'priceCurrency',
+  );
+  @override
+  late final GeneratedColumn<String> priceCurrency = GeneratedColumn<String>(
+    'price_currency',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES currencies (code)',
+    ),
+  );
+  static const VerificationMeta _receiptIdMeta = const VerificationMeta(
+    'receiptId',
+  );
+  @override
+  late final GeneratedColumn<int> receiptId = GeneratedColumn<int>(
+    'receipt_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _receiptRevisionMeta = const VerificationMeta(
+    'receiptRevision',
+  );
+  @override
+  late final GeneratedColumn<int> receiptRevision = GeneratedColumn<int>(
+    'receipt_revision',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    pieceId,
+    saleDay,
+    priceMinor,
+    priceCurrency,
+    receiptId,
+    receiptRevision,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'gold_sales';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GoldSale> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('piece_id')) {
+      context.handle(
+        _pieceIdMeta,
+        pieceId.isAcceptableOrUnknown(data['piece_id']!, _pieceIdMeta),
+      );
+    }
+    if (data.containsKey('sale_day')) {
+      context.handle(
+        _saleDayMeta,
+        saleDay.isAcceptableOrUnknown(data['sale_day']!, _saleDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_saleDayMeta);
+    }
+    if (data.containsKey('price_minor')) {
+      context.handle(
+        _priceMinorMeta,
+        priceMinor.isAcceptableOrUnknown(data['price_minor']!, _priceMinorMeta),
+      );
+    }
+    if (data.containsKey('price_currency')) {
+      context.handle(
+        _priceCurrencyMeta,
+        priceCurrency.isAcceptableOrUnknown(
+          data['price_currency']!,
+          _priceCurrencyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('receipt_id')) {
+      context.handle(
+        _receiptIdMeta,
+        receiptId.isAcceptableOrUnknown(data['receipt_id']!, _receiptIdMeta),
+      );
+    }
+    if (data.containsKey('receipt_revision')) {
+      context.handle(
+        _receiptRevisionMeta,
+        receiptRevision.isAcceptableOrUnknown(
+          data['receipt_revision']!,
+          _receiptRevisionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {pieceId};
+  @override
+  GoldSale map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GoldSale(
+      pieceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}piece_id'],
+      )!,
+      saleDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sale_day'],
+      )!,
+      priceMinor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}price_minor'],
+      ),
+      priceCurrency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}price_currency'],
+      ),
+      receiptId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}receipt_id'],
+      ),
+      receiptRevision: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}receipt_revision'],
+      )!,
+    );
+  }
+
+  @override
+  $GoldSalesTable createAlias(String alias) {
+    return $GoldSalesTable(attachedDatabase, alias);
+  }
+}
+
+class GoldSale extends DataClass implements Insertable<GoldSale> {
+  final int pieceId;
+  final int saleDay;
+  final int? priceMinor;
+  final String? priceCurrency;
+  final int? receiptId;
+  final int receiptRevision;
+  const GoldSale({
+    required this.pieceId,
+    required this.saleDay,
+    this.priceMinor,
+    this.priceCurrency,
+    this.receiptId,
+    required this.receiptRevision,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['piece_id'] = Variable<int>(pieceId);
+    map['sale_day'] = Variable<int>(saleDay);
+    if (!nullToAbsent || priceMinor != null) {
+      map['price_minor'] = Variable<int>(priceMinor);
+    }
+    if (!nullToAbsent || priceCurrency != null) {
+      map['price_currency'] = Variable<String>(priceCurrency);
+    }
+    if (!nullToAbsent || receiptId != null) {
+      map['receipt_id'] = Variable<int>(receiptId);
+    }
+    map['receipt_revision'] = Variable<int>(receiptRevision);
+    return map;
+  }
+
+  GoldSalesCompanion toCompanion(bool nullToAbsent) {
+    return GoldSalesCompanion(
+      pieceId: Value(pieceId),
+      saleDay: Value(saleDay),
+      priceMinor: priceMinor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(priceMinor),
+      priceCurrency: priceCurrency == null && nullToAbsent
+          ? const Value.absent()
+          : Value(priceCurrency),
+      receiptId: receiptId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(receiptId),
+      receiptRevision: Value(receiptRevision),
+    );
+  }
+
+  factory GoldSale.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GoldSale(
+      pieceId: serializer.fromJson<int>(json['pieceId']),
+      saleDay: serializer.fromJson<int>(json['saleDay']),
+      priceMinor: serializer.fromJson<int?>(json['priceMinor']),
+      priceCurrency: serializer.fromJson<String?>(json['priceCurrency']),
+      receiptId: serializer.fromJson<int?>(json['receiptId']),
+      receiptRevision: serializer.fromJson<int>(json['receiptRevision']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'pieceId': serializer.toJson<int>(pieceId),
+      'saleDay': serializer.toJson<int>(saleDay),
+      'priceMinor': serializer.toJson<int?>(priceMinor),
+      'priceCurrency': serializer.toJson<String?>(priceCurrency),
+      'receiptId': serializer.toJson<int?>(receiptId),
+      'receiptRevision': serializer.toJson<int>(receiptRevision),
+    };
+  }
+
+  GoldSale copyWith({
+    int? pieceId,
+    int? saleDay,
+    Value<int?> priceMinor = const Value.absent(),
+    Value<String?> priceCurrency = const Value.absent(),
+    Value<int?> receiptId = const Value.absent(),
+    int? receiptRevision,
+  }) => GoldSale(
+    pieceId: pieceId ?? this.pieceId,
+    saleDay: saleDay ?? this.saleDay,
+    priceMinor: priceMinor.present ? priceMinor.value : this.priceMinor,
+    priceCurrency: priceCurrency.present
+        ? priceCurrency.value
+        : this.priceCurrency,
+    receiptId: receiptId.present ? receiptId.value : this.receiptId,
+    receiptRevision: receiptRevision ?? this.receiptRevision,
+  );
+  GoldSale copyWithCompanion(GoldSalesCompanion data) {
+    return GoldSale(
+      pieceId: data.pieceId.present ? data.pieceId.value : this.pieceId,
+      saleDay: data.saleDay.present ? data.saleDay.value : this.saleDay,
+      priceMinor: data.priceMinor.present
+          ? data.priceMinor.value
+          : this.priceMinor,
+      priceCurrency: data.priceCurrency.present
+          ? data.priceCurrency.value
+          : this.priceCurrency,
+      receiptId: data.receiptId.present ? data.receiptId.value : this.receiptId,
+      receiptRevision: data.receiptRevision.present
+          ? data.receiptRevision.value
+          : this.receiptRevision,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoldSale(')
+          ..write('pieceId: $pieceId, ')
+          ..write('saleDay: $saleDay, ')
+          ..write('priceMinor: $priceMinor, ')
+          ..write('priceCurrency: $priceCurrency, ')
+          ..write('receiptId: $receiptId, ')
+          ..write('receiptRevision: $receiptRevision')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    pieceId,
+    saleDay,
+    priceMinor,
+    priceCurrency,
+    receiptId,
+    receiptRevision,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GoldSale &&
+          other.pieceId == this.pieceId &&
+          other.saleDay == this.saleDay &&
+          other.priceMinor == this.priceMinor &&
+          other.priceCurrency == this.priceCurrency &&
+          other.receiptId == this.receiptId &&
+          other.receiptRevision == this.receiptRevision);
+}
+
+class GoldSalesCompanion extends UpdateCompanion<GoldSale> {
+  final Value<int> pieceId;
+  final Value<int> saleDay;
+  final Value<int?> priceMinor;
+  final Value<String?> priceCurrency;
+  final Value<int?> receiptId;
+  final Value<int> receiptRevision;
+  const GoldSalesCompanion({
+    this.pieceId = const Value.absent(),
+    this.saleDay = const Value.absent(),
+    this.priceMinor = const Value.absent(),
+    this.priceCurrency = const Value.absent(),
+    this.receiptId = const Value.absent(),
+    this.receiptRevision = const Value.absent(),
+  });
+  GoldSalesCompanion.insert({
+    this.pieceId = const Value.absent(),
+    required int saleDay,
+    this.priceMinor = const Value.absent(),
+    this.priceCurrency = const Value.absent(),
+    this.receiptId = const Value.absent(),
+    this.receiptRevision = const Value.absent(),
+  }) : saleDay = Value(saleDay);
+  static Insertable<GoldSale> custom({
+    Expression<int>? pieceId,
+    Expression<int>? saleDay,
+    Expression<int>? priceMinor,
+    Expression<String>? priceCurrency,
+    Expression<int>? receiptId,
+    Expression<int>? receiptRevision,
+  }) {
+    return RawValuesInsertable({
+      if (pieceId != null) 'piece_id': pieceId,
+      if (saleDay != null) 'sale_day': saleDay,
+      if (priceMinor != null) 'price_minor': priceMinor,
+      if (priceCurrency != null) 'price_currency': priceCurrency,
+      if (receiptId != null) 'receipt_id': receiptId,
+      if (receiptRevision != null) 'receipt_revision': receiptRevision,
+    });
+  }
+
+  GoldSalesCompanion copyWith({
+    Value<int>? pieceId,
+    Value<int>? saleDay,
+    Value<int?>? priceMinor,
+    Value<String?>? priceCurrency,
+    Value<int?>? receiptId,
+    Value<int>? receiptRevision,
+  }) {
+    return GoldSalesCompanion(
+      pieceId: pieceId ?? this.pieceId,
+      saleDay: saleDay ?? this.saleDay,
+      priceMinor: priceMinor ?? this.priceMinor,
+      priceCurrency: priceCurrency ?? this.priceCurrency,
+      receiptId: receiptId ?? this.receiptId,
+      receiptRevision: receiptRevision ?? this.receiptRevision,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (pieceId.present) {
+      map['piece_id'] = Variable<int>(pieceId.value);
+    }
+    if (saleDay.present) {
+      map['sale_day'] = Variable<int>(saleDay.value);
+    }
+    if (priceMinor.present) {
+      map['price_minor'] = Variable<int>(priceMinor.value);
+    }
+    if (priceCurrency.present) {
+      map['price_currency'] = Variable<String>(priceCurrency.value);
+    }
+    if (receiptId.present) {
+      map['receipt_id'] = Variable<int>(receiptId.value);
+    }
+    if (receiptRevision.present) {
+      map['receipt_revision'] = Variable<int>(receiptRevision.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoldSalesCompanion(')
+          ..write('pieceId: $pieceId, ')
+          ..write('saleDay: $saleDay, ')
+          ..write('priceMinor: $priceMinor, ')
+          ..write('priceCurrency: $priceCurrency, ')
+          ..write('receiptId: $receiptId, ')
+          ..write('receiptRevision: $receiptRevision')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $GoldEventsTable extends GoldEvents
+    with TableInfo<$GoldEventsTable, GoldEvent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GoldEventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pieceIdMeta = const VerificationMeta(
+    'pieceId',
+  );
+  @override
+  late final GeneratedColumn<int> pieceId = GeneratedColumn<int>(
+    'piece_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES gold_pieces (id)',
+    ),
+  );
+  static const VerificationMeta _recordedMicrosMeta = const VerificationMeta(
+    'recordedMicros',
+  );
+  @override
+  late final GeneratedColumn<int> recordedMicros = GeneratedColumn<int>(
+    'recorded_micros',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<GoldEventKind, String> kind =
+      GeneratedColumn<String>(
+        'kind',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<GoldEventKind>($GoldEventsTable.$converterkind);
+  static const VerificationMeta _changesMeta = const VerificationMeta(
+    'changes',
+  );
+  @override
+  late final GeneratedColumn<String> changes = GeneratedColumn<String>(
+    'changes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _journalIdMeta = const VerificationMeta(
+    'journalId',
+  );
+  @override
+  late final GeneratedColumn<int> journalId = GeneratedColumn<int>(
+    'journal_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES journal_entries (id)',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pieceId,
+    recordedMicros,
+    kind,
+    changes,
+    journalId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'gold_events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GoldEvent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('piece_id')) {
+      context.handle(
+        _pieceIdMeta,
+        pieceId.isAcceptableOrUnknown(data['piece_id']!, _pieceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pieceIdMeta);
+    }
+    if (data.containsKey('recorded_micros')) {
+      context.handle(
+        _recordedMicrosMeta,
+        recordedMicros.isAcceptableOrUnknown(
+          data['recorded_micros']!,
+          _recordedMicrosMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_recordedMicrosMeta);
+    }
+    if (data.containsKey('changes')) {
+      context.handle(
+        _changesMeta,
+        changes.isAcceptableOrUnknown(data['changes']!, _changesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_changesMeta);
+    }
+    if (data.containsKey('journal_id')) {
+      context.handle(
+        _journalIdMeta,
+        journalId.isAcceptableOrUnknown(data['journal_id']!, _journalIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GoldEvent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GoldEvent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pieceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}piece_id'],
+      )!,
+      recordedMicros: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}recorded_micros'],
+      )!,
+      kind: $GoldEventsTable.$converterkind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}kind'],
+        )!,
+      ),
+      changes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}changes'],
+      )!,
+      journalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}journal_id'],
+      ),
+    );
+  }
+
+  @override
+  $GoldEventsTable createAlias(String alias) {
+    return $GoldEventsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<GoldEventKind, String, String> $converterkind =
+      const EnumNameConverter<GoldEventKind>(GoldEventKind.values);
+}
+
+class GoldEvent extends DataClass implements Insertable<GoldEvent> {
+  final int id;
+  final int pieceId;
+  final int recordedMicros;
+  final GoldEventKind kind;
+  final String changes;
+  final int? journalId;
+  const GoldEvent({
+    required this.id,
+    required this.pieceId,
+    required this.recordedMicros,
+    required this.kind,
+    required this.changes,
+    this.journalId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['piece_id'] = Variable<int>(pieceId);
+    map['recorded_micros'] = Variable<int>(recordedMicros);
+    {
+      map['kind'] = Variable<String>(
+        $GoldEventsTable.$converterkind.toSql(kind),
+      );
+    }
+    map['changes'] = Variable<String>(changes);
+    if (!nullToAbsent || journalId != null) {
+      map['journal_id'] = Variable<int>(journalId);
+    }
+    return map;
+  }
+
+  GoldEventsCompanion toCompanion(bool nullToAbsent) {
+    return GoldEventsCompanion(
+      id: Value(id),
+      pieceId: Value(pieceId),
+      recordedMicros: Value(recordedMicros),
+      kind: Value(kind),
+      changes: Value(changes),
+      journalId: journalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(journalId),
+    );
+  }
+
+  factory GoldEvent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GoldEvent(
+      id: serializer.fromJson<int>(json['id']),
+      pieceId: serializer.fromJson<int>(json['pieceId']),
+      recordedMicros: serializer.fromJson<int>(json['recordedMicros']),
+      kind: $GoldEventsTable.$converterkind.fromJson(
+        serializer.fromJson<String>(json['kind']),
+      ),
+      changes: serializer.fromJson<String>(json['changes']),
+      journalId: serializer.fromJson<int?>(json['journalId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pieceId': serializer.toJson<int>(pieceId),
+      'recordedMicros': serializer.toJson<int>(recordedMicros),
+      'kind': serializer.toJson<String>(
+        $GoldEventsTable.$converterkind.toJson(kind),
+      ),
+      'changes': serializer.toJson<String>(changes),
+      'journalId': serializer.toJson<int?>(journalId),
+    };
+  }
+
+  GoldEvent copyWith({
+    int? id,
+    int? pieceId,
+    int? recordedMicros,
+    GoldEventKind? kind,
+    String? changes,
+    Value<int?> journalId = const Value.absent(),
+  }) => GoldEvent(
+    id: id ?? this.id,
+    pieceId: pieceId ?? this.pieceId,
+    recordedMicros: recordedMicros ?? this.recordedMicros,
+    kind: kind ?? this.kind,
+    changes: changes ?? this.changes,
+    journalId: journalId.present ? journalId.value : this.journalId,
+  );
+  GoldEvent copyWithCompanion(GoldEventsCompanion data) {
+    return GoldEvent(
+      id: data.id.present ? data.id.value : this.id,
+      pieceId: data.pieceId.present ? data.pieceId.value : this.pieceId,
+      recordedMicros: data.recordedMicros.present
+          ? data.recordedMicros.value
+          : this.recordedMicros,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      changes: data.changes.present ? data.changes.value : this.changes,
+      journalId: data.journalId.present ? data.journalId.value : this.journalId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoldEvent(')
+          ..write('id: $id, ')
+          ..write('pieceId: $pieceId, ')
+          ..write('recordedMicros: $recordedMicros, ')
+          ..write('kind: $kind, ')
+          ..write('changes: $changes, ')
+          ..write('journalId: $journalId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, pieceId, recordedMicros, kind, changes, journalId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GoldEvent &&
+          other.id == this.id &&
+          other.pieceId == this.pieceId &&
+          other.recordedMicros == this.recordedMicros &&
+          other.kind == this.kind &&
+          other.changes == this.changes &&
+          other.journalId == this.journalId);
+}
+
+class GoldEventsCompanion extends UpdateCompanion<GoldEvent> {
+  final Value<int> id;
+  final Value<int> pieceId;
+  final Value<int> recordedMicros;
+  final Value<GoldEventKind> kind;
+  final Value<String> changes;
+  final Value<int?> journalId;
+  const GoldEventsCompanion({
+    this.id = const Value.absent(),
+    this.pieceId = const Value.absent(),
+    this.recordedMicros = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.changes = const Value.absent(),
+    this.journalId = const Value.absent(),
+  });
+  GoldEventsCompanion.insert({
+    this.id = const Value.absent(),
+    required int pieceId,
+    required int recordedMicros,
+    required GoldEventKind kind,
+    required String changes,
+    this.journalId = const Value.absent(),
+  }) : pieceId = Value(pieceId),
+       recordedMicros = Value(recordedMicros),
+       kind = Value(kind),
+       changes = Value(changes);
+  static Insertable<GoldEvent> custom({
+    Expression<int>? id,
+    Expression<int>? pieceId,
+    Expression<int>? recordedMicros,
+    Expression<String>? kind,
+    Expression<String>? changes,
+    Expression<int>? journalId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pieceId != null) 'piece_id': pieceId,
+      if (recordedMicros != null) 'recorded_micros': recordedMicros,
+      if (kind != null) 'kind': kind,
+      if (changes != null) 'changes': changes,
+      if (journalId != null) 'journal_id': journalId,
+    });
+  }
+
+  GoldEventsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pieceId,
+    Value<int>? recordedMicros,
+    Value<GoldEventKind>? kind,
+    Value<String>? changes,
+    Value<int?>? journalId,
+  }) {
+    return GoldEventsCompanion(
+      id: id ?? this.id,
+      pieceId: pieceId ?? this.pieceId,
+      recordedMicros: recordedMicros ?? this.recordedMicros,
+      kind: kind ?? this.kind,
+      changes: changes ?? this.changes,
+      journalId: journalId ?? this.journalId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pieceId.present) {
+      map['piece_id'] = Variable<int>(pieceId.value);
+    }
+    if (recordedMicros.present) {
+      map['recorded_micros'] = Variable<int>(recordedMicros.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(
+        $GoldEventsTable.$converterkind.toSql(kind.value),
+      );
+    }
+    if (changes.present) {
+      map['changes'] = Variable<String>(changes.value);
+    }
+    if (journalId.present) {
+      map['journal_id'] = Variable<int>(journalId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GoldEventsCompanion(')
+          ..write('id: $id, ')
+          ..write('pieceId: $pieceId, ')
+          ..write('recordedMicros: $recordedMicros, ')
+          ..write('kind: $kind, ')
+          ..write('changes: $changes, ')
+          ..write('journalId: $journalId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$LedgerDatabase extends GeneratedDatabase {
   _$LedgerDatabase(QueryExecutor e) : super(e);
   $LedgerDatabaseManager get managers => $LedgerDatabaseManager(this);
@@ -7718,6 +9296,13 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
   late final $TravelGoalsTable travelGoals = $TravelGoalsTable(this);
   late final $TravelContributionsTable travelContributions =
       $TravelContributionsTable(this);
+  late final $GoldPiecesTable goldPieces = $GoldPiecesTable(this);
+  late final $GoldSalesTable goldSales = $GoldSalesTable(this);
+  late final $GoldEventsTable goldEvents = $GoldEventsTable(this);
+  late final Index goldEventsByPiece = Index(
+    'gold_events_by_piece',
+    'CREATE INDEX gold_events_by_piece ON gold_events (piece_id, id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7746,6 +9331,10 @@ abstract class _$LedgerDatabase extends GeneratedDatabase {
     annualTickets,
     travelGoals,
     travelContributions,
+    goldPieces,
+    goldSales,
+    goldEvents,
+    goldEventsByPiece,
   ];
 }
 
@@ -7834,6 +9423,40 @@ final class $$CurrenciesTableReferences
     ).filter((f) => f.currency.code.sqlEquals($_itemColumn<String>('code')!));
 
     final cache = $_typedResult.readTableOrNull(_travelGoalsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$GoldPiecesTable, List<GoldPiece>>
+  _goldPiecesRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.goldPieces,
+    aliasName: 'currencies__code__gold_pieces__purchase_currency',
+  );
+
+  $$GoldPiecesTableProcessedTableManager get goldPiecesRefs {
+    final manager = $$GoldPiecesTableTableManager($_db, $_db.goldPieces).filter(
+      (f) => f.purchaseCurrency.code.sqlEquals($_itemColumn<String>('code')!),
+    );
+
+    final cache = $_typedResult.readTableOrNull(_goldPiecesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$GoldSalesTable, List<GoldSale>>
+  _goldSalesRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.goldSales,
+    aliasName: 'currencies__code__gold_sales__price_currency',
+  );
+
+  $$GoldSalesTableProcessedTableManager get goldSalesRefs {
+    final manager = $$GoldSalesTableTableManager($_db, $_db.goldSales).filter(
+      (f) => f.priceCurrency.code.sqlEquals($_itemColumn<String>('code')!),
+    );
+
+    final cache = $_typedResult.readTableOrNull(_goldSalesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -7950,6 +9573,56 @@ class $$CurrenciesTableFilterComposer
           }) => $$TravelGoalsTableFilterComposer(
             $db: $db,
             $table: $db.travelGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> goldPiecesRefs(
+    Expression<bool> Function($$GoldPiecesTableFilterComposer f) f,
+  ) {
+    final $$GoldPiecesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.purchaseCurrency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableFilterComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> goldSalesRefs(
+    Expression<bool> Function($$GoldSalesTableFilterComposer f) f,
+  ) {
+    final $$GoldSalesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.goldSales,
+      getReferencedColumn: (t) => t.priceCurrency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldSalesTableFilterComposer(
+            $db: $db,
+            $table: $db.goldSales,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -8094,6 +9767,56 @@ class $$CurrenciesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> goldPiecesRefs<T extends Object>(
+    Expression<T> Function($$GoldPiecesTableAnnotationComposer a) f,
+  ) {
+    final $$GoldPiecesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.purchaseCurrency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> goldSalesRefs<T extends Object>(
+    Expression<T> Function($$GoldSalesTableAnnotationComposer a) f,
+  ) {
+    final $$GoldSalesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.code,
+      referencedTable: $db.goldSales,
+      getReferencedColumn: (t) => t.priceCurrency,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldSalesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldSales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$CurrenciesTableTableManager
@@ -8114,6 +9837,8 @@ class $$CurrenciesTableTableManager
             bool remittancesRefs,
             bool dashainPlansRefs,
             bool travelGoalsRefs,
+            bool goldPiecesRefs,
+            bool goldSalesRefs,
           })
         > {
   $$CurrenciesTableTableManager(_$LedgerDatabase db, $CurrenciesTable table)
@@ -8156,6 +9881,8 @@ class $$CurrenciesTableTableManager
                 remittancesRefs = false,
                 dashainPlansRefs = false,
                 travelGoalsRefs = false,
+                goldPiecesRefs = false,
+                goldSalesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -8164,6 +9891,8 @@ class $$CurrenciesTableTableManager
                     if (remittancesRefs) db.remittances,
                     if (dashainPlansRefs) db.dashainPlans,
                     if (travelGoalsRefs) db.travelGoals,
+                    if (goldPiecesRefs) db.goldPieces,
+                    if (goldSalesRefs) db.goldSales,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -8248,6 +9977,46 @@ class $$CurrenciesTableTableManager
                           referencedColumn: 'currency',
                           typedResults: items,
                         ),
+                      if (goldPiecesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          GoldPiece,
+                          $GoldPiecesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._goldPiecesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).goldPiecesRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'purchase_currency',
+                          typedResults: items,
+                        ),
+                      if (goldSalesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          Currency,
+                          $CurrenciesTable,
+                          GoldSale,
+                          $GoldSalesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CurrenciesTableReferences
+                              ._goldSalesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CurrenciesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).goldSalesRefs,
+                          currentColumn: 'code',
+                          referencedColumn: 'price_currency',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -8273,6 +10042,8 @@ typedef $$CurrenciesTableProcessedTableManager =
         bool remittancesRefs,
         bool dashainPlansRefs,
         bool travelGoalsRefs,
+        bool goldPiecesRefs,
+        bool goldSalesRefs,
       })
     >;
 typedef $$LedgerAccountsTableCreateCompanionBuilder =
@@ -9642,6 +11413,42 @@ final class $$JournalEntriesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$GoldSalesTable, List<GoldSale>>
+  _goldSalesRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.goldSales,
+    aliasName: 'journal_entries__id__gold_sales__receipt_id',
+  );
+
+  $$GoldSalesTableProcessedTableManager get goldSalesRefs {
+    final manager = $$GoldSalesTableTableManager(
+      $_db,
+      $_db.goldSales,
+    ).filter((f) => f.receiptId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_goldSalesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$GoldEventsTable, List<GoldEvent>>
+  _goldEventsRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.goldEvents,
+    aliasName: 'journal_entries__id__gold_events__journal_id',
+  );
+
+  $$GoldEventsTableProcessedTableManager get goldEventsRefs {
+    final manager = $$GoldEventsTableTableManager(
+      $_db,
+      $_db.goldEvents,
+    ).filter((f) => f.journalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_goldEventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$JournalEntriesTableFilterComposer
@@ -9992,6 +11799,56 @@ class $$JournalEntriesTableFilterComposer
           }) => $$DashainPlansTableFilterComposer(
             $db: $db,
             $table: $db.dashainPlans,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> goldSalesRefs(
+    Expression<bool> Function($$GoldSalesTableFilterComposer f) f,
+  ) {
+    final $$GoldSalesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldSales,
+      getReferencedColumn: (t) => t.receiptId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldSalesTableFilterComposer(
+            $db: $db,
+            $table: $db.goldSales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> goldEventsRefs(
+    Expression<bool> Function($$GoldEventsTableFilterComposer f) f,
+  ) {
+    final $$GoldEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldEvents,
+      getReferencedColumn: (t) => t.journalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.goldEvents,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -10456,6 +12313,56 @@ class $$JournalEntriesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> goldSalesRefs<T extends Object>(
+    Expression<T> Function($$GoldSalesTableAnnotationComposer a) f,
+  ) {
+    final $$GoldSalesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldSales,
+      getReferencedColumn: (t) => t.receiptId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldSalesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldSales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> goldEventsRefs<T extends Object>(
+    Expression<T> Function($$GoldEventsTableAnnotationComposer a) f,
+  ) {
+    final $$GoldEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldEvents,
+      getReferencedColumn: (t) => t.journalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$JournalEntriesTableTableManager
@@ -10485,6 +12392,8 @@ class $$JournalEntriesTableTableManager
             bool remittanceSourceProofs,
             bool remittanceFamilyPaymentsRefs,
             bool dashainPlansRefs,
+            bool goldSalesRefs,
+            bool goldEventsRefs,
           })
         > {
   $$JournalEntriesTableTableManager(
@@ -10563,6 +12472,8 @@ class $$JournalEntriesTableTableManager
                 remittanceSourceProofs = false,
                 remittanceFamilyPaymentsRefs = false,
                 dashainPlansRefs = false,
+                goldSalesRefs = false,
+                goldEventsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -10578,6 +12489,8 @@ class $$JournalEntriesTableTableManager
                     if (remittanceFamilyPaymentsRefs)
                       db.remittanceFamilyPayments,
                     if (dashainPlansRefs) db.dashainPlans,
+                    if (goldSalesRefs) db.goldSales,
+                    if (goldEventsRefs) db.goldEvents,
                   ],
                   addJoins:
                       <
@@ -10833,6 +12746,46 @@ class $$JournalEntriesTableTableManager
                           referencedColumn: 'receipt_id',
                           typedResults: items,
                         ),
+                      if (goldSalesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          GoldSale,
+                          $GoldSalesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._goldSalesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).goldSalesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'receipt_id',
+                          typedResults: items,
+                        ),
+                      if (goldEventsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          JournalEntry,
+                          $JournalEntriesTable,
+                          GoldEvent,
+                          $GoldEventsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$JournalEntriesTableReferences
+                              ._goldEventsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$JournalEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).goldEventsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'journal_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -10867,6 +12820,8 @@ typedef $$JournalEntriesTableProcessedTableManager =
         bool remittanceSourceProofs,
         bool remittanceFamilyPaymentsRefs,
         bool dashainPlansRefs,
+        bool goldSalesRefs,
+        bool goldEventsRefs,
       })
     >;
 typedef $$JournalPostingsTableCreateCompanionBuilder =
@@ -18018,6 +19973,1567 @@ typedef $$TravelContributionsTableProcessedTableManager =
       TravelContribution,
       PrefetchHooks Function({bool goalId, bool accountId})
     >;
+typedef $$GoldPiecesTableCreateCompanionBuilder = GoldPiecesCompanion Function({
+  Value<int> id,
+  required String creationKey,
+  required String label,
+  required GoldKind kind,
+  required int weightMg,
+  required int karatHundredths,
+  Value<int?> purchaseDay,
+  Value<int?> purchaseMinor,
+  Value<String?> purchaseCurrency,
+  required String owner,
+  required String custodian,
+  Value<String?> notes,
+});
+typedef $$GoldPiecesTableUpdateCompanionBuilder = GoldPiecesCompanion Function({
+  Value<int> id,
+  Value<String> creationKey,
+  Value<String> label,
+  Value<GoldKind> kind,
+  Value<int> weightMg,
+  Value<int> karatHundredths,
+  Value<int?> purchaseDay,
+  Value<int?> purchaseMinor,
+  Value<String?> purchaseCurrency,
+  Value<String> owner,
+  Value<String> custodian,
+  Value<String?> notes,
+});
+
+final class $$GoldPiecesTableReferences
+    extends BaseReferences<_$LedgerDatabase, $GoldPiecesTable, GoldPiece> {
+  $$GoldPiecesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $CurrenciesTable _purchaseCurrencyTable(_$LedgerDatabase db) => db
+      .currencies
+      .createAlias('gold_pieces__purchase_currency__currencies__code');
+
+  $$CurrenciesTableProcessedTableManager? get purchaseCurrency {
+    final $_column = $_itemColumn<String>('purchase_currency');
+    if ($_column == null) return null;
+    final manager = $$CurrenciesTableTableManager(
+      $_db,
+      $_db.currencies,
+    ).filter((f) => f.code.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_purchaseCurrencyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$GoldSalesTable, List<GoldSale>>
+  _goldSalesRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.goldSales,
+    aliasName: 'gold_pieces__id__gold_sales__piece_id',
+  );
+
+  $$GoldSalesTableProcessedTableManager get goldSalesRefs {
+    final manager = $$GoldSalesTableTableManager(
+      $_db,
+      $_db.goldSales,
+    ).filter((f) => f.pieceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_goldSalesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$GoldEventsTable, List<GoldEvent>>
+  _goldEventsRefsTable(_$LedgerDatabase db) => MultiTypedResultKey.fromTable(
+    db.goldEvents,
+    aliasName: 'gold_pieces__id__gold_events__piece_id',
+  );
+
+  $$GoldEventsTableProcessedTableManager get goldEventsRefs {
+    final manager = $$GoldEventsTableTableManager(
+      $_db,
+      $_db.goldEvents,
+    ).filter((f) => f.pieceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_goldEventsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$GoldPiecesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $GoldPiecesTable> {
+  $$GoldPiecesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get creationKey => $composableBuilder(
+    column: $table.creationKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<GoldKind, GoldKind, String> get kind =>
+      $composableBuilder(
+        column: $table.kind,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get weightMg => $composableBuilder(
+    column: $table.weightMg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get karatHundredths => $composableBuilder(
+    column: $table.karatHundredths,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get purchaseDay => $composableBuilder(
+    column: $table.purchaseDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get purchaseMinor => $composableBuilder(
+    column: $table.purchaseMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get owner => $composableBuilder(
+    column: $table.owner,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get custodian => $composableBuilder(
+    column: $table.custodian,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CurrenciesTableFilterComposer get purchaseCurrency {
+    final $$CurrenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.purchaseCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> goldSalesRefs(
+    Expression<bool> Function($$GoldSalesTableFilterComposer f) f,
+  ) {
+    final $$GoldSalesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldSales,
+      getReferencedColumn: (t) => t.pieceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldSalesTableFilterComposer(
+            $db: $db,
+            $table: $db.goldSales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> goldEventsRefs(
+    Expression<bool> Function($$GoldEventsTableFilterComposer f) f,
+  ) {
+    final $$GoldEventsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldEvents,
+      getReferencedColumn: (t) => t.pieceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldEventsTableFilterComposer(
+            $db: $db,
+            $table: $db.goldEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$GoldPiecesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $GoldPiecesTable> {
+  $$GoldPiecesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get creationKey => $composableBuilder(
+    column: $table.creationKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weightMg => $composableBuilder(
+    column: $table.weightMg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get karatHundredths => $composableBuilder(
+    column: $table.karatHundredths,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get purchaseDay => $composableBuilder(
+    column: $table.purchaseDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get purchaseMinor => $composableBuilder(
+    column: $table.purchaseMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get owner => $composableBuilder(
+    column: $table.owner,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get custodian => $composableBuilder(
+    column: $table.custodian,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CurrenciesTableOrderingComposer get purchaseCurrency {
+    final $$CurrenciesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.purchaseCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableOrderingComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldPiecesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $GoldPiecesTable> {
+  $$GoldPiecesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get creationKey => $composableBuilder(
+    column: $table.creationKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<GoldKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<int> get weightMg =>
+      $composableBuilder(column: $table.weightMg, builder: (column) => column);
+
+  GeneratedColumn<int> get karatHundredths => $composableBuilder(
+    column: $table.karatHundredths,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get purchaseDay => $composableBuilder(
+    column: $table.purchaseDay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get purchaseMinor => $composableBuilder(
+    column: $table.purchaseMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get owner =>
+      $composableBuilder(column: $table.owner, builder: (column) => column);
+
+  GeneratedColumn<String> get custodian =>
+      $composableBuilder(column: $table.custodian, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  $$CurrenciesTableAnnotationComposer get purchaseCurrency {
+    final $$CurrenciesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.purchaseCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> goldSalesRefs<T extends Object>(
+    Expression<T> Function($$GoldSalesTableAnnotationComposer a) f,
+  ) {
+    final $$GoldSalesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldSales,
+      getReferencedColumn: (t) => t.pieceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldSalesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldSales,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> goldEventsRefs<T extends Object>(
+    Expression<T> Function($$GoldEventsTableAnnotationComposer a) f,
+  ) {
+    final $$GoldEventsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.goldEvents,
+      getReferencedColumn: (t) => t.pieceId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldEventsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldEvents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$GoldPiecesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $GoldPiecesTable,
+          GoldPiece,
+          $$GoldPiecesTableFilterComposer,
+          $$GoldPiecesTableOrderingComposer,
+          $$GoldPiecesTableAnnotationComposer,
+          $$GoldPiecesTableCreateCompanionBuilder,
+          $$GoldPiecesTableUpdateCompanionBuilder,
+          (GoldPiece, $$GoldPiecesTableReferences),
+          GoldPiece,
+          PrefetchHooks Function({
+            bool purchaseCurrency,
+            bool goldSalesRefs,
+            bool goldEventsRefs,
+          })
+        > {
+  $$GoldPiecesTableTableManager(_$LedgerDatabase db, $GoldPiecesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GoldPiecesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GoldPiecesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GoldPiecesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> creationKey = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<GoldKind> kind = const Value.absent(),
+                Value<int> weightMg = const Value.absent(),
+                Value<int> karatHundredths = const Value.absent(),
+                Value<int?> purchaseDay = const Value.absent(),
+                Value<int?> purchaseMinor = const Value.absent(),
+                Value<String?> purchaseCurrency = const Value.absent(),
+                Value<String> owner = const Value.absent(),
+                Value<String> custodian = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => GoldPiecesCompanion(
+                id: id,
+                creationKey: creationKey,
+                label: label,
+                kind: kind,
+                weightMg: weightMg,
+                karatHundredths: karatHundredths,
+                purchaseDay: purchaseDay,
+                purchaseMinor: purchaseMinor,
+                purchaseCurrency: purchaseCurrency,
+                owner: owner,
+                custodian: custodian,
+                notes: notes,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String creationKey,
+                required String label,
+                required GoldKind kind,
+                required int weightMg,
+                required int karatHundredths,
+                Value<int?> purchaseDay = const Value.absent(),
+                Value<int?> purchaseMinor = const Value.absent(),
+                Value<String?> purchaseCurrency = const Value.absent(),
+                required String owner,
+                required String custodian,
+                Value<String?> notes = const Value.absent(),
+              }) => GoldPiecesCompanion.insert(
+                id: id,
+                creationKey: creationKey,
+                label: label,
+                kind: kind,
+                weightMg: weightMg,
+                karatHundredths: karatHundredths,
+                purchaseDay: purchaseDay,
+                purchaseMinor: purchaseMinor,
+                purchaseCurrency: purchaseCurrency,
+                owner: owner,
+                custodian: custodian,
+                notes: notes,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GoldPiecesTable, GoldPiece>(table),
+                  $$GoldPiecesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                purchaseCurrency = false,
+                goldSalesRefs = false,
+                goldEventsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (goldSalesRefs) db.goldSales,
+                    if (goldEventsRefs) db.goldEvents,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (purchaseCurrency) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.purchaseCurrency,
+                            referencedTable: $$GoldPiecesTableReferences
+                                ._purchaseCurrencyTable(db),
+                            referencedColumn: $$GoldPiecesTableReferences
+                                ._purchaseCurrencyTable(db)
+                                .code,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (goldSalesRefs)
+                        await $_getPrefetchedDataByColumns<
+                          GoldPiece,
+                          $GoldPiecesTable,
+                          GoldSale,
+                          $GoldSalesTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$GoldPiecesTableReferences
+                              ._goldSalesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$GoldPiecesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).goldSalesRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'piece_id',
+                          typedResults: items,
+                        ),
+                      if (goldEventsRefs)
+                        await $_getPrefetchedDataByColumns<
+                          GoldPiece,
+                          $GoldPiecesTable,
+                          GoldEvent,
+                          $GoldEventsTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$GoldPiecesTableReferences
+                              ._goldEventsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$GoldPiecesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).goldEventsRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'piece_id',
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$GoldPiecesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $GoldPiecesTable,
+      GoldPiece,
+      $$GoldPiecesTableFilterComposer,
+      $$GoldPiecesTableOrderingComposer,
+      $$GoldPiecesTableAnnotationComposer,
+      $$GoldPiecesTableCreateCompanionBuilder,
+      $$GoldPiecesTableUpdateCompanionBuilder,
+      (GoldPiece, $$GoldPiecesTableReferences),
+      GoldPiece,
+      PrefetchHooks Function({
+        bool purchaseCurrency,
+        bool goldSalesRefs,
+        bool goldEventsRefs,
+      })
+    >;
+typedef $$GoldSalesTableCreateCompanionBuilder = GoldSalesCompanion Function({
+  Value<int> pieceId,
+  required int saleDay,
+  Value<int?> priceMinor,
+  Value<String?> priceCurrency,
+  Value<int?> receiptId,
+  Value<int> receiptRevision,
+});
+typedef $$GoldSalesTableUpdateCompanionBuilder = GoldSalesCompanion Function({
+  Value<int> pieceId,
+  Value<int> saleDay,
+  Value<int?> priceMinor,
+  Value<String?> priceCurrency,
+  Value<int?> receiptId,
+  Value<int> receiptRevision,
+});
+
+final class $$GoldSalesTableReferences
+    extends BaseReferences<_$LedgerDatabase, $GoldSalesTable, GoldSale> {
+  $$GoldSalesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $GoldPiecesTable _pieceIdTable(_$LedgerDatabase db) =>
+      db.goldPieces.createAlias('gold_sales__piece_id__gold_pieces__id');
+
+  $$GoldPiecesTableProcessedTableManager get pieceId {
+    final $_column = $_itemColumn<int>('piece_id')!;
+
+    final manager = $$GoldPiecesTableTableManager(
+      $_db,
+      $_db.goldPieces,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pieceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $CurrenciesTable _priceCurrencyTable(_$LedgerDatabase db) =>
+      db.currencies.createAlias('gold_sales__price_currency__currencies__code');
+
+  $$CurrenciesTableProcessedTableManager? get priceCurrency {
+    final $_column = $_itemColumn<String>('price_currency');
+    if ($_column == null) return null;
+    final manager = $$CurrenciesTableTableManager(
+      $_db,
+      $_db.currencies,
+    ).filter((f) => f.code.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_priceCurrencyTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $JournalEntriesTable _receiptIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('gold_sales__receipt_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager? get receiptId {
+    final $_column = $_itemColumn<int>('receipt_id');
+    if ($_column == null) return null;
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_receiptIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$GoldSalesTableFilterComposer
+    extends Composer<_$LedgerDatabase, $GoldSalesTable> {
+  $$GoldSalesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get saleDay => $composableBuilder(
+    column: $table.saleDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get priceMinor => $composableBuilder(
+    column: $table.priceMinor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get receiptRevision => $composableBuilder(
+    column: $table.receiptRevision,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$GoldPiecesTableFilterComposer get pieceId {
+    final $$GoldPiecesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pieceId,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableFilterComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurrenciesTableFilterComposer get priceCurrency {
+    final $$CurrenciesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.priceCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableFilterComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableFilterComposer get receiptId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldSalesTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $GoldSalesTable> {
+  $$GoldSalesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get saleDay => $composableBuilder(
+    column: $table.saleDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get priceMinor => $composableBuilder(
+    column: $table.priceMinor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get receiptRevision => $composableBuilder(
+    column: $table.receiptRevision,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$GoldPiecesTableOrderingComposer get pieceId {
+    final $$GoldPiecesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pieceId,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableOrderingComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurrenciesTableOrderingComposer get priceCurrency {
+    final $$CurrenciesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.priceCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableOrderingComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableOrderingComposer get receiptId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldSalesTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $GoldSalesTable> {
+  $$GoldSalesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get saleDay =>
+      $composableBuilder(column: $table.saleDay, builder: (column) => column);
+
+  GeneratedColumn<int> get priceMinor => $composableBuilder(
+    column: $table.priceMinor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get receiptRevision => $composableBuilder(
+    column: $table.receiptRevision,
+    builder: (column) => column,
+  );
+
+  $$GoldPiecesTableAnnotationComposer get pieceId {
+    final $$GoldPiecesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pieceId,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$CurrenciesTableAnnotationComposer get priceCurrency {
+    final $$CurrenciesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.priceCurrency,
+      referencedTable: $db.currencies,
+      getReferencedColumn: (t) => t.code,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CurrenciesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.currencies,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableAnnotationComposer get receiptId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.receiptId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldSalesTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $GoldSalesTable,
+          GoldSale,
+          $$GoldSalesTableFilterComposer,
+          $$GoldSalesTableOrderingComposer,
+          $$GoldSalesTableAnnotationComposer,
+          $$GoldSalesTableCreateCompanionBuilder,
+          $$GoldSalesTableUpdateCompanionBuilder,
+          (GoldSale, $$GoldSalesTableReferences),
+          GoldSale,
+          PrefetchHooks Function({
+            bool pieceId,
+            bool priceCurrency,
+            bool receiptId,
+          })
+        > {
+  $$GoldSalesTableTableManager(_$LedgerDatabase db, $GoldSalesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GoldSalesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GoldSalesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GoldSalesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> pieceId = const Value.absent(),
+                Value<int> saleDay = const Value.absent(),
+                Value<int?> priceMinor = const Value.absent(),
+                Value<String?> priceCurrency = const Value.absent(),
+                Value<int?> receiptId = const Value.absent(),
+                Value<int> receiptRevision = const Value.absent(),
+              }) => GoldSalesCompanion(
+                pieceId: pieceId,
+                saleDay: saleDay,
+                priceMinor: priceMinor,
+                priceCurrency: priceCurrency,
+                receiptId: receiptId,
+                receiptRevision: receiptRevision,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> pieceId = const Value.absent(),
+                required int saleDay,
+                Value<int?> priceMinor = const Value.absent(),
+                Value<String?> priceCurrency = const Value.absent(),
+                Value<int?> receiptId = const Value.absent(),
+                Value<int> receiptRevision = const Value.absent(),
+              }) => GoldSalesCompanion.insert(
+                pieceId: pieceId,
+                saleDay: saleDay,
+                priceMinor: priceMinor,
+                priceCurrency: priceCurrency,
+                receiptId: receiptId,
+                receiptRevision: receiptRevision,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GoldSalesTable, GoldSale>(table),
+                  $$GoldSalesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({pieceId = false, priceCurrency = false, receiptId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (pieceId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.pieceId,
+                            referencedTable: $$GoldSalesTableReferences
+                                ._pieceIdTable(db),
+                            referencedColumn: $$GoldSalesTableReferences
+                                ._pieceIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (priceCurrency) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.priceCurrency,
+                            referencedTable: $$GoldSalesTableReferences
+                                ._priceCurrencyTable(db),
+                            referencedColumn: $$GoldSalesTableReferences
+                                ._priceCurrencyTable(db)
+                                .code,
+                          ) as T;
+                        }
+                        if (receiptId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.receiptId,
+                            referencedTable: $$GoldSalesTableReferences
+                                ._receiptIdTable(db),
+                            referencedColumn: $$GoldSalesTableReferences
+                                ._receiptIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$GoldSalesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $GoldSalesTable,
+      GoldSale,
+      $$GoldSalesTableFilterComposer,
+      $$GoldSalesTableOrderingComposer,
+      $$GoldSalesTableAnnotationComposer,
+      $$GoldSalesTableCreateCompanionBuilder,
+      $$GoldSalesTableUpdateCompanionBuilder,
+      (GoldSale, $$GoldSalesTableReferences),
+      GoldSale,
+      PrefetchHooks Function({bool pieceId, bool priceCurrency, bool receiptId})
+    >;
+typedef $$GoldEventsTableCreateCompanionBuilder = GoldEventsCompanion Function({
+  Value<int> id,
+  required int pieceId,
+  required int recordedMicros,
+  required GoldEventKind kind,
+  required String changes,
+  Value<int?> journalId,
+});
+typedef $$GoldEventsTableUpdateCompanionBuilder = GoldEventsCompanion Function({
+  Value<int> id,
+  Value<int> pieceId,
+  Value<int> recordedMicros,
+  Value<GoldEventKind> kind,
+  Value<String> changes,
+  Value<int?> journalId,
+});
+
+final class $$GoldEventsTableReferences
+    extends BaseReferences<_$LedgerDatabase, $GoldEventsTable, GoldEvent> {
+  $$GoldEventsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $GoldPiecesTable _pieceIdTable(_$LedgerDatabase db) =>
+      db.goldPieces.createAlias('gold_events__piece_id__gold_pieces__id');
+
+  $$GoldPiecesTableProcessedTableManager get pieceId {
+    final $_column = $_itemColumn<int>('piece_id')!;
+
+    final manager = $$GoldPiecesTableTableManager(
+      $_db,
+      $_db.goldPieces,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pieceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $JournalEntriesTable _journalIdTable(_$LedgerDatabase db) => db
+      .journalEntries
+      .createAlias('gold_events__journal_id__journal_entries__id');
+
+  $$JournalEntriesTableProcessedTableManager? get journalId {
+    final $_column = $_itemColumn<int>('journal_id');
+    if ($_column == null) return null;
+    final manager = $$JournalEntriesTableTableManager(
+      $_db,
+      $_db.journalEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_journalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$GoldEventsTableFilterComposer
+    extends Composer<_$LedgerDatabase, $GoldEventsTable> {
+  $$GoldEventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get recordedMicros => $composableBuilder(
+    column: $table.recordedMicros,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<GoldEventKind, GoldEventKind, String>
+  get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get changes => $composableBuilder(
+    column: $table.changes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$GoldPiecesTableFilterComposer get pieceId {
+    final $$GoldPiecesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pieceId,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableFilterComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableFilterComposer get journalId {
+    final $$JournalEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.journalId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldEventsTableOrderingComposer
+    extends Composer<_$LedgerDatabase, $GoldEventsTable> {
+  $$GoldEventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get recordedMicros => $composableBuilder(
+    column: $table.recordedMicros,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get changes => $composableBuilder(
+    column: $table.changes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$GoldPiecesTableOrderingComposer get pieceId {
+    final $$GoldPiecesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pieceId,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableOrderingComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableOrderingComposer get journalId {
+    final $$JournalEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.journalId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldEventsTableAnnotationComposer
+    extends Composer<_$LedgerDatabase, $GoldEventsTable> {
+  $$GoldEventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get recordedMicros => $composableBuilder(
+    column: $table.recordedMicros,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<GoldEventKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get changes =>
+      $composableBuilder(column: $table.changes, builder: (column) => column);
+
+  $$GoldPiecesTableAnnotationComposer get pieceId {
+    final $$GoldPiecesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pieceId,
+      referencedTable: $db.goldPieces,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$GoldPiecesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.goldPieces,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$JournalEntriesTableAnnotationComposer get journalId {
+    final $$JournalEntriesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.journalId,
+      referencedTable: $db.journalEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$JournalEntriesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.journalEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$GoldEventsTableTableManager
+    extends
+        RootTableManager<
+          _$LedgerDatabase,
+          $GoldEventsTable,
+          GoldEvent,
+          $$GoldEventsTableFilterComposer,
+          $$GoldEventsTableOrderingComposer,
+          $$GoldEventsTableAnnotationComposer,
+          $$GoldEventsTableCreateCompanionBuilder,
+          $$GoldEventsTableUpdateCompanionBuilder,
+          (GoldEvent, $$GoldEventsTableReferences),
+          GoldEvent,
+          PrefetchHooks Function({bool pieceId, bool journalId})
+        > {
+  $$GoldEventsTableTableManager(_$LedgerDatabase db, $GoldEventsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GoldEventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GoldEventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GoldEventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pieceId = const Value.absent(),
+                Value<int> recordedMicros = const Value.absent(),
+                Value<GoldEventKind> kind = const Value.absent(),
+                Value<String> changes = const Value.absent(),
+                Value<int?> journalId = const Value.absent(),
+              }) => GoldEventsCompanion(
+                id: id,
+                pieceId: pieceId,
+                recordedMicros: recordedMicros,
+                kind: kind,
+                changes: changes,
+                journalId: journalId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pieceId,
+                required int recordedMicros,
+                required GoldEventKind kind,
+                required String changes,
+                Value<int?> journalId = const Value.absent(),
+              }) => GoldEventsCompanion.insert(
+                id: id,
+                pieceId: pieceId,
+                recordedMicros: recordedMicros,
+                kind: kind,
+                changes: changes,
+                journalId: journalId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GoldEventsTable, GoldEvent>(table),
+                  $$GoldEventsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({pieceId = false, journalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (pieceId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.pieceId,
+                        referencedTable: $$GoldEventsTableReferences
+                            ._pieceIdTable(db),
+                        referencedColumn: $$GoldEventsTableReferences
+                            ._pieceIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+                    if (journalId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.journalId,
+                        referencedTable: $$GoldEventsTableReferences
+                            ._journalIdTable(db),
+                        referencedColumn: $$GoldEventsTableReferences
+                            ._journalIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$GoldEventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$LedgerDatabase,
+      $GoldEventsTable,
+      GoldEvent,
+      $$GoldEventsTableFilterComposer,
+      $$GoldEventsTableOrderingComposer,
+      $$GoldEventsTableAnnotationComposer,
+      $$GoldEventsTableCreateCompanionBuilder,
+      $$GoldEventsTableUpdateCompanionBuilder,
+      (GoldEvent, $$GoldEventsTableReferences),
+      GoldEvent,
+      PrefetchHooks Function({bool pieceId, bool journalId})
+    >;
 
 class $LedgerDatabaseManager {
   final _$LedgerDatabase _db;
@@ -18071,4 +21587,10 @@ class $LedgerDatabaseManager {
       $$TravelGoalsTableTableManager(_db, _db.travelGoals);
   $$TravelContributionsTableTableManager get travelContributions =>
       $$TravelContributionsTableTableManager(_db, _db.travelContributions);
+  $$GoldPiecesTableTableManager get goldPieces =>
+      $$GoldPiecesTableTableManager(_db, _db.goldPieces);
+  $$GoldSalesTableTableManager get goldSales =>
+      $$GoldSalesTableTableManager(_db, _db.goldSales);
+  $$GoldEventsTableTableManager get goldEvents =>
+      $$GoldEventsTableTableManager(_db, _db.goldEvents);
 }

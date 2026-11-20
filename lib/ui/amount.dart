@@ -16,9 +16,12 @@ int? parseMinor(String input, int scale) {
   return amount.toInt();
 }
 
-String formatMinor(int minor, int scale) {
-  final digits = BigInt.from(minor).abs().toString().padLeft(scale + 1, '0');
-  final sign = minor < 0 ? '-' : '';
+String formatMinor(int minor, int scale) =>
+    formatUnits(BigInt.from(minor), scale);
+
+String formatUnits(BigInt minor, int scale) {
+  final digits = minor.abs().toString().padLeft(scale + 1, '0');
+  final sign = minor.isNegative ? '-' : '';
   if (scale == 0) return '$sign$digits';
   final point = digits.length - scale;
   return '$sign${digits.substring(0, point)}.${digits.substring(point)}';

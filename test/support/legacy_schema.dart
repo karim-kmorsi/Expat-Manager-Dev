@@ -9,12 +9,19 @@ void dropLeaveSchema(sqlite.Database database) {
 }
 
 void dropEntitlementSchema(sqlite.Database database) {
+  dropGoldSchema(database);
   for (final table in [
     'travel_contributions',
     'travel_goals',
     'annual_tickets',
     'dashain_plans',
   ]) {
+    database.execute('DROP TABLE $table');
+  }
+}
+
+void dropGoldSchema(sqlite.Database database) {
+  for (final table in ['gold_events', 'gold_sales', 'gold_pieces']) {
     database.execute('DROP TABLE $table');
   }
 }

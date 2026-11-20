@@ -19,6 +19,10 @@ Store civil dates as day numbers and derive balances from the leave register. At
 
 Schema 7 adds the yearly Dashain plan and ticket records, and the travel goal and earmarks, using the encrypted migration path. Update the active yearly bonus receipt and its balanced journal postings in one transaction. Revision-scoped operation IDs prevent duplicate posting. Corrections preserve links to the original receipt and obey the existing reconciled-period gate. Store a ticket policy version with each annual record. Travel contributions refer to personal accounts and do not write to the journal.
 
+## T-015 physical gold
+
+Schema 8 adds the piece register, one optional sale per piece, and an operation history with changed values or journal links. Weight uses integer milligrams and karat uses integer hundredths. The sale receipt points to a balanced income entry. Corrections and undo use the same receipt and reversal mechanisms as Dashain, with a piece-specific revision and transaction. Sale prices and acquisition costs are descriptive.
+
 ## Financial model
 
 - A user account has one currency and a type such as bank, cash or a separate real savings account. A card is a payment method for its account. Use integer minor units with fixed precision per currency once used. Report totals per currency. Any converted display value requires a known, dated rate.

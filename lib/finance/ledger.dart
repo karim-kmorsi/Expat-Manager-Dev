@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import '../data/database.dart';
@@ -10,6 +12,7 @@ part 'usd_cash.dart';
 part 'expenses.dart';
 part 'remittances.dart';
 part 'entitlements.dart';
+part 'gold.dart';
 
 class Ledger {
   Ledger(this._db);
@@ -178,6 +181,71 @@ class Ledger {
     );
   });
 
+  Future<JournalEntry> _journalEntry(int id) async {
+    final entry = await (_db.select(
+      _db.journalEntries,
+    )..where((row) => row.id.equals(id))).getSingleOrNull();
+    if (entry == null) throw const LedgerException(LedgerIssue.entryNotFound);
+    return entry;
+  }
+
+  Future<IncomeReceipt> _readIncomeReceipt(int id) async {
+    final entry = await _journalEntry(id);
+    final credit = (await _postingsFor(id)).singleWhere((row) => row.minor > 0);
+    return (
+      accountId: credit.accountId,
+      minor: credit.minor,
+      day: leaveDay(
+        DateTime.fromMicrosecondsSinceEpoch(entry.effectiveMicros, isUtc: true),
+      ),
+    );
+  }
+
+  Future<int> _postManagedIncome(
+    String operationId,
+    JournalKind kind,
+    IncomeReceipt receipt, {
+    int? correctionOf,
+    String? reason,
+  }) async {
+    if (receipt.minor <= 0 ||
+        receipt.day < leaveDay(firstLeaveDate) ||
+        receipt.day > leaveDay(lastLeaveDate) ||
+        receipt.day > leaveDay(DateTime.now())) {
+      throw const LedgerException(LedgerIssue.invalidInput);
+    }
+    final account = await _personalAccount(receipt.accountId);
+    final offset = await _offset(account.currency, AccountKind.income);
+    return _persist(
+      operationId,
+      kind,
+      dateOfLeaveDay(receipt.day),
+      [
+        (accountId: account.id, minor: receipt.minor),
+        (accountId: offset.id, minor: -receipt.minor),
+      ],
+      correctionOf: correctionOf,
+      reason: reason,
+    );
+  }
+
+  Future<int> _reverseManagedIncome(
+    String operationId,
+    int id,
+    String reason,
+  ) async {
+    final original = await _journalEntry(id);
+    return _reverse(
+      operationId,
+      original,
+      DateTime.fromMicrosecondsSinceEpoch(
+        original.effectiveMicros,
+        isUtc: true,
+      ),
+      reason,
+    );
+  }
+
   Future<int> _reverse(
     String operationId,
     JournalEntry original,
@@ -212,14 +280,11 @@ class Ledger {
   }
 
   Future<JournalEntry> _reversibleEntry(int id) async {
-    final entry = await (_db.select(
-      _db.journalEntries,
-    )..where((row) => row.id.equals(id))).getSingleOrNull();
-    if (entry == null) throw const LedgerException(LedgerIssue.entryNotFound);
+    final entry = await _journalEntry(id);
     if (entry.kind == JournalKind.opening ||
         entry.kind == JournalKind.reversal ||
         entry.kind == JournalKind.cashAdjustment ||
-        entry.kind == JournalKind.dashainBonus ||
+        entry.kind.isManagedIncome ||
         entry.kind.isRemittance) {
       throw const LedgerException(LedgerIssue.reversalNotAllowed);
     }

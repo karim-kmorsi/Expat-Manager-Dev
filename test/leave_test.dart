@@ -466,6 +466,7 @@ void main() {
       for (final row in raw.select(
         """SELECT name FROM sqlite_schema
            WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'leave_%'
+             AND name NOT LIKE 'gold_%'
              AND name NOT IN ('dashain_plans', 'annual_tickets', 'travel_goals', 'travel_contributions')""",
       ))
         row['name'] as String: [

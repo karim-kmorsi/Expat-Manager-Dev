@@ -16,6 +16,7 @@ part 'expense_tables.dart';
 part 'remittance_tables.dart';
 part 'leave_tables.dart';
 part 'entitlement_tables.dart';
+part 'gold_tables.dart';
 
 class Currencies extends Table {
   TextColumn get code => text()();
@@ -89,12 +90,15 @@ class StorageLocked implements Exception {
     AnnualTickets,
     TravelGoals,
     TravelContributions,
+    GoldPieces,
+    GoldSales,
+    GoldEvents,
   ],
 )
 class LedgerDatabase extends _$LedgerDatabase {
   LedgerDatabase._(super.executor);
 
-  static const _currentSchemaVersion = 7;
+  static const _currentSchemaVersion = 8;
 
   /// Takes ownership of a writable copy of the key.
   static Future<LedgerDatabase> open(File file, Uint8List key) async {
@@ -149,10 +153,16 @@ class LedgerDatabase extends _$LedgerDatabase {
         await migrator.createTable(leaveHolidays);
         await _seedLeaveRules();
       }
-      await migrator.createTable(dashainPlans);
-      await migrator.createTable(annualTickets);
-      await migrator.createTable(travelGoals);
-      await migrator.createTable(travelContributions);
+      if (from < 7) {
+        await migrator.createTable(dashainPlans);
+        await migrator.createTable(annualTickets);
+        await migrator.createTable(travelGoals);
+        await migrator.createTable(travelContributions);
+      }
+      await migrator.createTable(goldPieces);
+      await migrator.createTable(goldSales);
+      await migrator.createTable(goldEvents);
+      await migrator.createIndex(goldEventsByPiece);
       await customStatement('PRAGMA user_version = $schemaVersion');
     }),
     onCreate: (migrator) => transaction(() async {

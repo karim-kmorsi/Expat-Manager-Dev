@@ -7,8 +7,8 @@ import '../finance/ledger.dart';
 import '../finance/model.dart';
 import '../leave/model.dart';
 import 'amount.dart';
-import 'date_picker.dart';
 import 'digits.dart';
+import 'record_editor.dart';
 
 part 'entitlement_forms.dart';
 
@@ -20,9 +20,6 @@ typedef _Benefits = ({
   List<LedgerAccount> accounts,
   List<LeaveEntry> leaves,
 });
-
-String _displayDay(BuildContext context, int day) =>
-    MaterialLocalizations.of(context).formatCompactDate(dateOfLeaveDay(day));
 
 int _today() => leaveDay(DateTime.now());
 
@@ -68,7 +65,7 @@ class _EntitlementScreenState extends State<EntitlementScreen> {
       context: context,
       barrierDismissible: false,
       builder: (_) =>
-          _BenefitDialog(title: title, body: body, save: save, action: action),
+          RecordEditor(title: title, body: body, save: save, action: action),
     );
     if (mounted && saved == true) _refresh();
   }
@@ -158,11 +155,11 @@ class _EntitlementScreenState extends State<EntitlementScreen> {
                 'المتوقع ${_money(data, view.expectedMinor, view.plan.currency)}',
               ),
               Text(
-                'موعد الصرف المتوقع ${_displayDay(context, view.expectedDay)}',
+                'موعد الصرف المتوقع ${recordDayLabel(context, view.expectedDay)}',
               ),
             ],
             if (receipt != null) ...[
-              Text('الاستلام ${_displayDay(context, receipt.day)}'),
+              Text('الاستلام ${recordDayLabel(context, receipt.day)}'),
               Text(
                 _money(
                   data,
@@ -224,10 +221,11 @@ class _EntitlementScreenState extends State<EntitlementScreen> {
             }),
             const Text('رحلة ذهاب وعودة واحدة في السنة، على نفقة جهة العمل.'),
             if (received != null)
-              Text('الاستلام ${_displayDay(context, received)}'),
-            if (used != null) Text('الاستخدام ${_displayDay(context, used)}'),
+              Text('الاستلام ${recordDayLabel(context, received)}'),
+            if (used != null)
+              Text('الاستخدام ${recordDayLabel(context, used)}'),
             if (linked != null)
-              Text('الإجازة ${_displayDay(context, linked.startDay)}'),
+              Text('الإجازة ${recordDayLabel(context, linked.startDay)}'),
             Wrap(
               spacing: 8,
               children: [
@@ -270,7 +268,7 @@ class _EntitlementScreenState extends State<EntitlementScreen> {
             if (view == null) const Text('حدّد هدف الادخار وموعده.'),
             if (view != null && progress != null && code != null) ...[
               Text(
-                'الهدف ${_money(data, progress.target, code)} · ${_displayDay(context, view.goal.targetDay)}',
+                'الهدف ${_money(data, progress.target, code)} · ${recordDayLabel(context, view.goal.targetDay)}',
               ),
               Text('المتاح من الادخار ${_money(data, progress.saved, code)}'),
               Text('المتبقي ${_money(data, progress.remaining, code)}'),
@@ -294,7 +292,7 @@ class _EntitlementScreenState extends State<EntitlementScreen> {
                           latinDigits(_account(data, item.accountId).name),
                         ),
                         onTap: () => _editContribution(data, code, old: item),
-                        subtitle: Text(_displayDay(context, item.day)),
+                        subtitle: Text(recordDayLabel(context, item.day)),
                         trailing: Text(_money(data, item.minor, code)),
                       ),
                   ],

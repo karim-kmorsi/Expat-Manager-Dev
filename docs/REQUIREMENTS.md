@@ -45,7 +45,7 @@ Use only rules approved by the user. Where a planning result depends on an undec
 - Maintain one editable travel savings goal in a selected currency with a target date and optional self-funded airfare. Record or correct contributions from existing funds. Contributions earmark the recorded balance of a same-currency account, with no journal posting, expense or foreign exchange. Limit progress to the earmarks still covered by each account's recorded balance. Calculate the suggested monthly amount over the current month through the target month, rounding up to a minor unit. If the goal is overdue and incomplete, show the remaining amount without a monthly suggestion.
 
 ## Assets and investments
-- Physical gold in Egypt: piece/purchase entries, weight, purity, cost if known, owner, holder/custodian (mother or brother), distinct from brokerage investments.
+- Physical gold in Egypt has a per-piece register with type, weight, karat, distinct owner and custodian, and optional purchase date and cost. Keep custody history and sold records. Recording a purchase or declaring a sale creates no journal entry. Confirm actual sale proceeds into a chosen account in its currency. A correction or undo uses linked reversals and obeys the current reconciliation gate. Display held weight by karat without inferring a price, profit or exchange rate.
 - Thndr: manual portfolio total snapshots as of date and deposited/withdrawn cash; detailed positions and live feeds deferred. Unrealized appreciation is not cash.
 
 ## Must-have flows
